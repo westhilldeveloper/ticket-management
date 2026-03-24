@@ -449,8 +449,8 @@ export default function TicketDetailsPage({ params }) {
             <FiArrowLeft className="mr-2" />
             Back
           </button>
-          <div className="flex items-center space-x-3">
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(ticket.status)}`}>
+          <div className="flex items-center items-center justify-between space-x-3">
+            <span className={`px-3 flex py-1 rounded-full text-sm font-medium ${getStatusColor(ticket.status)}`}>
               {getStatusIcon(ticket.status)}
               <span className="ml-1">{ticket.status.replace(/_/g, ' ')}</span>
             </span>

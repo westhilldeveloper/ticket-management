@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/db'
 import { verifyToken } from '@/app/lib/auth'
-import { sendMDApprovalEmail } from '@/app/lib/email'
+import { sendMDApprovalEmail, sendServiceAssignmentEmail } from '@/app/lib/email' 
 
 export async function POST(request, { params }) {
   try {
     // 1. FIX: Await params in Next.js 15
     const { ticketId } = await params
-    const { action, review, status, mdApproval, thirdParty, thirdPartyStatus, thirdPartyDetails, reviewType } = await request.json()
+    const { action, review, status, mdApproval, thirdParty, thirdPartyStatus, thirdPartyDetails, reviewType,assignedToId } = await request.json()
 
     // Verify admin access
     const token = request.cookies.get('token')?.value
@@ -64,6 +64,35 @@ export async function POST(request, { params }) {
     if (thirdPartyStatus) updateData.thirdPartyStatus = thirdPartyStatus
     if (thirdPartyDetails) updateData.thirdPartyDetails = thirdPartyDetails
 
+
+     // NEW: Handle ASSIGN_TO_SERVICE action separately because it requires validation and specific status
+    if (action === 'ASSIGN_TO_SERVICE') {
+       console.log('ASSIGN_TO_SERVICE received. assignedToId:', assignedToId); 
+      if (!assignedToId) {
+        return NextResponse.json(
+          { message: 'assignedToId is required' },
+          { status: 400 }
+        )
+      }
+
+      // Verify that the assigned user exists and is a service team member
+      const serviceUser = await prisma.user.findUnique({
+        where: { id: assignedToId }
+      })
+
+      if (!serviceUser || serviceUser.role !== 'SERVICE_TEAM') {
+        console.error('User role is not SERVICE_TEAM:', serviceUser.role);
+        return NextResponse.json(
+          { message: 'Invalid service team member' },
+          { status: 400 }
+        )
+      }
+
+      // Set assignment and status
+      updateData.assignedToId = assignedToId
+      updateData.status = 'PENDING_SERVICE_ACCEPTANCE'
+    }
+
     // Update ticket if there are changes
     let updatedTicket = ticket
     if (Object.keys(updateData).length > 0) {
@@ -118,6 +147,23 @@ export async function POST(request, { params }) {
         )
       }
     }
+
+    // NEW: Send notification to assigned service team member
+    if (action === 'ASSIGN_TO_SERVICE' && assignedToId) {
+      const assignedUser = await prisma.user.findUnique({
+        where: { id: assignedToId }
+      })
+      if (assignedUser) {
+        // You need to implement sendServiceAssignmentEmail in your email utility
+        await sendServiceAssignmentEmail(
+          assignedUser.email,
+          ticketId,
+          ticket.ticketNumber,
+          review
+        )
+      }
+    }
+
 
     return NextResponse.json({
       message: 'Action completed successfully',

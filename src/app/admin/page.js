@@ -66,7 +66,7 @@ function AdminDashboardContent() {
 
   // Check authorization
   useEffect(() => {
-    if (isClient && user && !['ADMIN', 'SUPER_ADMIN', 'MD'].includes(user.role)) {
+    if (isClient && user && !['ADMIN', 'SUPER_ADMIN', 'MD', 'SERVICE_TEAM' ].includes(user.role)) {
       router.push('/dashboard')
       toast.error('You do not have permission to access this page')
     }

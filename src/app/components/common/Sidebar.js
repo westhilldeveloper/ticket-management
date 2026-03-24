@@ -23,15 +23,13 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
   const pathname = usePathname()
   const { user, isLoading: authLoading } = useAuth()
   const [isClient, setIsClient] = useState(false)
   const [error, setError] = useState(null)
-  const [collapsed, setCollapsed] = useState(false)
   const [mounted, setMounted] = useState(false)
 
-  // Set client-side flag after hydration
   useEffect(() => {
     setIsClient(true)
     setMounted(true)
@@ -44,7 +42,6 @@ export default function Sidebar({ isOpen, onClose }) {
         onClose()
       }
     }
-
     window.addEventListener('keydown', handleEscape)
     return () => window.removeEventListener('keydown', handleEscape)
   }, [isOpen, onClose])
@@ -58,7 +55,6 @@ export default function Sidebar({ isOpen, onClose }) {
         document.body.style.overflow = 'unset'
       }
     }
-
     return () => {
       document.body.style.overflow = 'unset'
     }
@@ -71,19 +67,14 @@ export default function Sidebar({ isOpen, onClose }) {
         onClose()
       }
     }
-
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [isOpen, onClose])
 
-  // Don't render anything during SSR to prevent hydration mismatch
   if (!isClient) {
-    return (
-      <div className="hidden lg:block lg:w-64 flex-shrink-0" aria-hidden="true" />
-    )
+    return <div className="hidden lg:block lg:w-64 flex-shrink-0" aria-hidden="true" />
   }
 
-  // Handle authentication states
   if (authLoading) {
     return (
       <div className="hidden lg:block lg:w-64 flex-shrink-0">
@@ -101,189 +92,105 @@ export default function Sidebar({ isOpen, onClose }) {
     )
   }
 
-  if (!user) {
-    return null
-  }
+  if (!user) return null
 
-  // Define navigation items with role-based access
+  // Navigation definitions (same as before)
   const baseNavigation = [
-    { 
-      name: 'Dashboard', 
-      href: `/dashboard` || '/dashboard', 
-      icon: FiHome,
-      description: 'Overview and statistics',
-      roles: ['EMPLOYEE', 'MD','SUPER_ADMIN']
-    },
-    { 
-      name: 'New Ticket', 
-      href: '/tickets/new', 
-      icon: FiPlusCircle,
-      description: 'Create a support ticket',
-      roles: ['EMPLOYEE', 'SUPER_ADMIN']
-    },
-    
-    { 
-      name: 'History', 
-      href: '/tickets/history', 
-      icon: FiArchive,
-      description: 'Ticket history',
-      roles: ['EMPLOYEE', 'ADMIN','MD', 'SUPER_ADMIN']
-    },
+    { name: 'Dashboard', href: '/dashboard', icon: FiHome, description: 'Overview and statistics', roles: ['EMPLOYEE', 'MD','SUPER_ADMIN', 'SERVICE_TEAM'] },
+    { name: 'New Ticket', href: '/tickets/new', icon: FiPlusCircle, description: 'Create a support ticket', roles: ['EMPLOYEE', 'SUPER_ADMIN'] },
+    { name: 'History', href: '/tickets/history', icon: FiArchive, description: 'Ticket history', roles: ['EMPLOYEE', 'ADMIN','MD', 'SUPER_ADMIN'] },
   ]
 
   const adminNavigation = [
-    { 
-      name: 'Team Dashboard', 
-      href: '/admin', 
-      icon: FiUsers,
-      description: 'Team overview',
-      roles: ['ADMIN', 'SUPER_ADMIN']
-    },
-    { 
-      name: 'All Tickets', 
-      href: '/admin/tickets', 
-      icon: FiList,
-      description: 'Manage all tickets',
-      roles: ['ADMIN', 'SUPER_ADMIN']
-    },
+    { name: 'Team Dashboard', href: '/admin', icon: FiUsers, description: 'Team overview', roles: ['ADMIN', 'SUPER_ADMIN'] },
+    { name: 'All Tickets', href: '/admin/tickets', icon: FiList, description: 'Manage all tickets', roles: ['ADMIN', 'SUPER_ADMIN'] },
   ]
 
   const superAdminNavigation = [
-    { 
-      name: 'User Management', 
-      href: '/admin/users', 
-      icon: FiUserCheck,
-      description: 'Manage users and roles',
-      roles: ['SUPER_ADMIN']
-    },
-    { 
-      name: 'System Settings', 
-      href: '/admin/settings', 
-      icon: FiSettings,
-      description: 'System configuration',
-      roles: ['SUPER_ADMIN']
-    },
-    { 
-      name: 'Audit Logs', 
-      href: '/admin/audit', 
-      icon: FiShield,
-      description: 'Security and audit logs',
-      roles: ['SUPER_ADMIN']
-    },
+    { name: 'User Management', href: '/admin/users', icon: FiUserCheck, description: 'Manage users and roles', roles: ['SUPER_ADMIN'] },
+    { name: 'System Settings', href: '/admin/settings', icon: FiSettings, description: 'System configuration', roles: ['SUPER_ADMIN'] },
+    { name: 'Audit Logs', href: '/admin/audit', icon: FiShield, description: 'Security and audit logs', roles: ['SUPER_ADMIN'] },
   ]
 
-  // Filter navigation based on user role
   const filteredNavigation = [
     ...baseNavigation.filter(item => item.roles.includes(user?.role)),
     ...adminNavigation.filter(item => item.roles.includes(user?.role)),
     ...superAdminNavigation.filter(item => item.roles.includes(user?.role)),
   ]
 
-  // Group navigation items
-  const mainNavItems = filteredNavigation.filter(item => 
-    !item.href.includes('/admin') || item.href === '/admin'
-  )
-  
-  const adminNavItems = filteredNavigation.filter(item => 
-    item.href.includes('/admin') && item.href !== '/admin'
-  )
+  const mainNavItems = filteredNavigation.filter(item => !item.href.includes('/admin') || item.href === '/admin')
+  const adminNavItems = filteredNavigation.filter(item => item.href.includes('/admin') && item.href !== '/admin')
 
-  // Check if current path matches the href
   const isActive = (href) => {
     try {
       if (!pathname) return false
-      if (href === '/dashboard') {
-        return pathname === '/dashboard' || pathname.startsWith('/dashboard/')
-      }
+      if (href === '/dashboard') return pathname === '/dashboard' || pathname.startsWith('/dashboard/')
       return pathname === href || pathname.startsWith(href + '/')
-    } catch (error) {
-      console.error('Error checking active path:', error)
+    } catch {
       return false
     }
   }
 
   const handleLinkClick = () => {
-    if (window.innerWidth < 1024) {
-      onClose()
-    }
-  }
-
-  const handleOverlayClick = () => {
-    onClose()
+    if (window.innerWidth < 1024) onClose()
   }
 
   const toggleCollapse = () => {
-    setCollapsed(!collapsed)
+    onCollapse(!collapsed)
   }
 
-  // Get user initials for avatar
   const getUserInitials = () => {
     try {
-      if (user?.name) {
-        return user.name
-          .split(' ')
-          .map(word => word[0])
-          .join('')
-          .toUpperCase()
-          .slice(0, 2)
-      }
-      if (user?.email) {
-        return user.email[0].toUpperCase()
-      }
+      if (user?.name) return user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+      if (user?.email) return user.email[0].toUpperCase()
       return 'U'
-    } catch (error) {
-      console.error('Error getting user initials:', error)
+    } catch {
       return 'U'
     }
   }
 
-  // Format role for display
   const formatRole = (role) => {
     if (!role) return 'User'
-    return role.replace('_', ' ').toLowerCase()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
+    return role.replace('_', ' ').toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
   }
 
   return (
     <>
-      {/* Mobile overlay with animation */}
+      {/* Mobile overlay */}
       <div
         className={classNames(
           'fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden',
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
-        onClick={handleOverlayClick}
+        onClick={onClose}
         aria-hidden="true"
-        role="presentation"
       />
 
-      {/* Sidebar */}
+      {/* Sidebar - now fixed on all screens */}
       <aside
         className={classNames(
-          'fixed inset-y-0 left-0 transform transition-all duration-300 ease-in-out z-50',
-          'bg-white shadow-xl lg:shadow-none lg:static lg:translate-x-0',
+          'fixed inset-y-0 left-0 transform transition-all duration-300 ease-in-out z-40',
+          'bg-white shadow-xl',
           'flex flex-col border-r border-gray-200',
-          collapsed ? 'lg:w-20' : 'lg:w-64',
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          collapsed ? 'w-20' : 'w-64',
+          // Position below navbar (navbar height = 4rem)
+          'top-16 h-[calc(100vh-4rem)]',
+          // Mobile handling
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
         aria-label="Sidebar navigation"
+        role="complementary"
       >
         {/* Header with logo and collapse button */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 flex-shrink-0">
           <div className="flex items-center space-x-2">
             <div className="h-8 w-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center shadow-sm">
               <span className="text-white font-bold text-sm">TS</span>
             </div>
-            {!collapsed && (
-              <h1 className="text-lg font-semibold text-gray-900">
-                TicketFlow
-              </h1>
-            )}
+            {!collapsed && <h1 className="text-lg font-semibold text-gray-900">TicketFlow</h1>}
           </div>
           
-          {/* Collapse button (desktop only) */}
+          {/* Collapse button */}
           <button
             onClick={toggleCollapse}
             className="hidden lg:flex p-1.5 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
@@ -297,10 +204,10 @@ export default function Sidebar({ isOpen, onClose }) {
             />
           </button>
 
-          {/* Close button (mobile only) */}
+          {/* Close button (mobile) */}
           <button
             onClick={onClose}
-            className="lg:hidden p-1.5 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+            className="lg:hidden p-1.5 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
             aria-label="Close sidebar"
           >
             <FiX className="h-5 w-5" />
@@ -319,56 +226,57 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto py-6 px-3">
-          <nav className="space-y-6">
-            {/* Main navigation */}
-            <div>
-              {!collapsed && (
-                <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                  Main
-                </h3>
-              )}
-              <div className="space-y-1">
-                {mainNavItems.map((item) => {
-                  const Icon = item.icon
-                  const active = isActive(item.href)
-                  
-                  return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className={classNames(
-                        'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200',
-                        active
-                          ? 'bg-primary-50 text-primary-700'
-                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900',
-                        collapsed ? 'justify-center' : ''
-                      )}
-                      onClick={handleLinkClick}
-                      title={collapsed ? item.name : undefined}
-                    >
-                      <Icon
-                        className={classNames(
-                          'h-5 w-5 flex-shrink-0',
-                          active
-                            ? 'text-primary-600'
-                            : 'text-gray-400 group-hover:text-gray-500',
-                          collapsed ? 'mr-0' : 'mr-3'
-                        )}
-                        aria-hidden="true"
-                      />
-                      {!collapsed && (
-                        <span className="flex-1 truncate">{item.name}</span>
-                      )}
-                      {!collapsed && active && (
-                        <span className="block h-2 w-2 rounded-full bg-primary-600" />
-                      )}
-                    </Link>
-                  )
-                })}
+          <nav className="space-y-6" aria-label="Main navigation">
+            {mainNavItems.length > 0 && (
+              <div>
+                {!collapsed && (
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                    Main
+                  </h3>
+                )}
+                <ul className="space-y-1">
+                  {mainNavItems.map((item) => {
+                    const Icon = item.icon
+                    const active = isActive(item.href)
+                    return (
+                      <li key={item.name}>
+                        <Link
+                          href={item.href}
+                          className={classNames(
+                            'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200',
+                            active
+                              ? 'bg-primary-50 text-primary-700'
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900',
+                            collapsed ? 'justify-center' : ''
+                          )}
+                          onClick={handleLinkClick}
+                          aria-current={active ? 'page' : undefined}
+                          title={collapsed ? item.name : undefined}
+                        >
+                          <Icon
+                            className={classNames(
+                              'h-5 w-5 flex-shrink-0',
+                              active
+                                ? 'text-primary-600'
+                                : 'text-gray-400 group-hover:text-gray-500',
+                              collapsed ? 'mr-0' : 'mr-3'
+                            )}
+                            aria-hidden="true"
+                          />
+                          {!collapsed && (
+                            <>
+                              <span className="flex-1 truncate">{item.name}</span>
+                              {active && <span className="block h-2 w-2 rounded-full bg-primary-600" />}
+                            </>
+                          )}
+                        </Link>
+                      </li>
+                    )
+                  })}
+                </ul>
               </div>
-            </div>
+            )}
 
-            {/* Admin navigation */}
             {adminNavItems.length > 0 && (
               <div>
                 {!collapsed && (
@@ -376,45 +284,46 @@ export default function Sidebar({ isOpen, onClose }) {
                     Administration
                   </h3>
                 )}
-                <div className="space-y-1">
+                <ul className="space-y-1">
                   {adminNavItems.map((item) => {
                     const Icon = item.icon
                     const active = isActive(item.href)
-                    
                     return (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200',
-                          active
-                            ? 'bg-primary-50 text-primary-700'
-                            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900',
-                          collapsed ? 'justify-center' : ''
-                        )}
-                        onClick={handleLinkClick}
-                        title={collapsed ? item.name : undefined}
-                      >
-                        <Icon
+                      <li key={item.name}>
+                        <Link
+                          href={item.href}
                           className={classNames(
-                            'h-5 w-5 flex-shrink-0',
+                            'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200',
                             active
-                              ? 'text-primary-600'
-                              : 'text-gray-400 group-hover:text-gray-500',
-                            collapsed ? 'mr-0' : 'mr-3'
+                              ? 'bg-primary-50 text-primary-700'
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900',
+                            collapsed ? 'justify-center' : ''
                           )}
-                          aria-hidden="true"
-                        />
-                        {!collapsed && (
-                          <span className="flex-1 truncate">{item.name}</span>
-                        )}
-                        {!collapsed && active && (
-                          <span className="block h-2 w-2 rounded-full bg-primary-600" />
-                        )}
-                      </Link>
+                          onClick={handleLinkClick}
+                          aria-current={active ? 'page' : undefined}
+                          title={collapsed ? item.name : undefined}
+                        >
+                          <Icon
+                            className={classNames(
+                              'h-5 w-5 flex-shrink-0',
+                              active
+                                ? 'text-primary-600'
+                                : 'text-gray-400 group-hover:text-gray-500',
+                              collapsed ? 'mr-0' : 'mr-3'
+                            )}
+                            aria-hidden="true"
+                          />
+                          {!collapsed && (
+                            <>
+                              <span className="flex-1 truncate">{item.name}</span>
+                              {active && <span className="block h-2 w-2 rounded-full bg-primary-600" />}
+                            </>
+                          )}
+                        </Link>
+                      </li>
                     )
                   })}
-                </div>
+                </ul>
               </div>
             )}
           </nav>
@@ -422,46 +331,28 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* User info footer */}
         <div className="flex-shrink-0 border-t border-gray-200 p-4">
-          <div className={classNames(
-            'flex items-center',
-            collapsed ? 'justify-center' : 'space-x-3'
-          )}>
+          <div className={classNames('flex items-center', collapsed ? 'justify-center' : 'space-x-3')}>
             <div className="flex-shrink-0">
               <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-sm">
-                <span className="text-white font-medium text-sm">
-                  {getUserInitials()}
-                </span>
+                <span className="text-white font-medium text-sm">{getUserInitials()}</span>
               </div>
             </div>
-            
             {!collapsed && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {user?.name || user?.email}
-                </p>
+                <p className="text-sm font-medium text-gray-900 truncate">{user?.name || user?.email}</p>
                 <p className="text-xs text-gray-500 truncate flex items-center mt-0.5">
                   <span className={classNames(
                     'inline-block h-1.5 w-1.5 rounded-full mr-1.5',
-                    user?.role === 'SUPER_ADMIN' ? 'bg-purple-500' :
-                    user?.role === 'ADMIN' ? 'bg-primary-500' : 'bg-green-500'
+                    user?.role === 'SUPER_ADMIN' ? 'bg-purple-500' : user?.role === 'ADMIN' ? 'bg-primary-500' : 'bg-green-500'
                   )} />
                   {formatRole(user?.role)}
                 </p>
               </div>
             )}
           </div>
-
-          {/* Collapsed tooltip version */}
-          {collapsed && (
-            <div className="absolute bottom-20 left-0 w-full px-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
-              <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 text-center">
-                {user?.name || user?.email}
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Version info (optional) */}
+        {/* Version info */}
         {!collapsed && (
           <div className="px-4 py-2 text-xs text-gray-400 border-t border-gray-100">
             Version 2.0.0

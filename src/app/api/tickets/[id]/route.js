@@ -120,7 +120,7 @@ export async function GET(request, { params }) {
       user.role === 'MD' || // MD can see everything
       ticket.createdById === user.id || // Creator can see their ticket
       (user.role === 'ADMIN') || // FIXED: Admins can see all tickets
-      (user.role === 'ADMIN' && ticket.assignedToId === user.id) // Or just assigned tickets
+      (user.role === 'SERVICE_TEAM' && ticket.assignedToId === user.id) 
 
     console.log('Has access:', hasAccess)
 
@@ -158,7 +158,7 @@ export async function PUT(request, { params }) {
     }
 
     // Verify token
-    const decoded = await verifyToken(token) // Make sure verifyToken is async
+    const decoded = await verifyToken(token) 
     if (!decoded || !decoded.id) {
       return NextResponse.json(
         { message: 'Invalid token' },
@@ -354,4 +354,4 @@ function getReviewType(role, status, mdApproval) {
   if (role === 'ADMIN' || role === 'SUPER_ADMIN') return 'ADMIN_REVIEW'
   if (status === 'CLOSED') return 'STATUS_UPDATE'
   return 'SYSTEM_NOTE'
-}  
+}

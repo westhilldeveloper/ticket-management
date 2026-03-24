@@ -1,7 +1,7 @@
 // app/lib/auth.js
 import bcrypt from 'bcryptjs'
 import { SignJWT, jwtVerify } from 'jose'
-import { prisma } from './db'
+import { prisma } from '../lib/db'
 
 const JWT_SECRET = process.env.JWT_SECRET
 // Convert secret to Uint8Array for jose

@@ -3,11 +3,12 @@
 
 generator client {
   provider = "prisma-client-js"
+   output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  
 }
 
 // User model for authentication and authorization
@@ -46,11 +47,12 @@ model Ticket {
   ticketNumber  String        @unique
   title         String
   description   String?       @db.Text
-  category      Category
+  category      String
   priority      Priority      @default(MEDIUM)
   status        Status        @default(OPEN)
   attachment    String?       // URL to uploaded file in Cloudinary
   attachmentPublicId String?   // Cloudinary public ID for deletion
+  serialNumber  String?
   
   // Foreign keys
   createdById   String
@@ -66,6 +68,7 @@ model Ticket {
   thirdParty    Boolean       @default(false)
   thirdPartyStatus String?    // Status of third party service
   thirdPartyDetails String?   @db.Text
+
   
   // Timestamps
   createdAt     DateTime      @default(now())
@@ -207,18 +210,13 @@ enum Role {
   EMPLOYEE
   ADMIN
   MD
+  SERVICE_TEAM
   SUPER_ADMIN
   
   @@map("roles")
 }
 
-enum Category {
-  HR
-  IT
-  TECHNICAL
-  
-  @@map("categories")
-}
+
 
 enum Priority {
   LOW
@@ -236,6 +234,9 @@ enum Status {
   IN_PROGRESS
   APPROVED_BY_MD
   REJECTED_BY_MD
+  PENDING_SERVICE_ACCEPTANCE
+  SERVICE_IN_PROGRESS
+  SERVICE_RESOLVED
   RESOLVED
   CLOSED
   

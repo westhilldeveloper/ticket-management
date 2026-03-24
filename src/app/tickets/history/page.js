@@ -407,12 +407,12 @@ function HistoryContent() {
         <div className="bg-white border-b border-gray-100 sticky top-0 z-10 py-1.5 px-2 mb-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <h1 className="text-xs font-medium text-gray-700">History</h1>
+              <h1 className="text-md font-medium text-gray-700">History</h1>
               <span className={`text-[8px] px-1 py-0.5 rounded ${getRoleBadge(user.role).bg} ${getRoleBadge(user.role).text}`}>
                 {getRoleBadge(user.role).label}
               </span>
               {stats.totalActions > 0 && (
-                <span className="text-[8px] text-gray-400">{stats.totalActions} items</span>
+                <span className="text-[10px] text-gray-400">{stats.totalActions} items</span>
               )}
             </div>
             
@@ -421,15 +421,15 @@ function HistoryContent() {
               <div className="flex bg-gray-100 rounded-sm p-0.5">
                 <button
                   onClick={() => setViewMode('timeline')}
-                  className={`p-1 rounded-sm ${viewMode === 'timeline' ? 'bg-white shadow-xs' : ''}`}
+                  className={`p-1 rounded-sm ${viewMode === 'timeline' ? 'bg-white shadow-sm' : ''}`}
                 >
-                  <FiList className="h-3 w-3 text-gray-600" />
+                  <FiList className="h-6 w-6 text-gray-600" />
                 </button>
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-1 rounded-sm ${viewMode === 'grid' ? 'bg-white shadow-xs' : ''}`}
                 >
-                  <FiGrid className="h-3 w-3 text-gray-600" />
+                  <FiGrid className="h-6 w-6 text-gray-600" />
                 </button>
               </div>
 
@@ -437,7 +437,7 @@ function HistoryContent() {
                 onClick={() => setShowFilters(!showFilters)}
                 className={`p-1 rounded-sm ${showFilters ? 'bg-blue-50' : 'bg-gray-100'}`}
               >
-                <FiFilter className="h-3 w-3 text-gray-600" />
+                <FiFilter className="h-6 w-6 text-gray-600" />
               </button>
               
               {canExport && (
@@ -446,7 +446,7 @@ function HistoryContent() {
                   disabled={exportLoading || !history.length}
                   className="p-1 bg-gray-100 rounded-sm disabled:opacity-30"
                 >
-                  <FiDownload className="h-3 w-3 text-gray-600" />
+                  <FiDownload className="h-6 w-6 text-gray-600" />
                 </button>
               )}
             </div>
@@ -454,13 +454,13 @@ function HistoryContent() {
 
           {/* Search bar - always visible */}
           <div className="mt-1.5 relative">
-            <FiSearch className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-300" />
+            <FiSearch className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300" />
             <input
               type="text"
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
               placeholder="Search tickets..."
-              className="w-full pl-7 pr-2 py-1 text-[9px] border border-gray-100 rounded-sm focus:outline-none focus:border-blue-200"
+              className="w-full pl-7 pr-2 py-1 text-[10px] border border-gray-100 rounded-sm focus:outline-none focus:border-blue-200"
             />
           </div>
 
@@ -470,7 +470,7 @@ function HistoryContent() {
               <select
                 value={filters.actionType}
                 onChange={(e) => handleFilterChange('actionType', e.target.value)}
-                className="px-1 py-0.5 text-[8px] border border-gray-100 rounded-sm"
+                className="px-1 py-0.5 text-[10px] border border-gray-100 rounded-sm"
               >
                 <option value="ALL">Action</option>
                 <option value="CREATE">Create</option>
@@ -481,7 +481,7 @@ function HistoryContent() {
               <select
                 value={filters.category}
                 onChange={(e) => handleFilterChange('category', e.target.value)}
-                className="px-1 py-0.5 text-[8px] border border-gray-100 rounded-sm"
+                className="px-1 py-0.5 text-[10px] border border-gray-100 rounded-sm"
               >
                 <option value="ALL">Category</option>
                 {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
@@ -502,7 +502,7 @@ function HistoryContent() {
                 <select
                   value={filters.userId}
                   onChange={(e) => handleFilterChange('userId', e.target.value)}
-                  className="px-1 py-0.5 text-[8px] border border-gray-100 rounded-sm"
+                  className="px-1 py-0.5 text-[10px] border border-gray-100 rounded-sm"
                 >
                   <option value="ALL">User</option>
                   {users.slice(0, 10).map(u => (
@@ -513,7 +513,7 @@ function HistoryContent() {
 
               {(filters.actionType !== 'ALL' || filters.category !== 'ALL' || 
                 filters.dateRange !== 'ALL' || filters.userId !== 'ALL' || filters.search) && (
-                <button onClick={clearFilters} className="col-span-full text-[7px] text-gray-400 text-right">
+                <button onClick={clearFilters} className="col-span-full text-[9px] text-gray-400 text-right">
                   Clear filters
                 </button>
               )}
@@ -545,17 +545,17 @@ function HistoryContent() {
                   
                   return (
                     <div key={item.id} className="bg-white p-2 border-b border-gray-50 flex items-start space-x-2">
-                      <div className={`h-5 w-5 rounded-full ${bgClass} flex items-center justify-center shrink-0`}>
+                      <div className={`h-10 w-10 rounded-full ${bgClass} flex items-center justify-center shrink-0`}>
                         <ActionIcon className={`h-2.5 w-2.5 ${colorClass}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <Link href={`/tickets/${item.ticket?.id}`} className="text-[9px] font-medium text-gray-700 truncate max-w-[150px]">
+                          <Link href={`/tickets/${item.ticket?.id}`} className="text-[10px] font-medium text-gray-700 truncate max-w-[150px]">
                             {item.ticket?.title || 'Ticket'}
                           </Link>
-                          <span className="text-[6px] text-gray-300">{formattedDate.short}</span>
+                          <span className="text-[9px] text-gray-300">{formattedDate.short}</span>
                         </div>
-                        <p className="text-[7px] text-gray-500 mt-0.5">{formatAction(item)}</p>
+                        <p className="text-[10px] text-gray-500 mt-0.5">{formatAction(item)}</p>
                         <div className="flex items-center mt-1 text-[6px] text-gray-300">
                           <span>#{item.ticket?.ticketNumber?.slice(-4) || '?'}</span>
                           {item.createdBy && (
@@ -583,27 +583,27 @@ function HistoryContent() {
                     return (
                       <div key={item.id} className="bg-white border border-gray-50 p-1.5 hover:border-gray-200 transition-colors">
                         <div className="flex items-start justify-between mb-1">
-                          <div className={`h-4 w-4 rounded-full ${bgClass} flex items-center justify-center`}>
-                            <ActionIcon className={`h-2 w-2 ${colorClass}`} />
+                          <div className={`h-6 w-6 rounded-full ${bgClass} flex items-center justify-center`}>
+                            <ActionIcon className={`h-4 w-4 ${colorClass}`} />
                           </div>
-                          <span className="text-[5px] text-gray-300">{formattedDate.short}</span>
+                          <span className="text-[8px] text-gray-300">{formattedDate.short}</span>
                         </div>
                         
                         <Link href={`/tickets/${item.ticket?.id}`} className="block">
-                          <h3 className="text-[7px] font-medium text-gray-700 line-clamp-2 mb-1 leading-tight">
+                          <h3 className="text-[9px] font-medium text-gray-700 line-clamp-2 mb-1 leading-tight">
                             {item.ticket?.title || 'Untitled'}
                           </h3>
                         </Link>
                         
-                        <p className="text-[6px] text-gray-400 mb-1.5">{formatAction(item)}</p>
+                        <p className="text-[9px] text-gray-400 mb-1.5">{formatAction(item)}</p>
                         
                         <div className="flex flex-wrap gap-0.5 mb-1">
                           {item.ticket?.category && (
-                            <span className={`px-1 py-px rounded text-[4px] font-medium ${getCategoryBadge(item.ticket.category).bg} ${getCategoryBadge(item.ticket.category).text}`}>
+                            <span className={`px-1 py-px rounded text-[7px] font-medium ${getCategoryBadge(item.ticket.category).bg} ${getCategoryBadge(item.ticket.category).text}`}>
                               {getCategoryBadge(item.ticket.category).label}
                             </span>
                           )}
-                          <span className={`px-1 py-px rounded text-[4px] font-medium ${bgClass} ${colorClass}`}>
+                          <span className={`px-1 py-px rounded text-[8px] font-medium ${bgClass} ${colorClass}`}>
                             {getActionInfo(item.action).label}
                           </span>
                         </div>
@@ -611,14 +611,14 @@ function HistoryContent() {
                         <div className="flex items-center justify-between pt-1 border-t border-gray-50">
                           <div className="flex items-center space-x-0.5">
                             {item.createdBy ? (
-                              <span className="text-[4px] text-gray-400 truncate max-w-[40px]">
+                              <span className="text-[8px] text-gray-400 truncate max-w-[60px]">
                                 {item.createdBy.name}
                               </span>
                             ) : (
-                              <span className="text-[4px] text-gray-300">System</span>
+                              <span className="text-[8px] text-gray-300">System</span>
                             )}
                           </div>
-                          <span className="text-[4px] text-gray-300 font-mono">
+                          <span className="text-[8px] text-gray-300 font-mono">
                             #{item.ticket?.ticketNumber?.slice(-4) || item.ticket?.id?.slice(-4)}
                           </span>
                         </div>
@@ -633,7 +633,7 @@ function HistoryContent() {
                     {loadingMore ? (
                       <LoadingSpinner size="small" />
                     ) : (
-                      <div className="h-4" />
+                      <div className="h-6" />
                     )}
                   </div>
                 )}

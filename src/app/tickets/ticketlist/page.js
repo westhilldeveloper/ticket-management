@@ -660,7 +660,7 @@ export default function TicketListPage() {
                       <tr 
                         key={ticket.id} 
                         className="hover:bg-gray-50 cursor-pointer"
-                        onClick={() => router.push(`/tickets/${ticket.id}`)}
+                        onClick={() => router.push(`/send-ticket/${ticket.id}`)}
                       >
                         <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                           <input

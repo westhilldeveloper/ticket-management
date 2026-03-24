@@ -7,7 +7,7 @@ import * as React from 'react'  // Add this import for React.use()
 import { useAuth } from '@/app/context/AuthContext'
 import { useSocket } from '@/app/context/SocketContext'
 import { useToast } from '@/app/context/ToastContext'
-import LoadingSpinner from '@/app/components/common/LoadingSpinner'
+import LoadingSpinner from '@/app/components/common/LoadingSpinner' 
 import {
   FiClock,
   FiCheckCircle,
@@ -32,7 +32,8 @@ import {
   FiBriefcase,
   FiTool,
   FiShoppingCart,
-  FiCheckSquare
+  FiCheckSquare,
+  FiUserPlus 
 } from 'react-icons/fi'
 import { formatDistanceToNow, format } from 'date-fns'
 
@@ -58,6 +59,11 @@ export default function PublicTicketPage({ params }) {
   const [thirdPartyStatus, setThirdPartyStatus] = useState('PENDING')
   const [adminReview, setAdminReview] = useState('')
   const [showConfirmation, setShowConfirmation] = useState(false)
+
+   const [serviceTeamMembers, setServiceTeamMembers] = useState([])
+  const [selectedServiceUserId, setSelectedServiceUserId] = useState('')
+  const [serviceResponse, setServiceResponse] = useState('') 
+  const [serviceDecision, setServiceDecision] = useState(null)
 
   useEffect(() => {
     if (ticketId) {
@@ -110,64 +116,182 @@ export default function PublicTicketPage({ params }) {
     }
   }
 
+  // NEW: Fetch service team members (only when needed)
+   const fetchServiceTeamMembers = async () => {
+    try {
+      const response = await fetch('/api/users?role=SERVICE_TEAM', {
+        credentials: 'include'
+      })
+      const data = await response.json()
+      if (response.ok) {
+        setServiceTeamMembers(data.users || [])
+      } else {
+        toast.error('Failed to load service team members')
+      }
+    } catch (error) {
+      console.error('Error fetching service team:', error)
+      toast.error('Error loading service team members')
+    }
+  }
+
   // Admin/SuperAdmin/HR/IT Actions
   const handleAdminAction = async (action) => {
-    if (!adminReview.trim() && action !== 'CONFIRM' && action !== 'MESSAGE') {
-      toast.error('Please add a review')
+  // --- SPECIAL CASE: Assign to Service Team (use dedicated endpoint) ---
+  if (action === 'ASSIGN_TO_SERVICE') {
+    if (!selectedServiceUserId) {
+      toast.error('Please select a service team member');
+      return;
+    }
+    if (!adminReview.trim()) {
+      toast.error('Please add a review');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const response = await fetch(`/api/public/tickets/${ticketId}/assign-service-team`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          assignedToId: selectedServiceUserId,
+          review: adminReview,
+        }),
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Assignment failed');
+
+      setTicket(data.ticket);
+      setSelectedAction(null);
+      setAdminReview('');
+      setSelectedServiceUserId('');
+      toast.success('Ticket assigned to service team');
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setSubmitting(false);
+    }
+    return; // ✅ important – exit early
+  }
+
+  // --- ALL OTHER ADMIN ACTIONS (use the generic endpoint) ---
+  if (!adminReview.trim() && action !== 'CONFIRM' && action !== 'MESSAGE') {
+    toast.error('Please add a review');
+    return;
+  }
+
+  setSubmitting(true);
+  try {
+    const endpoint = `/api/public/tickets/${ticketId}/admin-action`;
+    const body = {
+      action,
+      review: adminReview || (action === 'MESSAGE' ? review : `Action: ${action}`),
+    };
+
+    if (action === 'FORWARD_TO_MD') {
+      body.status = 'PENDING_MD_APPROVAL';
+      body.mdApproval = 'PENDING';
+    } else if (action === 'THIRD_PARTY') {
+      body.status = 'PENDING_THIRD_PARTY';
+      body.thirdParty = true;
+      body.thirdPartyStatus = thirdPartyStatus;
+      body.thirdPartyDetails = thirdPartyDetails;
+    } else if (action === 'CONFIRM') {
+      body.status = 'IN_PROGRESS';
+      body.confirmed = true;
+    } else if (action === 'MESSAGE') {
+      body.reviewType = 'ADMIN_REVIEW';
+    }
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      credentials: 'include',
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Action failed');
+
+    setTicket(data.ticket);
+
+    if (action === 'MESSAGE') {
+      setReview('');
+    } else {
+      setSelectedAction(null);
+      setAdminReview('');
+      setThirdPartyDetails('');
+    }
+
+    toast.success('Action completed successfully');
+  } catch (error) {
+    console.error('Error performing action:', error);
+    toast.error(error.message);
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+   // Service Team Actions
+  const handleServiceResponse = async (action) => {
+    if (!serviceResponse.trim() && action === 'reject') {
+      toast.error('Please provide a reason for rejection')
       return
     }
 
     setSubmitting(true)
     try {
-      let endpoint = `/api/public/tickets/${ticketId}/admin-action`
-      let body = {
-        action,
-        review: adminReview || (action === 'MESSAGE' ? review : `Action: ${action}`)
-      }
-
-      if (action === 'FORWARD_TO_MD') {
-        body.status = 'PENDING_MD_APPROVAL'
-        body.mdApproval = 'PENDING'
-      } else if (action === 'THIRD_PARTY') {
-        body.status = 'PENDING_THIRD_PARTY'
-        body.thirdParty = true
-        body.thirdPartyStatus = thirdPartyStatus
-        body.thirdPartyDetails = thirdPartyDetails
-      } else if (action === 'CONFIRM') {
-        body.status = 'IN_PROGRESS'
-        body.confirmed = true
-      } else if (action === 'MESSAGE') {
-        body.reviewType = 'ADMIN_REVIEW'
-      }
-
-      const response = await fetch(endpoint, {
+      const response = await fetch(`/api/public/tickets/${ticketId}/service-team-response`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action,           // 'accept' or 'reject'
+          review: serviceResponse || (action === 'accept' ? 'Accepted by service team' : '')
+        }),
         credentials: 'include'
       })
 
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Action failed')
-      }
+      if (!response.ok) throw new Error(data.message || 'Failed to respond')
 
       setTicket(data.ticket)
-      
-      if (action === 'MESSAGE') {
-        setReview('')
-      } else {
-        setSelectedAction(null)
-        setAdminReview('')
-        setThirdPartyDetails('')
-      }
-      
-      toast.success('Action completed successfully')
+      setServiceDecision(null)
+      setServiceResponse('')
+      toast.success(action === 'accept' ? 'Ticket accepted' : 'Ticket rejected')
     } catch (error) {
-      console.error('Error performing action:', error)
+      toast.error(error.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleServiceWorkUpdate = async (workType) => {
+    if (!serviceResponse.trim()) {
+      toast.error('Please add work details')
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const response = await fetch(`/api/public/tickets/${ticketId}/service-work-update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workType,                 // 'PROGRESS' or 'RESOLVE'
+          details: serviceResponse
+        }),
+        credentials: 'include'
+      })
+
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Failed to update work')
+
+      setTicket(data.ticket)
+      setServiceResponse('')
+      setSelectedAction(null)
+      toast.success('Work update recorded')
+    } catch (error) {
       toast.error(error.message)
     } finally {
       setSubmitting(false)
@@ -296,7 +420,8 @@ export default function PublicTicketPage({ params }) {
       'APPROVED_BY_MD': 'bg-green-100 text-green-800',
       'REJECTED_BY_MD': 'bg-red-100 text-red-800',
       'RESOLVED': 'bg-green-100 text-green-800',
-      'CLOSED': 'bg-gray-100 text-gray-800'
+      'CLOSED': 'bg-gray-100 text-gray-800',
+      'SERVICE_RESOLVED': 'bg-green-100 text-green-800',
     }
     return colors[status] || 'bg-gray-100 text-gray-800'
   }
@@ -319,6 +444,12 @@ export default function PublicTicketPage({ params }) {
         return <FiCheckCircle className="h-5 w-5 text-green-500" />
       case 'CLOSED':
         return <FiCheckSquare className="h-5 w-5 text-gray-500" />
+      case 'PENDING_SERVICE_ACCEPTANCE':                         // NEW
+        return <FiUserPlus className="h-5 w-5 text-indigo-500" />
+      case 'SERVICE_IN_PROGRESS':                                // NEW
+        return <FiTool className="h-5 w-5 text-teal-500" />
+      case 'SERVICE_RESOLVED':
+        return <FiCheckCircle className="h-5 w-5 text-green-500" />;
       default:
         return <FiClock className="h-5 w-5 text-gray-500" />
     }
@@ -356,6 +487,7 @@ export default function PublicTicketPage({ params }) {
 
   const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(user?.role)
   const isMD = user?.role === 'MD'
+  const isServiceTeam = user?.role === 'SERVICE_TEAM'
   const isEmployee = user?.role === 'EMPLOYEE' && user?.id === ticket.createdBy?.id
   const canView = isAdmin || isMD || isEmployee || !user // Allow public view without login
 
@@ -410,7 +542,7 @@ export default function PublicTicketPage({ params }) {
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div>
-                <p className="text-xs text-gray-500">Category</p>
+                <p className="text-xs text-gray-500">Branch</p>
                 <p className="text-sm font-medium text-gray-900">{ticket.category}</p>
               </div>
               <div>
@@ -476,7 +608,7 @@ export default function PublicTicketPage({ params }) {
               </h3>
 
               {!selectedAction ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                   <button
                     onClick={() => setSelectedAction('CONFIRM')}
                     className="p-4 bg-white rounded-lg border-2 border-green-200 hover:border-green-400 transition-colors text-left"
@@ -503,6 +635,18 @@ export default function PublicTicketPage({ params }) {
                     <h4 className="font-medium text-gray-900">Third Party</h4>
                     <p className="text-xs text-gray-500 mt-1">Request external service</p>
                   </button>
+
+                  <button
+                    onClick={() => {
+                      setSelectedAction('ASSIGN_TO_SERVICE')
+                      fetchServiceTeamMembers()
+                    }}
+                    className="p-4 bg-white rounded-lg border-2 border-indigo-200 hover:border-indigo-400 transition-colors text-left"
+                  >
+                    <FiUserPlus className="h-6 w-6 text-indigo-600 mb-2" />
+                    <h4 className="font-medium text-gray-900">Assign to Service Team</h4>
+                    <p className="text-xs text-gray-500 mt-1">Send to internal service team</p>
+                  </button>
                 </div>
               ) : (
                 <div className="bg-white rounded-lg p-4">
@@ -511,6 +655,7 @@ export default function PublicTicketPage({ params }) {
                       {selectedAction === 'CONFIRM' && 'Confirm Ticket Receipt'}
                       {selectedAction === 'FORWARD_TO_MD' && 'Forward to MD for Approval'}
                       {selectedAction === 'THIRD_PARTY' && 'Request Third Party Service'}
+                       {selectedAction === 'ASSIGN_TO_SERVICE' && 'Assign to Service Team'}
                     </h4>
                     <button
                       onClick={() => setSelectedAction(null)}
@@ -554,7 +699,7 @@ export default function PublicTicketPage({ params }) {
                         <textarea
                           value={thirdPartyDetails}
                           onChange={(e) => setThirdPartyDetails(e.target.value)}
-                          placeholder="Provide details about third party service required..."
+                          placeholder="Serial No/ Details about third party service"
                           className="input-field w-full"
                           rows="3"
                         />
@@ -564,6 +709,31 @@ export default function PublicTicketPage({ params }) {
                           placeholder="Add your review/comments..."
                           className="input-field w-full"
                           rows="2"
+                        />
+                      </>
+                    )}
+
+                     {selectedAction === 'ASSIGN_TO_SERVICE' && (
+                      <>
+                        <select
+                          value={selectedServiceUserId}
+                          onChange={(e) => setSelectedServiceUserId(e.target.value)}
+                          className="input-field w-full"
+                          required
+                        >
+                          <option value="">Select a service team member</option>
+                          {serviceTeamMembers.map(member => (
+                            <option key={member.id} value={member.id}>
+                              {member.name} ({member.email})
+                            </option>
+                          ))}
+                        </select>
+                        <textarea
+                          value={adminReview}
+                          onChange={(e) => setAdminReview(e.target.value)}
+                          placeholder="Add instructions/review for the service team..."
+                          className="input-field w-full"
+                          rows="3"
                         />
                       </>
                     )}
@@ -621,6 +791,7 @@ export default function PublicTicketPage({ params }) {
                     <p className="font-medium text-gray-900">Reject</p>
                   </button>
                 </div>
+                
               ) : (
                 <div className="bg-white rounded-lg p-4">
                   <div className="mb-4">
@@ -660,6 +831,131 @@ export default function PublicTicketPage({ params }) {
                 </div>
               )}
             </div>
+          )}
+
+          {/* NEW: Service Team Actions Section */}
+          {isServiceTeam && ticket.assignedToId === user?.id && (
+            <>
+              {/* Pending Acceptance */}
+              {ticket.status === 'PENDING_SERVICE_ACCEPTANCE' && (
+                <div className="p-6 border-b border-gray-200 bg-indigo-50">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                    <FiUserPlus className="mr-2 text-indigo-600" />
+                    Service Team Assignment
+                  </h3>
+
+                  {!serviceDecision ? (
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        onClick={() => setServiceDecision('accept')}
+                        className="p-4 bg-white rounded-lg border-2 border-green-200 hover:border-green-400 transition-colors"
+                      >
+                        <FiCheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                        <p className="font-medium text-gray-900">Accept</p>
+                      </button>
+                      <button
+                        onClick={() => setServiceDecision('reject')}
+                        className="p-4 bg-white rounded-lg border-2 border-red-200 hover:border-red-400 transition-colors"
+                      >
+                        <FiXCircle className="h-8 w-8 text-red-600 mx-auto mb-2" />
+                        <p className="font-medium text-gray-900">Reject</p>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-lg p-4">
+                      <div className="mb-4">
+                        {serviceDecision === 'accept' ? (
+                          <p className="text-sm text-gray-600">
+                            Are you sure you want to accept this ticket?
+                          </p>
+                        ) : (
+                          <textarea
+                            value={serviceResponse}
+                            onChange={(e) => setServiceResponse(e.target.value)}
+                            placeholder="Please provide reason for rejection..."
+                            className="input-field w-full"
+                            rows="3"
+                          />
+                        )}
+                      </div>
+                      <div className="flex space-x-3">
+                        <button
+                          onClick={() => handleServiceResponse(serviceDecision)}
+                          disabled={submitting}
+                          className={`flex-1 px-4 py-2 rounded-lg text-white ${
+                            serviceDecision === 'accept'
+                              ? 'bg-green-600 hover:bg-green-700'
+                              : 'bg-red-600 hover:bg-red-700'
+                          } disabled:opacity-50`}
+                        >
+                          {submitting ? <LoadingSpinner size="small" /> : 'Confirm'}
+                        </button>
+                        <button
+                          onClick={() => setServiceDecision(null)}
+                          className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Service In Progress */}
+              {ticket.status === 'SERVICE_IN_PROGRESS' && (
+                <div className="p-6 border-b border-gray-200 bg-teal-50">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                    <FiTool className="mr-2 text-teal-600" />
+                    Service Work
+                  </h3>
+
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <button
+                      onClick={() => setSelectedAction('PROGRESS')}
+                      className="p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-400 text-left"
+                    >
+                      <FiRefreshCw className="h-5 w-5 text-blue-600 mb-1" />
+                      <p className="text-sm font-medium">Add Progress Note</p>
+                    </button>
+                    <button
+                      onClick={() => setSelectedAction('RESOLVE')}
+                      className="p-3 bg-white rounded-lg border border-gray-200 hover:border-green-400 text-left"
+                    >
+                      <FiCheckCircle className="h-5 w-5 text-green-600 mb-1" />
+                      <p className="text-sm font-medium">Mark Resolved</p>
+                    </button>
+                  </div>
+
+                  {selectedAction && (
+                    <div className="bg-white rounded-lg p-4">
+                      <textarea
+                        value={serviceResponse}
+                        onChange={(e) => setServiceResponse(e.target.value)}
+                        placeholder={`Add details about ${selectedAction.toLowerCase()}...`}
+                        className="input-field w-full mb-3"
+                        rows="2"
+                      />
+                      <div className="flex space-x-3">
+                        <button
+                          onClick={() => handleServiceWorkUpdate(selectedAction)}
+                          disabled={submitting}
+                          className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                        >
+                          {submitting ? <LoadingSpinner size="small" /> : 'Update'}
+                        </button>
+                        <button
+                          onClick={() => setSelectedAction(null)}
+                          className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
 
           {/* Admin Work Section - After MD Approval */}

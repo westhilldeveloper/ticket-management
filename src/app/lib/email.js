@@ -97,6 +97,34 @@ export const sendMDApprovalEmail = async (email, ticketId, ticketNumber, review)
   })
 }
 
+// NEW: Service Team Assignment Email
+export const sendServiceAssignmentEmail = async (email, ticketId, ticketNumber, instructions) => {
+  const ticketLink = `${process.env.NEXTAUTH_URL}/dashboard/service-team`
+  
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #2563eb;">New Ticket Assignment</h2>
+      <p>You have been assigned a ticket by the admin.</p>
+      <p><strong>Ticket Number:</strong> ${ticketNumber}</p>
+      ${instructions ? `<p><strong>Instructions:</strong> ${instructions}</p>` : ''}
+      <p>Please review and accept or reject this assignment.</p>
+      <a href="${ticketLink}" 
+         style="display: inline-block; background-color: #2563eb; color: white; 
+                padding: 12px 24px; text-decoration: none; border-radius: 6px; 
+                margin-top: 20px;">
+        View Ticket
+      </a>
+    </div>
+  `
+  
+  return await sendEmail({
+    to: email,
+    subject: `New Ticket Assignment: ${ticketNumber}`,
+    html,
+  })
+}
+
+
 export const sendStatusUpdateEmail = async (email, ticketNumber, status, review) => {
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

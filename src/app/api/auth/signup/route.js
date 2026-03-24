@@ -10,11 +10,11 @@ const generateOTP = () => {
 export async function POST(request) {
   try {
     const { email, password, name, department } = await request.json()
-
+ const allowedDomains = ['@westhillinternational.com', '@finovestgroup.com']
     // Validate email domain (company email)
-    if (!email.endsWith('@westhillinternational.com')) {
+   if (!allowedDomains.some(domain => email.endsWith(domain))) {
       return NextResponse.json(
-        { message: 'Only company email addresses are allowed' },
+        { message: 'Only company email addresses (@westhillinternational.com or @finovestgroup.com) are allowed' },
         { status: 400 }
       )
     }

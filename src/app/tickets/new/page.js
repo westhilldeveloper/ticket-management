@@ -52,10 +52,40 @@ const PRIORITY_OPTIONS = [
 
 // Category options
 const CATEGORY_OPTIONS = [
-  { value: 'HR', label: 'Human Resources', description: 'HR-related inquiries', icon: '👥' },
-  { value: 'IT', label: 'Information Technology', description: 'IT support and infrastructure', icon: '💻' },
-  { value: 'TECHNICAL', label: 'Technical Support', description: 'Product technical issues', icon: '🔧' },
-]
+  { value: 'ENATHU', label: 'ENATHU', icon: '📍', description: '' },
+  { value: 'POOVATTOOR', label: 'POOVATTOOR', icon: '📍', description: '' },
+  { value: 'KODUMON', label: 'KODUMON', icon: '📍', description: '' },
+  { value: 'HARIPAD', label: 'HARIPAD', icon: '📍', description: '' },
+  { value: 'THRIPPUNITHURA', label: 'THRIPPUNITHURA', icon: '📍', description: '' },
+  { value: 'CHETTIKULANGARA', label: 'CHETTIKULANGARA', icon: '📍', description: '' },
+  { value: 'MUTHUKULAM', label: 'MUTHUKULAM', icon: '📍', description: '' },
+  { value: 'KARUNAGAPALLY', label: 'KARUNAGAPALLY', icon: '📍', description: '' },
+  { value: 'CHETTIKULANGARA MAIN', label: 'CHETTIKULANGARA MAIN', icon: '📍', description: '' },
+  { value: 'KULATHUPUZHA', label: 'KULATHUPUZHA', icon: '📍', description: '' },
+  { value: 'MULAKKUZHA', label: 'MULAKKUZHA', icon: '📍', description: '' },
+  { value: 'KATTANAM', label: 'KATTANAM', icon: '📍', description: '' },
+  { value: 'KUMBANAD', label: 'KUMBANAD', icon: '📍', description: '' },
+  { value: 'RANNI', label: 'RANNI', icon: '📍', description: '' },
+  { value: 'VAIKOM', label: 'VAIKOM', icon: '📍', description: '' },
+  { value: 'ALAPPUZHA', label: 'ALAPPUZHA', icon: '📍', description: '' },
+  { value: 'PALLIKATHODU', label: 'PALLIKATHODU', icon: '📍', description: '' },
+  { value: 'PUTHOOR', label: 'PUTHOOR', icon: '📍', description: '' },
+  { value: 'PATHANAMTHITTA', label: 'PATHANAMTHITTA', icon: '📍', description: '' },
+  { value: 'MANNAR', label: 'MANNAR', icon: '📍', description: '' },
+  { value: 'PRAVINKODU', label: 'PRAVINKODU', icon: '📍', description: '' },
+  { value: 'KOTTARAKKARA', label: 'KOTTARAKKARA', icon: '📍', description: '' },
+  { value: 'ANCHAL', label: 'ANCHAL', icon: '📍', description: '' },
+  { value: 'THRIPPUNITHURA TOWN', label: 'THRIPPUNITHURA TOWN', icon: '📍', description: '' },
+  { value: 'MUVATTUPUZHA', label: 'MUVATTUPUZHA', icon: '📍', description: '' },
+  { value: 'KOTHAMANGALAM', label: 'KOTHAMANGALAM', icon: '📍', description: '' },
+  { value: 'THOPPUMPODY', label: 'THOPPUMPODY', icon: '📍', description: '' },
+  { value: 'PATHANAPURAM', label: 'PATHANAPURAM', icon: '📍', description: '' },
+  { value: 'MATTANCHERRY', label: 'MATTANCHERRY', icon: '📍', description: '' },
+  { value: 'ATHANI', label: 'ATHANI', icon: '📍', description: '' },
+  { value: 'KECHERY', label: 'KECHERY', icon: '📍', description: '' },
+  { value: 'VADANAPALLI', label: 'VADANAPALLI', icon: '📍', description: '' },
+  { value: 'KALMANDAPAM', label: 'KALMANDAPAM', icon: '📍', description: '' },
+];
 
 function NewTicketContent() {
   const { user, isLoading: authLoading } = useAuth()
@@ -91,7 +121,7 @@ function NewTicketContent() {
     defaultValues: {
       title: '',
       description: '',
-      category: '',
+      category:  CATEGORY_OPTIONS[1]?.value,
       priority: 'MEDIUM',
       review: ''
     }
@@ -711,7 +741,7 @@ function NewTicketContent() {
                   Category
                 </h2>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-60 overflow-y-scroll pr-1">
                   {CATEGORY_OPTIONS.map((cat) => (
                     <label
                       key={cat.value}
@@ -787,23 +817,7 @@ function NewTicketContent() {
 
               {/* Additional Info Card */}
               <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <h2 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
-                  <FiUser className="mr-1.5 h-4 w-4 text-primary-500" />
-                  Additional Info
-                </h2>
                 
-                <div>
-                  <label htmlFor="review" className="block text-xs font-medium text-gray-600 mb-1">
-                    Comments <span className="text-gray-400">(Optional)</span>
-                  </label>
-                  <textarea
-                    id="review"
-                    {...register('review')}
-                    rows={3}
-                    className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="Any additional context..."
-                  />
-                </div>
 
                 {/* Requester Info - Read-only */}
                 {user && (

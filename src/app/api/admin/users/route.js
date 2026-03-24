@@ -13,7 +13,7 @@ export async function GET(request) {
       )
     }
 
-    const decoded = verifyToken(token)
+    const decoded = await verifyToken(token)
     if (!decoded) {
       return NextResponse.json(
         { message: 'Invalid token' },
@@ -121,7 +121,7 @@ export async function POST(request) {
       )
     }
 
-    const decoded = verifyToken(token)
+    const decoded = await verifyToken(token)
     if (!decoded) {
       return NextResponse.json(
         { message: 'Invalid token' },

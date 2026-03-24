@@ -22,6 +22,9 @@ export default function DashboardPage() {
         case 'MD':
           router.push('/dashboard/md')
           break
+        case 'SERVICE_TEAM':
+          router.push('/dashboard/service-team')
+          break
         default:
           router.push('/dashboard/employee')
       }

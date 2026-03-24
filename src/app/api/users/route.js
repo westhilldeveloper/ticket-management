@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import prisma from '../../lib/db'
+import {prisma} from '../../lib/db'
 import { getCurrentUser } from '../../lib/auth'
 
 export async function GET(request) {
@@ -29,12 +29,16 @@ export async function GET(request) {
     const active = searchParams.get('active')
     const limit = parseInt(searchParams.get('limit') || '50')
     const search = searchParams.get('search')
-
+    const role = searchParams.get('role')
     // Build where clause
     let where = {}
     
     if (active === 'true') {
       where.isActive = true
+    }
+
+    if (role) {
+      where.role = role  // filter by exact role (e.g., 'SERVICE_TEAM')
     }
 
     if (search) {
