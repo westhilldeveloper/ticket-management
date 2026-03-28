@@ -1,79 +1,75 @@
+// src/app/context/SocketContext.js
 'use client';
-import { createContext, useContext, useEffect, useState } from 'react'
-import { io } from 'socket.io-client'
-import { useAuth } from './AuthContext'
-import toast from 'react-hot-toast'
+import { createContext, useContext, useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
+import { useAuth } from './AuthContext';
+import toast from 'react-hot-toast';
 
-const SocketContext = createContext()
+const SocketContext = createContext();
 
 export const useSocket = () => {
-  const context = useContext(SocketContext)
+  const context = useContext(SocketContext);
   if (!context) {
-    throw new Error('useSocket must be used within a SocketProvider')
+    throw new Error('useSocket must be used within a SocketProvider');
   }
-  return context
-}
+  return context;
+};
 
 export const SocketProvider = ({ children }) => {
-  const [socket, setSocket] = useState(null)
-  const [connected, setConnected] = useState(false)
-  const { user } = useAuth()
+  const [socket, setSocket] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (user) {
-      const socketInstance = io(process.env.NEXTAUTH_URL || 'http://localhost:3000', {
-        withCredentials: true,
-      })
+    if (!user) return;
 
-      socketInstance.on('connect', () => {
-        console.log('Socket connected')
-        setConnected(true)
+    const socketInstance = io(process.env.NEXTAUTH_URL || 'http://localhost:3000', {
+      withCredentials: true,
+    });
 
-         // Register the user with their ID and role
+    socketInstance.on('connect', () => {
+      console.log('Socket connected');
+      setConnected(true);
+      // Register user with role
       socketInstance.emit('register', {
         userId: user.id,
-        role: user.role, // make sure user.role exists (e.g., 'EMPLOYEE' or 'ADMIN')
-      })
-      
-      })
+        role: user.role,
+      });
+    });
 
-      
+    socketInstance.on('connect_error', (err) => {
+      console.error('Socket connection error:', err);
+      // Optionally show toast
+    });
 
-      socketInstance.on('disconnect', () => {
-        console.log('Socket disconnected')
-        setConnected(false)
-      })
+    socketInstance.on('disconnect', () => {
+      console.log('Socket disconnected');
+      setConnected(false);
+    });
 
-      socketInstance.on('ticket-updated', (data) => {
-        toast.success(`Ticket ${data.ticketNumber} status updated to ${data.status}`)
-      })
+    // Global ticket update listener (optional)
+    socketInstance.on('ticket-updated', (data) => {
+      toast.success(`Ticket ${data.ticketNumber} status updated to ${data.status}`);
+    });
 
-      setSocket(socketInstance)
+    setSocket(socketInstance);
 
-      return () => {
-        socketInstance.disconnect()
-      }
-    }
-  }, [user])
+    return () => {
+      socketInstance.disconnect();
+    };
+  }, [user]);
 
   const joinTicket = (ticketId) => {
-    if (socket) {
-      socket.emit('join-ticket', ticketId)
-    }
-  }
+    if (socket) socket.emit('join-ticket', ticketId);
+  };
 
   const leaveTicket = (ticketId) => {
-    if (socket) {
-      socket.emit('leave-ticket', ticketId)
-    }
-  }
+    if (socket) socket.emit('leave-ticket', ticketId);
+  };
 
-  const value = {
-    socket,
-    connected,
-    joinTicket,
-    leaveTicket,
-  }
-
-  return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>
-}
+  return (
+    <SocketContext.Provider value={{ socket, connected, joinTicket, leaveTicket }}>
+      {children}
+    </SocketContext.Provider>
+  );
+};

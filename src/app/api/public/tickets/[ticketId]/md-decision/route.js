@@ -8,7 +8,8 @@ export async function POST(request, { params }) {
   try {
     // AWAIT params in Next.js 15
     const { ticketId } = await params
-    const { approved, review, status } = await request.json()
+    const body = await request.json()
+    const { approved, status, mdApprovalComment, mdRejectReason } = body
 
     // Verify MD access
     const token = request.cookies.get('token')?.value
@@ -19,7 +20,6 @@ export async function POST(request, { params }) {
       )
     }
 
-    // AWAIT token verification (jose returns Promise)
     const decoded = await verifyToken(token)
     if (!decoded || !decoded.id) {
       return NextResponse.json(
@@ -55,14 +55,26 @@ export async function POST(request, { params }) {
       )
     }
 
+    // Build update data
+    const updateData = {
+      status,
+      mdApproval: approved ? 'APPROVED' : 'REJECTED'
+    }
+
+    if (approved) {
+      updateData.mdApprovedAt = new Date()
+      if (mdApprovalComment) {
+        updateData.mdApprovalComment = mdApprovalComment
+      }
+    } else {
+      updateData.mdRejectedAt = new Date()
+      updateData.mdRejectReason = mdRejectReason // required; frontend already validates
+    }
+
     // Update ticket
     const updatedTicket = await prisma.ticket.update({
       where: { id: ticketId },
-      data: {
-        status,
-        mdApproval: approved ? 'APPROVED' : 'REJECTED',
-        ...(approved ? { mdApprovedAt: new Date() } : { mdRejectedAt: new Date() })
-      },
+      data: updateData,
       include: {
         createdBy: {
           select: { id: true, name: true, email: true }
@@ -73,10 +85,15 @@ export async function POST(request, { params }) {
       }
     })
 
+    // Determine review content (use comment or reason)
+    const reviewContent = approved
+      ? (mdApprovalComment || 'Approved by MD')
+      : (mdRejectReason || 'Rejected by MD')
+
     // Add review
     await prisma.review.create({
       data: {
-        content: review,
+        content: reviewContent,
         reviewType: 'MD_REVIEW',
         createdById: user.id,
         ticketId
@@ -87,7 +104,7 @@ export async function POST(request, { params }) {
     await prisma.ticketHistory.create({
       data: {
         action: approved ? 'MD_APPROVED' : 'MD_REJECTED',
-        description: `Ticket ${approved ? 'approved' : 'rejected'} by MD: ${review}`,
+        description: `Ticket ${approved ? 'approved' : 'rejected'} by MD: ${reviewContent}`,
         createdById: user.id,
         ticketId
       }
@@ -98,7 +115,7 @@ export async function POST(request, { params }) {
       ticket.createdBy.email,
       ticket.ticketNumber,
       status,
-      review
+      reviewContent
     )
 
     // Send email to assigned admin if any
@@ -107,7 +124,7 @@ export async function POST(request, { params }) {
         ticket.assignedTo.email,
         ticket.ticketNumber,
         status,
-        review
+        reviewContent
       )
     }
 

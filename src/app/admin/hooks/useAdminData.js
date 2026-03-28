@@ -102,7 +102,7 @@ export function useAdminData(timeRange, socket) {
     } finally {
       setLoading(false)
     }
-  }, [timeRange, router, toast])
+  }, [timeRange, router, toast, socket])
 
   const exportReport = useCallback(async () => {
     try {

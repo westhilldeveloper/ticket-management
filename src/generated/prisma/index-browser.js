@@ -152,6 +152,7 @@ exports.Prisma.TicketScalarFieldEnum = {
   mdApprovedAt: 'mdApprovedAt',
   mdRejectedAt: 'mdRejectedAt',
   mdRejectReason: 'mdRejectReason',
+  mdApprovalComment: 'mdApprovalComment',
   thirdParty: 'thirdParty',
   thirdPartyStatus: 'thirdPartyStatus',
   thirdPartyDetails: 'thirdPartyDetails',

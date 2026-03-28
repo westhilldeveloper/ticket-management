@@ -230,31 +230,42 @@ function TicketsPageContent() {
       
       // Calculate stats
       const stats = ticketsArray.reduce((acc, ticket) => {
-        if (!ticket || typeof ticket !== 'object') return acc
-        
-        acc.total++
-        if (ticket.status === 'OPEN') acc.open++
-        else if (ticket.status === 'IN_PROGRESS') acc.inProgress++
-        else if (ticket.status === 'PENDING_MD_APPROVAL') acc.pendingMD++
-        else if (ticket.status === 'PENDING_THIRD_PARTY') acc.pendingThirdParty++
-        else if (ticket.status === 'RESOLVED') acc.resolved++
-        else if (ticket.status === 'CLOSED') acc.closed++
-        
-        if (ticket.priority === 'CRITICAL') acc.critical++
-        
-        return acc
-      }, { 
-        total: 0, 
-        open: 0, 
-        inProgress: 0, 
-        pendingMD: 0,
-        pendingThirdParty: 0,
-        resolved: 0, 
-        closed: 0,
-        critical: 0 
-      })
-      
-      setStats(stats)
+  if (!ticket || typeof ticket !== 'object') return acc
+  
+  acc.total++
+  const status = ticket.status
+  
+  // Categorize statuses
+  if (['OPEN', 'PENDING_MD_APPROVAL', 'PENDING_THIRD_PARTY', 'REJECTED_BY_MD', 'PENDING_SERVICE_ACCEPTANCE'].includes(status)) {
+    acc.open++
+  } else if (['IN_PROGRESS', 'SERVICE_IN_PROGRESS'].includes(status)) {
+    acc.inProgress++
+  } else if (status === 'RESOLVED' || status === 'SERVICE_RESOLVED') {
+    acc.resolved++   // resolved includes RESOLVED and SERVICE_RESOLVED
+  } else if (status === 'CLOSED') {
+    acc.closed++     // closed only for CLOSED
+  }
+  
+  // Specific status counts
+  if (status === 'PENDING_MD_APPROVAL') acc.pendingMD++
+  if (status === 'PENDING_THIRD_PARTY') acc.pendingThirdParty++
+  
+  // Critical priority
+  if (ticket.priority === 'CRITICAL') acc.critical++
+  
+  return acc
+}, { 
+  total: 0, 
+  open: 0, 
+  inProgress: 0, 
+  pendingMD: 0,
+  pendingThirdParty: 0,
+  resolved: 0, 
+  closed: 0,
+  critical: 0 
+})
+
+setStats(stats)
       
     } catch (error) {
       console.error('Tickets fetch error:', error)
@@ -474,7 +485,7 @@ function TicketsPageContent() {
       <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">{title}</p>
+            <p className="text-xs font-medium text-gray-500">{title}</p>
             <p className="text-2xl font-semibold text-gray-900 mt-2">{displayValue}</p>
             {trend && (
               <p className={`text-xs mt-2 ${trend.positive ? 'text-emerald-600' : 'text-red-600'}`}>
@@ -542,10 +553,10 @@ function TicketsPageContent() {
             {getIcon()}
           </div>
           <div className="ml-3 flex-1">
-            <h3 className={`text-sm font-medium ${getTextColor()}`}>
+            <h3 className={`text-xs font-medium ${getTextColor()}`}>
               {error.type === 'warning' ? 'Warning' : error.type === 'info' ? 'Information' : 'Error'}
             </h3>
-            <div className={`mt-2 text-sm ${error.type === 'warning' ? 'text-amber-700' : error.type === 'info' ? 'text-blue-700' : 'text-red-700'}`}>
+            <div className={`mt-2 text-xs ${error.type === 'warning' ? 'text-amber-700' : error.type === 'info' ? 'text-blue-700' : 'text-red-700'}`}>
               <p>{error.message}</p>
               {error.code && (
                 <p className="text-xs mt-1 opacity-75">Error code: {error.code}</p>
@@ -555,7 +566,7 @@ function TicketsPageContent() {
               {error.action !== 'login' && (
                 <button
                   onClick={onRetry}
-                  className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${getButtonColor()} focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors`}
+                  className={`inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md ${getButtonColor()} focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors`}
                 >
                   <FiRefreshCw className="h-4 w-4 mr-1.5" />
                   Try Again
@@ -564,14 +575,14 @@ function TicketsPageContent() {
               {error.action === 'login' ? (
                 <Link
                   href="/login"
-                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                  className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                 >
                   Go to Login
                 </Link>
               ) : (
                 <button
                   onClick={onDismiss}
-                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                  className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                 >
                   Dismiss
                 </button>
@@ -610,13 +621,13 @@ function TicketsPageContent() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-7xl mx-auto space-y-1">
       {/* Network Status Warning */}
       {networkStatus === 'offline' && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
           <div className="flex items-center">
             <FiAlertCircle className="h-5 w-5 text-amber-500 mr-3" />
-            <p className="text-sm text-amber-700">
+            <p className="text-xs text-amber-700">
               You are currently offline. Some features may be unavailable.
             </p>
           </div>
@@ -637,7 +648,7 @@ function TicketsPageContent() {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-semibold mb-1">Tickets</h1>
-            <p className="text-gray-300 text-sm flex items-center">
+            <p className="text-gray-300 text-xs flex items-center">
               <FiBriefcase className="h-4 w-4 mr-1.5" />
               {user?.role === 'EMPLOYEE' 
                 ? 'View and manage your tickets' 
@@ -650,7 +661,7 @@ function TicketsPageContent() {
             </p>
           </div>
           <div className="flex items-center space-x-3">
-            <span className="bg-white/10 px-3 py-1.5 rounded-lg text-sm flex items-center">
+            <span className="bg-white/10 px-3 py-1.5 rounded-lg text-xs flex items-center">
               <FiUser className="h-4 w-4 mr-2" />
               {user?.name}
             </span>
@@ -661,55 +672,55 @@ function TicketsPageContent() {
 
       {/* Stats Cards - Show different stats based on role */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        <StatCard
-          title="Total Tickets"
-          value={stats.total}
-          icon={FiInbox}
-          color="bg-gray-800"
-        />
-        <StatCard
-          title="Open"
-          value={stats.open}
-          icon={FiAlertCircle}
-          color="bg-amber-500"
-        />
-        <StatCard
-          title="In Progress"
-          value={stats.inProgress}
-          icon={FiClock}
-          color="bg-blue-500"
-        />
-        {(user?.role === 'MD' || user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN') && (
-          <StatCard
-            title="Pending MD"
-            value={stats.pendingMD}
-            icon={FiAward}
-            color="bg-purple-500"
-          />
-        )}
-        {(user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN') && (
-          <StatCard
-            title="Third Party"
-            value={stats.pendingThirdParty}
-            icon={FiUsers}
-            color="bg-indigo-500"
-          />
-        )}
-        <StatCard
-          title="Completed"
-          value={stats.resolved + stats.closed}
-          icon={FiCheck}
-          color="bg-emerald-500"
-        />
-        {(user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN' || user?.role === 'MD') && (
-          <StatCard
-            title="Critical"
-            value={stats.critical}
-            icon={FiAlertCircle}
-            color="bg-red-500"
-          />
-        )}
-      </div>
+         <StatCard
+    title="Total Tickets"
+    value={stats.total}
+    icon={FiInbox}
+    color="bg-gray-800"
+  />
+  <StatCard
+    title="Open"
+    value={stats.open}
+    icon={FiAlertCircle}
+    color="bg-amber-500"
+  />
+  <StatCard
+    title="In Progress"
+    value={stats.inProgress}
+    icon={FiClock}
+    color="bg-blue-500"
+  />
+  {(user?.role === 'MD' || user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN') && (
+    <StatCard
+      title="Pending MD"
+      value={stats.pendingMD}
+      icon={FiAward}
+      color="bg-purple-500"
+    />
+  )}
+  {(user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN') && (
+    <StatCard
+      title="Third Party"
+      value={stats.pendingThirdParty}
+      icon={FiUsers}
+      color="bg-indigo-500"
+    />
+  )}
+  <StatCard
+    title="Completed"
+    value={stats.resolved + stats.closed}
+    icon={FiCheck}
+    color="bg-emerald-500"
+  />
+  {(user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN' || user?.role === 'MD') && (
+    <StatCard
+      title="Critical"
+      value={stats.critical}
+      icon={FiAlertCircle}
+      color="bg-red-500"
+    />
+  )}
+</div>
 
       {/* Actions Bar */}
       <div className="bg-white rounded-lg border border-gray-200 p-4">
@@ -717,7 +728,7 @@ function TicketsPageContent() {
           <div className="flex items-center space-x-2 w-full sm:w-auto">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`inline-flex items-center px-4 py-2 rounded-lg text-xs font-medium transition-colors ${
                 showFilters 
                   ? 'bg-primary-50 text-primary-700 border-primary-200' 
                   : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
@@ -737,7 +748,7 @@ function TicketsPageContent() {
                 value={filters.search}
                 onChange={handleFilterChange}
                 placeholder="Search tickets..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -746,7 +757,7 @@ function TicketsPageContent() {
             {/* Bulk Actions */}
             {selectedTickets.length > 0 && (
               <div className="flex items-center space-x-2 mr-2">
-                <span className="text-sm text-gray-500">
+                <span className="text-xs text-gray-500">
                   {selectedTickets.length} selected
                 </span>
                 <button
@@ -768,7 +779,7 @@ function TicketsPageContent() {
 
             <Link
               href="/tickets/new"
-              className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
+              className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-xs font-medium"
             >
               <FiPlus className="h-4 w-4 mr-2" />
               New Ticket
@@ -781,14 +792,14 @@ function TicketsPageContent() {
           <div className="mt-4 pt-4 border-t border-gray-200">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Status
                 </label>
                 <select
                   name="status"
                   value={filters.status}
                   onChange={handleFilterChange}
-                  className="w-full rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full rounded-lg border-gray-200 text-xs focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
                   <option value="">All Statuses</option>
                   <option value="OPEN">Open</option>
@@ -803,14 +814,14 @@ function TicketsPageContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Category
                 </label>
                 <select
                   name="category"
                   value={filters.category}
                   onChange={handleFilterChange}
-                  className="w-full rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full rounded-lg border-gray-200 text-xs focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
                   <option value="">All Categories</option>
                   <option value="HR">HR</option>
@@ -820,14 +831,14 @@ function TicketsPageContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Priority
                 </label>
                 <select
                   name="priority"
                   value={filters.priority}
                   onChange={handleFilterChange}
-                  className="w-full rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full rounded-lg border-gray-200 text-xs focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
                   <option value="">All Priorities</option>
                   <option value="LOW">Low</option>
@@ -840,7 +851,7 @@ function TicketsPageContent() {
               <div className="flex items-end">
                 <button
                   onClick={handleClearFilters}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   Clear Filters
                 </button>
@@ -859,10 +870,10 @@ function TicketsPageContent() {
         ) : tickets.length > 0 ? (
           <>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="max-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left">
+                    {/* <th scope="col" className="px-6 py-3 text-left">
                       <div className="flex items-center">
                         <input
                           type="checkbox"
@@ -871,7 +882,7 @@ function TicketsPageContent() {
                           className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                         />
                       </div>
-                    </th>
+                    </th> */}
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Ticket #
                     </th>
@@ -884,7 +895,7 @@ function TicketsPageContent() {
                       </th>
                     )}
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Category
+                      Branch
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Priority
@@ -908,23 +919,23 @@ function TicketsPageContent() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {tickets.map((ticket) => (
                     <tr key={ticket.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      {/* <td className="px-6 py-4 whitespace-nowrap">
                         <input
                           type="checkbox"
                           checked={selectedTickets.includes(ticket.id)}
                           onChange={() => handleSelectTicket(ticket.id)}
                           className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                         />
-                      </td>
+                      </td> */}
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm font-medium text-primary-600">
+                        <span className="text-xs font-medium text-primary-600">
                           {ticket.ticketNumber || `#${ticket.id?.slice(0, 8)}`}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           {getStatusIcon(ticket.status)}
-                          <span className="ml-2 text-sm text-gray-900 font-medium">
+                          <span className="ml-2 text-xs text-gray-900 font-medium">
                             {ticket.title || 'Untitled Ticket'}
                           </span>
                         </div>
@@ -936,7 +947,7 @@ function TicketsPageContent() {
                               <FiUser className="h-4 w-4 text-gray-500" />
                             </div>
                             <div className="ml-3">
-                              <p className="text-sm font-medium text-gray-900">
+                              <p className="text-xs font-medium text-gray-900">
                                 {ticket.createdBy?.name || 'Unknown'}
                               </p>
                               <p className="text-xs text-gray-500">
@@ -947,7 +958,7 @@ function TicketsPageContent() {
                         </td>
                       )}
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center text-sm text-gray-500">
+                        <div className="flex items-center text-xs text-gray-500">
                           {getCategoryIcon(ticket.category)}
                           <span className="ml-1.5">{ticket.category || 'General'}</span>
                         </div>
@@ -958,7 +969,7 @@ function TicketsPageContent() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {getStatusBadge(ticket.status)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
                         <div title={formatDateTime(ticket.createdAt)}>
                           {formatDate(ticket.createdAt)}
                         </div>
@@ -970,16 +981,16 @@ function TicketsPageContent() {
                               <div className="h-6 w-6 bg-gray-100 rounded-full flex items-center justify-center">
                                 <FiUser className="h-3 w-3 text-gray-500" />
                               </div>
-                              <span className="ml-2 text-sm text-gray-900">
+                              <span className="ml-2 text-xs text-gray-900">
                                 {ticket.assignedTo.name}
                               </span>
                             </div>
                           ) : (
-                            <span className="text-sm text-gray-400">Unassigned</span>
+                            <span className="text-xs text-gray-400">Unassigned</span>
                           )}
                         </td>
                       )}
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="px-6 py-4 whitespace-nowrap text-xs font-medium">
                         <Link
                           href={`/tickets/${ticket.id}`}
                           className="text-primary-600 hover:text-primary-900 inline-flex items-center"
@@ -1001,21 +1012,21 @@ function TicketsPageContent() {
                   <button
                     onClick={() => handlePageChange(pagination.page - 1)}
                     disabled={pagination.page === 1}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     Previous
                   </button>
                   <button
                     onClick={() => handlePageChange(pagination.page + 1)}
                     disabled={pagination.page === pagination.pages}
-                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     Next
                   </button>
                 </div>
                 <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-xs text-gray-700">
                       Showing <span className="font-medium">{(pagination.page - 1) * pagination.limit + 1}</span> to{' '}
                       <span className="font-medium">
                         {Math.min(pagination.page * pagination.limit, pagination.total)}
@@ -1028,7 +1039,7 @@ function TicketsPageContent() {
                       <button
                         onClick={() => handlePageChange(pagination.page - 1)}
                         disabled={pagination.page === 1}
-                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-xs font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
                       >
                         <span className="sr-only">Previous</span>
                         <FiChevronLeft className="h-5 w-5" />
@@ -1045,7 +1056,7 @@ function TicketsPageContent() {
                             <button
                               key={pageNum}
                               onClick={() => handlePageChange(pageNum)}
-                              className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                              className={`relative inline-flex items-center px-4 py-2 border text-xs font-medium ${
                                 pageNum === pagination.page
                                   ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
                                   : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
@@ -1058,7 +1069,7 @@ function TicketsPageContent() {
                           return (
                             <span
                               key={pageNum}
-                              className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                              className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-xs font-medium text-gray-700"
                             >
                               ...
                             </span>
@@ -1070,7 +1081,7 @@ function TicketsPageContent() {
                       <button
                         onClick={() => handlePageChange(pagination.page + 1)}
                         disabled={pagination.page === pagination.pages}
-                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-xs font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
                       >
                         <span className="sr-only">Next</span>
                         <FiChevronRight className="h-5 w-5" />
@@ -1085,7 +1096,7 @@ function TicketsPageContent() {
           <div className="px-6 py-12 text-center">
             <FiInbox className="h-12 w-12 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500 mb-2">No tickets found</p>
-            <p className="text-sm text-gray-400 mb-6">
+            <p className="text-xs text-gray-400 mb-6">
               {filters.status || filters.category || filters.priority || filters.search
                 ? 'Try adjusting your filters'
                 : 'Get started by creating your first ticket'}
@@ -1093,7 +1104,7 @@ function TicketsPageContent() {
             {(filters.status || filters.category || filters.priority || filters.search) ? (
               <button
                 onClick={handleClearFilters}
-                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-xs font-medium"
               >
                 <FiRefreshCw className="h-4 w-4 mr-2" />
                 Clear Filters
@@ -1101,7 +1112,7 @@ function TicketsPageContent() {
             ) : (
               <Link
                 href="/tickets/new"
-                className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
+                className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-xs font-medium"
               >
                 <FiPlus className="h-4 w-4 mr-2" />
                 Create your first ticket

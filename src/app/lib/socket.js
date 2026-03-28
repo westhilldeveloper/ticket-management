@@ -1,8 +1,8 @@
-const { Server } = require('socket.io');
+import { Server } from 'socket.io';
 
 let io;
 
-const initSocket = (server) => {
+export const initSocket = (server) => {
   io = new Server(server, {
     cors: {
       origin: process.env.NEXTAUTH_URL || 'http://localhost:3000',
@@ -10,7 +10,7 @@ const initSocket = (server) => {
       credentials: true,
     },
   });
-
+ 
   io.on('connection', (socket) => {
     console.log('New client connected:', socket.id);
 
@@ -47,14 +47,12 @@ const initSocket = (server) => {
   return io;
 };
 
-const getIO = () => {
+export const getIO = () => {
   if (!io) throw new Error('Socket.io not initialized');
   return io;
 };
 
-const emitTicketUpdate = (ticketId, update) => {
+export const emitTicketUpdate = (ticketId, update) => {
   if (!io) return;
   io.to(`ticket-${ticketId}`).emit('ticket-updated', update);
 };
-
-module.exports = { initSocket, getIO, emitTicketUpdate };

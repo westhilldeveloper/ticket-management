@@ -33,6 +33,7 @@ function EmployeeDashboardContent() {
     total: 0,
     open: 0,
     inProgress: 0,
+    completed: 0,
     resolved: 0,
     closed: 0
   })
@@ -42,7 +43,18 @@ function EmployeeDashboardContent() {
   const [retryCount, setRetryCount] = useState(0)
   const [networkStatus, setNetworkStatus] = useState('online')
   const { socket } = useSocket();
-  
+
+  // Monitor network status
+  useEffect(() => {
+    const handleOnline = () => setNetworkStatus('online')
+    const handleOffline = () => setNetworkStatus('offline')
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -51,7 +63,6 @@ function EmployeeDashboardContent() {
   }, [authLoading, user, retryCount])
 
   const fetchDashboardData = useCallback(async () => {
-    // Check network status first
     if (networkStatus === 'offline') {
       setError({
         message: 'You are currently offline. Please check your internet connection.',
@@ -74,15 +85,12 @@ function EmployeeDashboardContent() {
         }
       }
 
-      // Fetch tickets with timeout and abort controller
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 10000)
 
       const ticketsRes = await fetch('/api/tickets?limit=15', {
         signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-        }
+        headers: { 'Content-Type': 'application/json' }
       })
       
       clearTimeout(timeoutId)
@@ -96,51 +104,25 @@ function EmployeeDashboardContent() {
           errorMessage = errorData.message || errorMessage
           errorCode = errorData.code || errorCode
         } catch {
-          // Use default error message
+          // use default
         }
         
-        // Handle specific HTTP status codes
         if (ticketsRes.status === 401) {
-          throw {
-            message: 'Your session has expired. Please log in again.',
-            code: 'SESSION_EXPIRED',
-            type: 'error'
-          }
+          throw { message: 'Your session has expired. Please log in again.', code: 'SESSION_EXPIRED', type: 'error' }
         } else if (ticketsRes.status === 403) {
-          throw {
-            message: 'You do not have permission to view tickets.',
-            code: 'FORBIDDEN',
-            type: 'error'
-          }
+          throw { message: 'You do not have permission to view tickets.', code: 'FORBIDDEN', type: 'error' }
         } else if (ticketsRes.status === 429) {
-          throw {
-            message: 'Too many requests. Please wait a moment and try again.',
-            code: 'RATE_LIMITED',
-            type: 'warning'
-          }
+          throw { message: 'Too many requests. Please wait a moment and try again.', code: 'RATE_LIMITED', type: 'warning' }
         } else if (ticketsRes.status >= 500) {
-          throw {
-            message: 'Server error. Our team has been notified.',
-            code: 'SERVER_ERROR',
-            type: 'error'
-          }
+          throw { message: 'Server error. Our team has been notified.', code: 'SERVER_ERROR', type: 'error' }
         }
         
-        throw {
-          message: errorMessage,
-          status: ticketsRes.status,
-          code: errorCode,
-          type: 'error'
-        }
+        throw { message: errorMessage, status: ticketsRes.status, code: errorCode, type: 'error' }
       }
       
       const ticketsText = await ticketsRes.text()
       if (!ticketsText) {
-        throw {
-          message: 'Empty response from server',
-          code: 'EMPTY_RESPONSE',
-          type: 'error'
-        }
+        throw { message: 'Empty response from server', code: 'EMPTY_RESPONSE', type: 'error' }
       }
       
       let ticketsData
@@ -148,45 +130,44 @@ function EmployeeDashboardContent() {
         ticketsData = JSON.parse(ticketsText)
       } catch (parseError) {
         console.error('JSON parse error:', parseError)
-        throw {
-          message: 'Invalid data format received from server',
-          code: 'PARSE_ERROR',
-          type: 'error'
-        }
+        throw { message: 'Invalid data format received from server', code: 'PARSE_ERROR', type: 'error' }
       }
       
-      // Validate tickets data structure
       if (!ticketsData || typeof ticketsData !== 'object') {
-        throw {
-          message: 'Invalid data structure received',
-          code: 'INVALID_DATA',
-          type: 'error'
-        }
+        throw { message: 'Invalid data structure received', code: 'INVALID_DATA', type: 'error' }
       }
 
       const ticketsArray = Array.isArray(ticketsData.tickets) ? ticketsData.tickets : []
       setTickets(ticketsArray)
       
-      // Calculate stats with validation
+      // Calculate stats with proper status categorization
       const stats = ticketsArray.reduce((acc, ticket) => {
         if (!ticket || typeof ticket !== 'object') return acc
         
         acc.total++
-        if (ticket.status === 'OPEN') acc.open++
-        else if (ticket.status === 'IN_PROGRESS') acc.inProgress++
-        else if (ticket.status === 'RESOLVED') acc.resolved++
-        else if (ticket.status === 'CLOSED') acc.closed++
+        const status = ticket.status
+        
+        // Categorize statuses
+        if (['OPEN', 'PENDING_MD_APPROVAL', 'PENDING_THIRD_PARTY', 'REJECTED_BY_MD', 'PENDING_SERVICE_ACCEPTANCE'].includes(status)) {
+          acc.open++
+        } else if (['IN_PROGRESS', 'SERVICE_IN_PROGRESS'].includes(status)) {
+          acc.inProgress++
+        } else if (['RESOLVED', 'CLOSED', 'SERVICE_RESOLVED'].includes(status)) {
+          acc.completed++
+        }
+        
+        // Keep resolved/closed counts for potential future use
+        if (status === 'RESOLVED' || status === 'SERVICE_RESOLVED') acc.resolved++
+        if (status === 'CLOSED') acc.closed++
+        
         return acc
-      }, { total: 0, open: 0, inProgress: 0, resolved: 0, closed: 0 })
+      }, { total: 0, open: 0, inProgress: 0, completed: 0, resolved: 0, closed: 0 })
       
       setStats(stats)
 
-      // Fetch recent activities with error handling (non-critical)
+      // Fetch recent activities (non-critical)
       try {
-        const historyRes = await fetch('/api/tickets/history?limit=5', {
-          signal: controller.signal
-        })
-        
+        const historyRes = await fetch('/api/tickets/history?limit=10', { signal: controller.signal })
         if (historyRes.ok) {
           const historyText = await historyRes.text()
           if (historyText) {
@@ -195,7 +176,6 @@ function EmployeeDashboardContent() {
           }
         }
       } catch (historyError) {
-        // Non-critical error - just log and continue
         console.warn('Failed to fetch activity history:', historyError.message)
         setRecentActivities([])
       }
@@ -203,7 +183,6 @@ function EmployeeDashboardContent() {
     } catch (error) {
       console.error('Dashboard data fetch error:', error)
       
-      // Handle different error types
       if (error.name === 'AbortError' || error.code === 'TIMEOUT') {
         setError({
           message: 'Request timed out. Please check your connection and try again.',
@@ -227,40 +206,29 @@ function EmployeeDashboardContent() {
         })
       }
       
-      // Set fallback data
+      // Fallback data
       setTickets([])
       setRecentActivities([])
-      setStats({
-        total: 0,
-        open: 0,
-        inProgress: 0,
-        resolved: 0,
-        closed: 0
-      })
+      setStats({ total: 0, open: 0, inProgress: 0, completed: 0, resolved: 0, closed: 0 })
     } finally {
       setLoading(false)
     }
-  },  [user, retryCount, networkStatus]);
-// Monitor network status
+  }, [user, retryCount, networkStatus])
+
+  // Socket event for new tickets
   useEffect(() => {
-  if (!socket) return
+    if (!socket) return
 
-  const handleNewTicket = (newTicket) => {
-    // Show toast (optional)
+    const handleNewTicket = (newTicket) => {
+      toast.success(`New ticket #${newTicket.ticketNumber} created`)
+      fetchDashboardData()
+    }
 
-    console.log("socket in dashboard calling")
-    toast.success(`New ticket #${newTicket.ticketNumber} created`)
-    // Refresh dashboard data
-    fetchDashboardData() 
-  }
-
-  socket.on('new-ticket', handleNewTicket)
-  setNetworkStatus('online')
-
-  return () => {
-    socket.off('new-ticket', handleNewTicket)
-  }
-}, [socket, fetchDashboardData])
+    socket.on('new-ticket', handleNewTicket)
+    return () => {
+      socket.off('new-ticket', handleNewTicket)
+    }
+  }, [socket, fetchDashboardData])
 
   const handleRetry = () => {
     setRetryCount(prev => prev + 1)
@@ -329,7 +297,6 @@ function EmployeeDashboardContent() {
   }
 
   const StatCard = ({ title, value, icon: Icon, color, trend }) => {
-    // Ensure value is a number
     const displayValue = typeof value === 'number' ? value : 0
     
     return (
@@ -445,7 +412,6 @@ function EmployeeDashboardContent() {
     )
   }
 
-  // Loading state
   if (authLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -454,7 +420,6 @@ function EmployeeDashboardContent() {
     )
   }
 
-  // Not authenticated state
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
@@ -471,7 +436,6 @@ function EmployeeDashboardContent() {
     )
   }
 
-  // Loading state for dashboard data
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -482,7 +446,6 @@ function EmployeeDashboardContent() {
 
   return (
     <div className="space-y-6">
-      {/* Network Status Warning */}
       {networkStatus === 'offline' && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
           <div className="flex items-center">
@@ -494,7 +457,6 @@ function EmployeeDashboardContent() {
         </div>
       )}
 
-      {/* Error Alert */}
       {error && (
         <ErrorAlert 
           error={error} 
@@ -502,8 +464,6 @@ function EmployeeDashboardContent() {
           onDismiss={handleDismissError}
         />
       )}
-
-     
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -527,7 +487,7 @@ function EmployeeDashboardContent() {
         />
         <StatCard
           title="Completed"
-          value={stats.resolved + stats.closed}
+          value={stats.completed}
           icon={FiCheck}
           color="bg-emerald-500"
         />
@@ -687,7 +647,6 @@ function EmployeeDashboardContent() {
   )
 }
 
-// Main export with ErrorBoundary wrapper
 export default function EmployeeDashboard() {
   return (
     <DashboardLayout>

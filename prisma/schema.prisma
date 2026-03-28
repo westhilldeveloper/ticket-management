@@ -63,6 +63,7 @@ model Ticket {
   mdApprovedAt  DateTime?
   mdRejectedAt  DateTime?
   mdRejectReason String?      @db.Text
+  mdApprovalComment String?   @db.Text
   
   // Third party fields
   thirdParty    Boolean       @default(false)

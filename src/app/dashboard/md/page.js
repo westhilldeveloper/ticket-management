@@ -14,39 +14,28 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiAlertCircle,
-  FiUser,
-  FiCalendar,
-  FiTag,
-  FiMessageSquare,
-  FiSend,
   FiThumbsUp,
   FiThumbsDown,
   FiExternalLink,
   FiEye,
   FiRefreshCw,
-  FiTrendingUp,
-  FiInbox,
-  FiCheckSquare,
   FiBarChart2,
   FiFilter,
   FiSearch,
   FiChevronDown,
-  FiChevronLeft,
-  FiChevronRight,
   FiAward
 } from 'react-icons/fi'
-import { formatDistanceToNow, format, subDays, subMonths, startOfMonth, endOfMonth } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
 
 function MDDashboardContent() {
   const { user } = useAuth()
-  const { socket, connected, joinTicket, leaveTicket } = useSocket() // Using your existing socket methods
+  const { socket, connected, joinTicket, leaveTicket } = useSocket()
   const toast = useToast()
 
   // State for tickets
   const [pendingApprovals, setPendingApprovals] = useState([])
   const [approvedTickets, setApprovedTickets] = useState([])
   const [rejectedTickets, setRejectedTickets] = useState([])
-  const [allTickets, setAllTickets] = useState([])
   
   // Loading states
   const [loading, setLoading] = useState({
@@ -91,7 +80,8 @@ function MDDashboardContent() {
   const [showFilters, setShowFilters] = useState(false)
   const [selectedTicket, setSelectedTicket] = useState(null)
   const [mdDecision, setMdDecision] = useState(null)
-  const [mdReview, setMdReview] = useState('')
+  const [mdComment, setMdComment] = useState('')      // for approval comment
+  const [mdRejectReason, setMdRejectReason] = useState('') // for rejection reason
   const [submitting, setSubmitting] = useState(false)
 
   // Pagination
@@ -107,14 +97,12 @@ function MDDashboardContent() {
     if (socket && connected) {
       console.log('Setting up MD socket listeners')
       
-      // Listen for new tickets that need MD approval
       socket.on('new-ticket-for-md', (data) => {
         console.log('New ticket for MD:', data)
         toast.success('New ticket requires your approval')
         fetchPendingApprovals()
       })
 
-      // Listen for ticket updates
       socket.on('ticket-updated', (data) => {
         console.log('Ticket updated:', data)
         if (data.ticket?.mdApproval) {
@@ -123,7 +111,6 @@ function MDDashboardContent() {
         }
       })
 
-      // Cleanup listeners
       return () => {
         socket.off('new-ticket-for-md')
         socket.off('ticket-updated')
@@ -166,7 +153,6 @@ function MDDashboardContent() {
       
       if (res.ok) {
         setPendingApprovals(data.tickets || [])
-        // Join each ticket room for real-time updates
         data.tickets?.forEach(ticket => {
           joinTicket(ticket.id)
         })
@@ -242,25 +228,32 @@ function MDDashboardContent() {
   }
 
   const handleMDDecision = async (ticketId, approved) => {
-    if (!approved && !mdReview.trim()) {
+    if (!approved && !mdRejectReason.trim()) {
       toast.error('Please provide a reason for rejection')
       return
     }
 
     setSubmitting(true)
     try {
+      const payload = {
+        status: approved ? 'APPROVED_BY_MD' : 'REJECTED_BY_MD',
+        mdApproval: approved ? 'APPROVED' : 'REJECTED',
+      }
+
+      if (approved) {
+        payload.mdApprovedAt = new Date()
+        if (mdComment.trim()) {
+          payload.mdApprovalComment = mdComment.trim()
+        }
+      } else {
+        payload.mdRejectedAt = new Date()
+        payload.mdRejectReason = mdRejectReason.trim()
+      }
+
       const response = await fetch(`/api/tickets/${ticketId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          status: approved ? 'APPROVED_BY_MD' : 'REJECTED_BY_MD',
-          mdApproval: approved ? 'APPROVED' : 'REJECTED',
-          review: mdReview || (approved ? 'Approved by MD' : 'Rejected by MD'),
-          ...(approved && { mdApprovedAt: new Date() }),
-          ...(!approved && { mdRejectedAt: new Date(), mdRejectReason: mdReview })
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       })
 
       const data = await response.json()
@@ -269,7 +262,7 @@ function MDDashboardContent() {
         throw new Error(data.message || 'Failed to process decision')
       }
 
-      // Emit socket event for real-time update
+      // Emit socket event
       if (socket && connected) {
         socket.emit('ticket-updated', {
           ticketId: data.ticket.id,
@@ -292,7 +285,8 @@ function MDDashboardContent() {
       
       setSelectedTicket(null)
       setMdDecision(null)
-      setMdReview('')
+      setMdComment('')
+      setMdRejectReason('')
       toast.success(approved ? 'Ticket approved successfully' : 'Ticket rejected')
     } catch (error) {
       console.error('Error processing MD decision:', error)
@@ -366,24 +360,6 @@ function MDDashboardContent() {
     </div>
   )
 
-  const ProgressBar = ({ label, value, total, color }) => {
-    const percentage = total > 0 ? Math.round((value / total) * 100) : 0
-    return (
-      <div className="mb-3">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="text-gray-600">{label}</span>
-          <span className="text-gray-900 font-medium">{value} ({percentage}%)</span>
-        </div>
-        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-          <div 
-            className={`h-full ${color}`} 
-            style={{ width: `${percentage}%` }}
-          />
-        </div>
-      </div>
-    )
-  }
-
   // Show loading state
   if (loading.pending && loading.stats && pendingApprovals.length === 0) {
     return (
@@ -398,7 +374,7 @@ function MDDashboardContent() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header with Connection Status */}
+        {/* Header */}
         <div className="bg-gradient-to-r from-purple-700 to-purple-900 rounded-xl shadow-lg p-6 text-white">
           <div className="flex justify-between items-center">
             <div>
@@ -454,63 +430,6 @@ function MDDashboardContent() {
             icon={FiBarChart2}
             color="bg-blue-600"
           />
-        </div>
-
-        {/* Category & Priority Stats */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
-              Approval by Category
-            </h3>
-            <ProgressBar 
-              label="HR" 
-              value={stats.byCategory?.HR?.approved || 0} 
-              total={stats.byCategory?.HR?.total || 1}
-              color="bg-blue-500"
-            />
-            <ProgressBar 
-              label="IT" 
-              value={stats.byCategory?.IT?.approved || 0} 
-              total={stats.byCategory?.IT?.total || 1}
-              color="bg-green-500"
-            />
-            <ProgressBar 
-              label="Technical" 
-              value={stats.byCategory?.TECHNICAL?.approved || 0} 
-              total={stats.byCategory?.TECHNICAL?.total || 1}
-              color="bg-purple-500"
-            />
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
-              Approval by Priority
-            </h3>
-            <ProgressBar 
-              label="Critical" 
-              value={stats.byPriority?.CRITICAL?.approved || 0} 
-              total={stats.byPriority?.CRITICAL?.total || 1}
-              color="bg-red-500"
-            />
-            <ProgressBar 
-              label="High" 
-              value={stats.byPriority?.HIGH?.approved || 0} 
-              total={stats.byPriority?.HIGH?.total || 1}
-              color="bg-orange-500"
-            />
-            <ProgressBar 
-              label="Medium" 
-              value={stats.byPriority?.MEDIUM?.approved || 0} 
-              total={stats.byPriority?.MEDIUM?.total || 1}
-              color="bg-yellow-500"
-            />
-            <ProgressBar 
-              label="Low" 
-              value={stats.byPriority?.LOW?.approved || 0} 
-              total={stats.byPriority?.LOW?.total || 1}
-              color="bg-green-500"
-            />
-          </div>
         </div>
 
         {/* Pending Approvals Section */}
@@ -607,7 +526,8 @@ function MDDashboardContent() {
                           onClick={() => {
                             setSelectedTicket(null)
                             setMdDecision(null)
-                            setMdReview('')
+                            setMdComment('')
+                            setMdRejectReason('')
                           }}
                           className="text-gray-400 hover:text-gray-600"
                         >
@@ -666,13 +586,22 @@ function MDDashboardContent() {
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          {mdDecision === 'reject' && (
+                          {mdDecision === 'reject' ? (
                             <textarea
-                              value={mdReview}
-                              onChange={(e) => setMdReview(e.target.value)}
+                              value={mdRejectReason}
+                              onChange={(e) => setMdRejectReason(e.target.value)}
                               placeholder="Please provide reason for rejection..."
                               className="input-field w-full"
                               rows="3"
+                              required
+                            />
+                          ) : (
+                            <textarea
+                              value={mdComment}
+                              onChange={(e) => setMdComment(e.target.value)}
+                              placeholder="Optional: Add a comment for approval..."
+                              className="input-field w-full"
+                              rows="2"
                             />
                           )}
                           <div className="flex space-x-3">
@@ -777,6 +706,9 @@ function MDDashboardContent() {
                         </p>
                       </div>
                     </div>
+                    {ticket.mdApprovalComment && (
+                      <p className="text-xs text-green-600 mt-1 line-clamp-1">💬 {ticket.mdApprovalComment}</p>
+                    )}
                   </Link>
                 ))}
               </div>
@@ -819,7 +751,7 @@ function MDDashboardContent() {
                       </div>
                     </div>
                     {ticket.mdRejectReason && (
-                      <p className="text-xs text-red-600 mt-1 line-clamp-1">{ticket.mdRejectReason}</p>
+                      <p className="text-xs text-red-600 mt-1 line-clamp-1">❌ {ticket.mdRejectReason}</p>
                     )}
                   </Link>
                 ))}
@@ -859,7 +791,7 @@ export default function MDDashboard() {
               Something went wrong
             </h3>
             <p className="text-gray-500 mb-4 max-w-md">
-              {error?.message || 'We\'re having trouble loading the MD dashboard.'}
+              {error?.message || "We're having trouble loading the MD dashboard."}
             </p>
             <button
               onClick={resetError}

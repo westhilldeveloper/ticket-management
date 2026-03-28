@@ -1,0 +1,393 @@
+import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+
+export function useTicketPage({ ticketId, user, socket, joinTicket, leaveTicket, toast }) {
+  const [ticket, setTicket] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [review, setReview] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [showActions, setShowActions] = useState(false)
+  const [selectedAction, setSelectedAction] = useState(null)
+  const [mdDecision, setMdDecision] = useState(null)
+  const [mdReview, setMdReview] = useState('')
+  const [thirdPartyDetails, setThirdPartyDetails] = useState('')
+  const [thirdPartyStatus, setThirdPartyStatus] = useState('PENDING')
+  const [adminReview, setAdminReview] = useState('')
+  const [serviceTeamMembers, setServiceTeamMembers] = useState([])
+  const [selectedServiceUserId, setSelectedServiceUserId] = useState('')
+  const [serviceResponse, setServiceResponse] = useState('')
+  const [serviceDecision, setServiceDecision] = useState(null)
+
+  const router = useRouter()
+
+  const fetchTicket = useCallback(async () => {
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/public/tickets/${ticketId}`, {
+        credentials: user ? 'include' : 'omit'
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch ticket')
+      }
+
+      setTicket(data.ticket)
+    } catch (error) {
+      console.error('Error fetching ticket:', error)
+      setError(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }, [ticketId, user])
+
+  const fetchServiceTeamMembers = useCallback(async () => {
+    try {
+      const response = await fetch('/api/users?role=SERVICE_TEAM', {
+        credentials: 'include'
+      })
+      const data = await response.json()
+      if (response.ok) {
+        setServiceTeamMembers(data.users || [])
+      } else {
+        toast.error('Failed to load service team members')
+      }
+    } catch (error) {
+      console.error('Error fetching service team:', error)
+      toast.error('Error loading service team members')
+    }
+  }, [toast])
+
+  const handleTicketUpdate = useCallback((updatedTicket) => {
+    setTicket(updatedTicket)
+    toast.info('Ticket status was updated')
+  }, [toast])
+
+  // Fetch on mount and when ticketId changes
+  useEffect(() => {
+    if (ticketId) {
+      fetchTicket()
+    }
+  }, [ticketId, fetchTicket])
+
+  // Socket events
+  useEffect(() => {
+    if (socket && ticketId) {
+      joinTicket(ticketId)
+      socket.on(`ticket-${ticketId}-updated`, handleTicketUpdate)
+
+      return () => {
+        socket.off(`ticket-${ticketId}-updated`, handleTicketUpdate)
+        leaveTicket(ticketId)
+      }
+    }
+  }, [socket, ticketId, joinTicket, leaveTicket, handleTicketUpdate])
+
+  // Admin Actions
+  const handleAdminAction = useCallback(async (action) => {
+    if (action === 'ASSIGN_TO_SERVICE') {
+      if (!selectedServiceUserId) {
+        toast.error('Please select a service team member');
+        return;
+      }
+      if (!adminReview.trim()) {
+        toast.error('Please add a review');
+        return;
+      }
+
+      setSubmitting(true);
+      try {
+        const response = await fetch(`/api/public/tickets/${ticketId}/assign-service-team`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            assignedToId: selectedServiceUserId,
+            review: adminReview,
+          }),
+          credentials: 'include',
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Assignment failed');
+
+        setTicket(data.ticket);
+        setSelectedAction(null);
+        setAdminReview('');
+        setSelectedServiceUserId('');
+        toast.success('Ticket assigned to service team');
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+
+    // Generic admin actions
+    if (!adminReview.trim() && action !== 'CONFIRM' && action !== 'MESSAGE') {
+      toast.error('Please add a review');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const endpoint = `/api/public/tickets/${ticketId}/admin-action`;
+      const body = {
+        action,
+        review: adminReview || (action === 'MESSAGE' ? review : `Action: ${action}`),
+      };
+
+      if (action === 'FORWARD_TO_MD') {
+        body.status = 'PENDING_MD_APPROVAL';
+        body.mdApproval = 'PENDING';
+      } else if (action === 'THIRD_PARTY') {
+        body.status = 'PENDING_THIRD_PARTY';
+        body.thirdParty = true;
+        body.thirdPartyStatus = thirdPartyStatus;
+        body.thirdPartyDetails = thirdPartyDetails;
+      } else if (action === 'CONFIRM') {
+        body.status = 'IN_PROGRESS';
+        body.confirmed = true;
+      } else if (action === 'MESSAGE') {
+        body.reviewType = 'ADMIN_REVIEW';
+      } else if (action === 'PENDING_THIRD_PARTY') {
+        body.reviewType = 'ADMIN_REVIEW';
+        body.status = 'SERVICE_RESOLVED';
+      }
+      
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Action failed');
+
+      setTicket(data.ticket);
+
+      if (action === 'MESSAGE') {
+        setReview('');
+      } else {
+        setSelectedAction(null);
+        setAdminReview('');
+        setThirdPartyDetails('');
+      }
+
+      toast.success('Action completed successfully');
+    } catch (error) {
+      console.error('Error performing action:', error);
+      toast.error(error.message);
+    } finally {
+      setSubmitting(false);
+    }
+  }, [ticketId, selectedServiceUserId, adminReview, thirdPartyStatus, thirdPartyDetails, review, toast]);
+
+  // Service Team Actions
+  const handleServiceResponse = useCallback(async (action) => {
+    if (!serviceResponse.trim() && action === 'reject') {
+      toast.error('Please provide a reason for rejection')
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const response = await fetch(`/api/public/tickets/${ticketId}/service-team-response`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action,
+          review: serviceResponse || (action === 'accept' ? 'Accepted by service team' : '')
+        }),
+        credentials: 'include'
+      })
+
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Failed to respond')
+
+      setTicket(data.ticket)
+      setServiceDecision(null)
+      setServiceResponse('')
+      toast.success(action === 'accept' ? 'Ticket accepted' : 'Ticket rejected')
+    } catch (error) {
+      toast.error(error.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }, [ticketId, serviceResponse, toast]);
+
+  const handleServiceWorkUpdate = useCallback(async (workType) => {
+    if (!serviceResponse.trim()) {
+      toast.error('Please add work details')
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const response = await fetch(`/api/public/tickets/${ticketId}/service-work-update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workType,
+          details: serviceResponse
+        }),
+        credentials: 'include'
+      })
+
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Failed to update work')
+
+      setTicket(data.ticket)
+      setServiceResponse('')
+      setSelectedAction(null)
+      toast.success('Work update recorded')
+    } catch (error) {
+      toast.error(error.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }, [ticketId, serviceResponse, toast]);
+
+  // MD Actions
+  const handleMDDecision = useCallback(async (approved) => {
+    if (!mdReview.trim() && !approved) {
+      toast.error('Please provide a reason for rejection')
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const response = await fetch(`/api/public/tickets/${ticketId}/md-decision`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          approved,
+          review: mdReview || (approved ? 'Approved by MD' : 'Rejected by MD'),
+          status: approved ? 'APPROVED_BY_MD' : 'REJECTED_BY_MD'
+        }),
+        credentials: 'include'
+      })
+
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Failed to process decision')
+
+      setTicket(data.ticket)
+      setMdDecision(null)
+      setMdReview('')
+      toast.success(approved ? 'Ticket approved' : 'Ticket rejected')
+    } catch (error) {
+      console.error('Error processing MD decision:', error)
+      toast.error(error.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }, [ticketId, mdReview, toast]);
+
+  // Admin work after MD approval
+  const handleWorkUpdate = useCallback(async (workType) => {
+    if (!review.trim()) {
+      toast.error('Please add work details')
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const response = await fetch(`/api/public/tickets/${ticketId}/work-update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workType,
+          details: review,
+          status: workType === 'RESOLVE' ? 'RESOLVED' : 'IN_PROGRESS'
+        }),
+        credentials: 'include'
+      })
+
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Failed to update work')
+
+      setTicket(data.ticket)
+      setReview('')
+      setSelectedAction(null)
+      toast.success('Work update recorded')
+    } catch (error) {
+      console.error('Error updating work:', error)
+      toast.error(error.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }, [ticketId, review, toast]);
+
+  // Close ticket
+  const handleCloseTicket = useCallback(async () => {
+  // Confirm removed – now handled by the component
+  setSubmitting(true)
+  try {
+    const response = await fetch(`/api/public/tickets/${ticketId}/close`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        review: review || 'Ticket closed'
+      }),
+      credentials: 'include'
+    })
+
+    const data = await response.json()
+    if (!response.ok) throw new Error(data.message || 'Failed to close ticket')
+
+    setTicket(data.ticket)
+    toast.success('Ticket closed successfully')
+  } catch (error) {
+    console.error('Error closing ticket:', error)
+    toast.error(error.message)
+  } finally {
+    setSubmitting(false)
+  }
+}, [ticketId, review, toast])
+
+  // Expose fetchServiceTeamMembers for admin actions
+  useEffect(() => {
+    if (selectedAction === 'ASSIGN_TO_SERVICE') {
+      fetchServiceTeamMembers()
+    }
+  }, [selectedAction, fetchServiceTeamMembers])
+
+  return {
+    ticket,
+    loading,
+    error,
+    review,
+    setReview,
+    submitting,
+    showActions,
+    selectedAction,
+    setSelectedAction,
+    mdDecision,
+    setMdDecision,
+    mdReview,
+    setMdReview,
+    thirdPartyDetails,
+    setThirdPartyDetails,
+    thirdPartyStatus,
+    setThirdPartyStatus,
+    adminReview,
+    setAdminReview,
+    serviceTeamMembers,
+    selectedServiceUserId,
+    setSelectedServiceUserId,
+    serviceResponse,
+    setServiceResponse,
+    serviceDecision,
+    setServiceDecision,
+    fetchTicket,
+    handleAdminAction,
+    handleServiceResponse,
+    handleServiceWorkUpdate,
+    handleMDDecision,
+    handleWorkUpdate,
+    handleCloseTicket,
+  }
+}

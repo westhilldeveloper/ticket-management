@@ -3148,6 +3148,7 @@ export namespace Prisma {
     mdApprovedAt: Date | null
     mdRejectedAt: Date | null
     mdRejectReason: string | null
+    mdApprovalComment: string | null
     thirdParty: boolean | null
     thirdPartyStatus: string | null
     thirdPartyDetails: string | null
@@ -3173,6 +3174,7 @@ export namespace Prisma {
     mdApprovedAt: Date | null
     mdRejectedAt: Date | null
     mdRejectReason: string | null
+    mdApprovalComment: string | null
     thirdParty: boolean | null
     thirdPartyStatus: string | null
     thirdPartyDetails: string | null
@@ -3198,6 +3200,7 @@ export namespace Prisma {
     mdApprovedAt: number
     mdRejectedAt: number
     mdRejectReason: number
+    mdApprovalComment: number
     thirdParty: number
     thirdPartyStatus: number
     thirdPartyDetails: number
@@ -3225,6 +3228,7 @@ export namespace Prisma {
     mdApprovedAt?: true
     mdRejectedAt?: true
     mdRejectReason?: true
+    mdApprovalComment?: true
     thirdParty?: true
     thirdPartyStatus?: true
     thirdPartyDetails?: true
@@ -3250,6 +3254,7 @@ export namespace Prisma {
     mdApprovedAt?: true
     mdRejectedAt?: true
     mdRejectReason?: true
+    mdApprovalComment?: true
     thirdParty?: true
     thirdPartyStatus?: true
     thirdPartyDetails?: true
@@ -3275,6 +3280,7 @@ export namespace Prisma {
     mdApprovedAt?: true
     mdRejectedAt?: true
     mdRejectReason?: true
+    mdApprovalComment?: true
     thirdParty?: true
     thirdPartyStatus?: true
     thirdPartyDetails?: true
@@ -3373,6 +3379,7 @@ export namespace Prisma {
     mdApprovedAt: Date | null
     mdRejectedAt: Date | null
     mdRejectReason: string | null
+    mdApprovalComment: string | null
     thirdParty: boolean
     thirdPartyStatus: string | null
     thirdPartyDetails: string | null
@@ -3415,6 +3422,7 @@ export namespace Prisma {
     mdApprovedAt?: boolean
     mdRejectedAt?: boolean
     mdRejectReason?: boolean
+    mdApprovalComment?: boolean
     thirdParty?: boolean
     thirdPartyStatus?: boolean
     thirdPartyDetails?: boolean
@@ -3446,6 +3454,7 @@ export namespace Prisma {
     mdApprovedAt?: boolean
     mdRejectedAt?: boolean
     mdRejectReason?: boolean
+    mdApprovalComment?: boolean
     thirdParty?: boolean
     thirdPartyStatus?: boolean
     thirdPartyDetails?: boolean
@@ -3473,6 +3482,7 @@ export namespace Prisma {
     mdApprovedAt?: boolean
     mdRejectedAt?: boolean
     mdRejectReason?: boolean
+    mdApprovalComment?: boolean
     thirdParty?: boolean
     thirdPartyStatus?: boolean
     thirdPartyDetails?: boolean
@@ -3500,6 +3510,7 @@ export namespace Prisma {
     mdApprovedAt?: boolean
     mdRejectedAt?: boolean
     mdRejectReason?: boolean
+    mdApprovalComment?: boolean
     thirdParty?: boolean
     thirdPartyStatus?: boolean
     thirdPartyDetails?: boolean
@@ -3508,7 +3519,7 @@ export namespace Prisma {
     closedAt?: boolean
   }
 
-  export type TicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ticketNumber" | "title" | "description" | "category" | "priority" | "status" | "attachment" | "attachmentPublicId" | "serialNumber" | "createdById" | "assignedToId" | "mdApproval" | "mdApprovedAt" | "mdRejectedAt" | "mdRejectReason" | "thirdParty" | "thirdPartyStatus" | "thirdPartyDetails" | "createdAt" | "updatedAt" | "closedAt", ExtArgs["result"]["ticket"]>
+  export type TicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ticketNumber" | "title" | "description" | "category" | "priority" | "status" | "attachment" | "attachmentPublicId" | "serialNumber" | "createdById" | "assignedToId" | "mdApproval" | "mdApprovedAt" | "mdRejectedAt" | "mdRejectReason" | "mdApprovalComment" | "thirdParty" | "thirdPartyStatus" | "thirdPartyDetails" | "createdAt" | "updatedAt" | "closedAt", ExtArgs["result"]["ticket"]>
   export type TicketInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
@@ -3552,6 +3563,7 @@ export namespace Prisma {
       mdApprovedAt: Date | null
       mdRejectedAt: Date | null
       mdRejectReason: string | null
+      mdApprovalComment: string | null
       thirdParty: boolean
       thirdPartyStatus: string | null
       thirdPartyDetails: string | null
@@ -4002,6 +4014,7 @@ export namespace Prisma {
     readonly mdApprovedAt: FieldRef<"Ticket", 'DateTime'>
     readonly mdRejectedAt: FieldRef<"Ticket", 'DateTime'>
     readonly mdRejectReason: FieldRef<"Ticket", 'String'>
+    readonly mdApprovalComment: FieldRef<"Ticket", 'String'>
     readonly thirdParty: FieldRef<"Ticket", 'Boolean'>
     readonly thirdPartyStatus: FieldRef<"Ticket", 'String'>
     readonly thirdPartyDetails: FieldRef<"Ticket", 'String'>
@@ -11201,6 +11214,7 @@ export namespace Prisma {
     mdApprovedAt: 'mdApprovedAt',
     mdRejectedAt: 'mdRejectedAt',
     mdRejectReason: 'mdRejectReason',
+    mdApprovalComment: 'mdApprovalComment',
     thirdParty: 'thirdParty',
     thirdPartyStatus: 'thirdPartyStatus',
     thirdPartyDetails: 'thirdPartyDetails',
@@ -11624,6 +11638,7 @@ export namespace Prisma {
     mdApprovedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
     mdRejectedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
     mdRejectReason?: StringNullableFilter<"Ticket"> | string | null
+    mdApprovalComment?: StringNullableFilter<"Ticket"> | string | null
     thirdParty?: BoolFilter<"Ticket"> | boolean
     thirdPartyStatus?: StringNullableFilter<"Ticket"> | string | null
     thirdPartyDetails?: StringNullableFilter<"Ticket"> | string | null
@@ -11654,6 +11669,7 @@ export namespace Prisma {
     mdApprovedAt?: SortOrderInput | SortOrder
     mdRejectedAt?: SortOrderInput | SortOrder
     mdRejectReason?: SortOrderInput | SortOrder
+    mdApprovalComment?: SortOrderInput | SortOrder
     thirdParty?: SortOrder
     thirdPartyStatus?: SortOrderInput | SortOrder
     thirdPartyDetails?: SortOrderInput | SortOrder
@@ -11687,6 +11703,7 @@ export namespace Prisma {
     mdApprovedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
     mdRejectedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
     mdRejectReason?: StringNullableFilter<"Ticket"> | string | null
+    mdApprovalComment?: StringNullableFilter<"Ticket"> | string | null
     thirdParty?: BoolFilter<"Ticket"> | boolean
     thirdPartyStatus?: StringNullableFilter<"Ticket"> | string | null
     thirdPartyDetails?: StringNullableFilter<"Ticket"> | string | null
@@ -11717,6 +11734,7 @@ export namespace Prisma {
     mdApprovedAt?: SortOrderInput | SortOrder
     mdRejectedAt?: SortOrderInput | SortOrder
     mdRejectReason?: SortOrderInput | SortOrder
+    mdApprovalComment?: SortOrderInput | SortOrder
     thirdParty?: SortOrder
     thirdPartyStatus?: SortOrderInput | SortOrder
     thirdPartyDetails?: SortOrderInput | SortOrder
@@ -11748,6 +11766,7 @@ export namespace Prisma {
     mdApprovedAt?: DateTimeNullableWithAggregatesFilter<"Ticket"> | Date | string | null
     mdRejectedAt?: DateTimeNullableWithAggregatesFilter<"Ticket"> | Date | string | null
     mdRejectReason?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
+    mdApprovalComment?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
     thirdParty?: BoolWithAggregatesFilter<"Ticket"> | boolean
     thirdPartyStatus?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
     thirdPartyDetails?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
@@ -12342,6 +12361,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -12372,6 +12392,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -12398,6 +12419,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12428,6 +12450,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12456,6 +12479,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -12479,6 +12503,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12504,6 +12529,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13286,6 +13312,7 @@ export namespace Prisma {
     mdApprovedAt?: SortOrder
     mdRejectedAt?: SortOrder
     mdRejectReason?: SortOrder
+    mdApprovalComment?: SortOrder
     thirdParty?: SortOrder
     thirdPartyStatus?: SortOrder
     thirdPartyDetails?: SortOrder
@@ -13311,6 +13338,7 @@ export namespace Prisma {
     mdApprovedAt?: SortOrder
     mdRejectedAt?: SortOrder
     mdRejectReason?: SortOrder
+    mdApprovalComment?: SortOrder
     thirdParty?: SortOrder
     thirdPartyStatus?: SortOrder
     thirdPartyDetails?: SortOrder
@@ -13336,6 +13364,7 @@ export namespace Prisma {
     mdApprovedAt?: SortOrder
     mdRejectedAt?: SortOrder
     mdRejectReason?: SortOrder
+    mdApprovalComment?: SortOrder
     thirdParty?: SortOrder
     thirdPartyStatus?: SortOrder
     thirdPartyDetails?: SortOrder
@@ -14641,6 +14670,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -14669,6 +14699,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -14705,6 +14736,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -14733,6 +14765,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -14964,6 +14997,7 @@ export namespace Prisma {
     mdApprovedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
     mdRejectedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
     mdRejectReason?: StringNullableFilter<"Ticket"> | string | null
+    mdApprovalComment?: StringNullableFilter<"Ticket"> | string | null
     thirdParty?: BoolFilter<"Ticket"> | boolean
     thirdPartyStatus?: StringNullableFilter<"Ticket"> | string | null
     thirdPartyDetails?: StringNullableFilter<"Ticket"> | string | null
@@ -15582,6 +15616,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -15611,6 +15646,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -15707,6 +15743,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15736,6 +15773,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15810,6 +15848,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -15839,6 +15878,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -15935,6 +15975,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15964,6 +16005,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16038,6 +16080,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -16067,6 +16110,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -16163,6 +16207,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16192,6 +16237,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16509,6 +16555,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -16533,6 +16580,7 @@ export namespace Prisma {
     mdApprovedAt?: Date | string | null
     mdRejectedAt?: Date | string | null
     mdRejectReason?: string | null
+    mdApprovalComment?: string | null
     thirdParty?: boolean
     thirdPartyStatus?: string | null
     thirdPartyDetails?: string | null
@@ -16598,6 +16646,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16626,6 +16675,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16653,6 +16703,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16676,6 +16727,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16704,6 +16756,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16731,6 +16784,7 @@ export namespace Prisma {
     mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
     thirdParty?: BoolFieldUpdateOperationsInput | boolean
     thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
     thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null

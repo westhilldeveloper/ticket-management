@@ -53,24 +53,38 @@ function AdminDashboardContent() {
     exportReport 
   } = useAdminData(timeRange, socket)
 
-  // Set client-side flag after hydration
+  // Set client-side flag
   useEffect(() => {
-    
-    fetchDashboardData();
-  }, [])
+    setIsClient(true);
+  }, []);
 
-   useEffect(() => {
-    setIsClient(true)
-   
-  }, [fetchDashboardData]);
+  // Initial fetch
+  useEffect(() => {
+    if (isClient && user) fetchDashboardData();
+  }, [fetchDashboardData, isClient, user]);
+
+  // Listen for new ticket events
+  useEffect(() => {
+    if (socket && isConnected) {
+      const handleNewTicket = (ticketData) => {
+        console.log('New ticket received:', ticketData);
+        fetchDashboardData();
+        toast.success(`New ticket #${ticketData.ticketNumber} created`, { duration: 4000 });
+      };
+      socket.on('new-ticket', handleNewTicket);
+      return () => {
+        socket.off('new-ticket', handleNewTicket);
+      };
+    }
+  }, [socket, isConnected, fetchDashboardData, toast]);
 
   // Check authorization
   useEffect(() => {
-    if (isClient && user && !['ADMIN', 'SUPER_ADMIN', 'MD', 'SERVICE_TEAM' ].includes(user.role)) {
-      router.push('/dashboard')
-      toast.error('You do not have permission to access this page')
+    if (isClient && user && !['ADMIN', 'SUPER_ADMIN', 'MD', 'SERVICE_TEAM'].includes(user.role)) {
+      router.push('/dashboard');
+      toast.error('You do not have permission to access this page');
     }
-  }, [isClient, user, router, toast])
+  }, [isClient, user, router, toast]);
 
   // Generate chart data from stats
   const generateChartData = () => {
