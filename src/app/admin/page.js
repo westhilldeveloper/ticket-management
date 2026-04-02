@@ -39,6 +39,7 @@ function AdminDashboardContent() {
 
   const [isClient, setIsClient] = useState(false)
   const [timeRange, setTimeRange] = useState('week')
+  const [requestServiceType, setRequestServiceType] = useState('')
   
   const { 
     loading, 
@@ -48,10 +49,10 @@ function AdminDashboardContent() {
     pendingApprovals, 
     pendingThirdParty, 
     recentActivities, 
-    topUsers,
+    TopUsers,
     fetchDashboardData,
     exportReport 
-  } = useAdminData(timeRange, socket)
+  } = useAdminData(timeRange, requestServiceType, socket)
 
   // Set client-side flag
   useEffect(() => {
@@ -215,7 +216,8 @@ function AdminDashboardContent() {
           onTimeRangeChange={setTimeRange}
           onExport={exportReport}
           onRefresh={fetchDashboardData}
-          isConnected={isConnected}
+          isConnected={isConnected} requestServiceType={requestServiceType}
+          onRequestServiceTypeChange={setRequestServiceType}
         />
 
         <StatsGrid stats={stats} />

@@ -20,6 +20,9 @@ import RequesterInfo from './components/RequesterInfo';
 import SuccessView from './components/SuccessView';
 import { useFileUpload } from './hooks/useFileUpload';
 import { PRIORITY_OPTIONS, CATEGORY_OPTIONS } from './constants';
+import MainCategorySelector from './components/MainCategorySelector';
+import RequestServiceSelector from './components/RequestServiceSelector';
+import DynamicItemSelector from './components/DynamicItemSelector';
 
 function NewTicketContent() {
   const { user, isLoading: authLoading } = useAuth();
@@ -58,7 +61,11 @@ function NewTicketContent() {
       description: '',
       category: CATEGORY_OPTIONS[1]?.value,
       priority: 'MEDIUM',
-      review: ''
+      review: '',
+      mainCategory: '',
+      requestServiceType: '',
+      itemType: '',
+      _prevItemKey: '',
     }
   });
 
@@ -91,6 +98,9 @@ function NewTicketContent() {
     if (!formValues.description?.trim()) errors.push('Description is required');
     if (!formValues.category) errors.push('Category is required');
     if (!formValues.priority) errors.push('Priority is required');
+    if (!formValues.mainCategory) errors.push('Main category is required');
+    if (!formValues.requestServiceType) errors.push('Please select Request or Service');
+    if (!formValues.itemType) errors.push('Please select an item/service type');
     if (formValues.title?.length < 5) errors.push('Title must be at least 5 characters');
     if (formValues.description?.length < 20) errors.push('Description must be at least 20 characters');
     return errors;
@@ -123,6 +133,9 @@ const onSubmit = async (data) => {
     formData.append('description', data.description.trim());
     formData.append('category', data.category);
     formData.append('priority', data.priority);
+    formData.append('mainCategory', data.mainCategory);
+    formData.append('requestServiceType', data.requestServiceType);
+    formData.append('itemType', data.itemType);
     if (data.review?.trim()) {
       formData.append('review', data.review.trim());
     }
@@ -321,6 +334,9 @@ const onSubmit = async (data) => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {/* Left Column - Main Content */}
               <div className="lg:col-span-2 space-y-4">
+                <MainCategorySelector />
+                <RequestServiceSelector />
+                <DynamicItemSelector />
                 <BasicInfo />
                 <Attachments 
                   files={files}
@@ -336,7 +352,7 @@ const onSubmit = async (data) => {
 
               {/* Right Column - Metadata */}
               <div className="space-y-4">
-                <CategorySelector />
+                <CategorySelector user={user} />
                 <PrioritySelector />
                 <RequesterInfo user={user} />
               </div>

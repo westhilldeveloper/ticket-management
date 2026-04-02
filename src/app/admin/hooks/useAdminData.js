@@ -3,9 +3,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/app/context/ToastContext'
+import { useAuth } from '@/app/context/AuthContext'
 import { format } from 'date-fns'
 
-export function useAdminData(timeRange, socket) {
+export function useAdminData(timeRange, requestServiceType, socket) {
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [stats, setStats] = useState({
@@ -40,12 +42,36 @@ export function useAdminData(timeRange, socket) {
   const router = useRouter()
   const toast = useToast()
 
+  // Build common query parameters
+  const buildQueryString = useCallback(() => {
+    const params = new URLSearchParams()
+    
+    // Add timeRange (used only by some endpoints, but we'll pass it anyway)
+    if (timeRange) params.append('timeRange', timeRange)
+    
+    // Add department filter (only for regular admin)
+    if (user?.role === 'ADMIN' && user?.department && user?.role !== 'SUPER_ADMIN') {
+      params.append('department', user.department)
+    }
+    
+    // Add requestServiceType filter if provided
+    if (requestServiceType) {
+      params.append('requestServiceType', requestServiceType)
+    }
+    
+    const queryString = params.toString()
+    return queryString ? `?${queryString}` : ''
+  }, [user, timeRange, requestServiceType])
+
   const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const statsResponse = await fetch('/api/admin/stats', {
+      const queryString = buildQueryString()
+
+      // Stats endpoint
+      const statsResponse = await fetch(`/api/admin/stats${queryString}`, {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
       })
@@ -61,7 +87,8 @@ export function useAdminData(timeRange, socket) {
       const statsData = await statsResponse.json()
       if (statsData.stats) setStats(statsData.stats)
 
-      const ticketsResponse = await fetch(`/api/admin/recent-tickets?limit=10&timeRange=${timeRange}`, {
+      // Recent tickets (add limit)
+      const ticketsResponse = await fetch(`/api/admin/recent-tickets?limit=10${queryString}`, {
         credentials: 'include'
       })
       if (ticketsResponse.ok) {
@@ -69,19 +96,22 @@ export function useAdminData(timeRange, socket) {
         setRecentTickets(ticketsData.tickets || [])
       }
 
-      const pendingResponse = await fetch('/api/admin/pending-approvals', { credentials: 'include' })
+      // Pending approvals
+      const pendingResponse = await fetch(`/api/admin/pending-approvals${queryString}`, { credentials: 'include' })
       if (pendingResponse.ok) {
         const pendingData = await pendingResponse.json()
         setPendingApprovals(pendingData.tickets || [])
       }
 
-      const thirdPartyResponse = await fetch('/api/admin/pending-third-party', { credentials: 'include' })
+      // Pending third party
+      const thirdPartyResponse = await fetch(`/api/admin/pending-third-party${queryString}`, { credentials: 'include' })
       if (thirdPartyResponse.ok) {
         const thirdPartyData = await thirdPartyResponse.json()
         setPendingThirdParty(thirdPartyData.tickets || [])
       }
 
-      const activitiesResponse = await fetch(`/api/admin/recent-activities?limit=10&timeRange=${timeRange}`, {
+      // Recent activities (add limit)
+      const activitiesResponse = await fetch(`/api/admin/recent-activities?limit=10${queryString}`, {
         credentials: 'include'
       })
       if (activitiesResponse.ok) {
@@ -89,6 +119,7 @@ export function useAdminData(timeRange, socket) {
         setRecentActivities(activitiesData.activities || [])
       }
 
+      // Top users (no filters needed)
       const usersResponse = await fetch('/api/admin/top-users?limit=5', { credentials: 'include' })
       if (usersResponse.ok) {
         const usersData = await usersResponse.json()
@@ -102,11 +133,12 @@ export function useAdminData(timeRange, socket) {
     } finally {
       setLoading(false)
     }
-  }, [timeRange, router, toast, socket])
+  }, [router, toast, buildQueryString]) // buildQueryString already includes user, timeRange, requestServiceType
 
   const exportReport = useCallback(async () => {
     try {
-      const response = await fetch(`/api/admin/export-report?timeRange=${timeRange}`, {
+      const queryString = buildQueryString()
+      const response = await fetch(`/api/admin/export-report${queryString}`, {
         credentials: 'include'
       })
       
@@ -127,9 +159,9 @@ export function useAdminData(timeRange, socket) {
       console.error('Error exporting report:', error)
       toast.error('Failed to export report', { duration: 5000 })
     }
-  }, [timeRange, toast])
+  }, [toast, buildQueryString])
 
-  // WebSocket handlers
+  // WebSocket handlers (unchanged)
   useEffect(() => {
     if (!socket) return
 

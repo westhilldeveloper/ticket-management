@@ -215,7 +215,8 @@ export default function Navbar({ onMenuClick }) {
                     {user?.name || 'User'}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {user?.role || 'Employee'}
+                    { user?.department || 'Employee'}
+                    { user?.role || ' '}
                   </p>
                 </div>
                 <FiChevronDown className="hidden md:block h-4 w-4 text-gray-400" aria-hidden="true" />

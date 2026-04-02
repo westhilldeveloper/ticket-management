@@ -1,4 +1,3 @@
-// app/api/admin/stats/route.js
 import { NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/db'
 import { getCurrentUser } from '@/app/lib/auth'
@@ -12,19 +11,43 @@ export async function GET(request) {
     const user = await getCurrentUser(token)
 
     if (!user) {
-      return NextResponse.json(
-        { message: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Not authenticated' }, { status: 401 })
     }
 
-    // Check if user has admin access
     if (!['ADMIN', 'SUPER_ADMIN', 'MD'].includes(user.role)) {
-      return NextResponse.json(
-        { message: 'Unauthorized' },
-        { status: 403 }
-      )
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
     }
+
+    const { searchParams } = new URL(request.url)
+    const departmentParam = searchParams.get('department') // optional, only for super admin
+    const requestServiceType = searchParams.get('requestServiceType')
+
+    // Determine filter for tickets based on mainCategory
+    let ticketWhere = {}
+    if (user.role === 'ADMIN') {
+      // Regular admin – only see tickets with mainCategory == user.department
+      if (departmentParam && departmentParam !== user.department) {
+        return NextResponse.json(
+          { message: 'Access denied: You can only view your own department' },
+          { status: 403 }
+        )
+      }
+      if (user.department) {
+        ticketWhere.mainCategory = user.department
+      }
+    } else if (user.role === 'SUPER_ADMIN' && departmentParam) {
+      // Super admin can optionally filter by a specific department
+      ticketWhere.mainCategory = departmentParam
+    }
+
+       if (requestServiceType) {
+      ticketWhere.requestServiceType = requestServiceType
+    }
+    // MD sees all, no filter
+
+    // User stats remain unfiltered (total users etc. are global)
+    // But if you want to restrict user stats by department as well, we can add similar logic.
+    // For now, user stats are not filtered.
 
     const today = new Date()
     const startToday = startOfDay(today)
@@ -32,7 +55,6 @@ export async function GET(request) {
     const startWeek = subDays(today, 7)
     const startMonth = subDays(today, 30)
 
-    // Parallel queries for better performance
     const [
       totalTickets,
       openTickets,
@@ -53,195 +75,146 @@ export async function GET(request) {
       mdApprovals
     ] = await Promise.all([
       // Total tickets
-      prisma.ticket.count(),
-      
+      prisma.ticket.count({ where: ticketWhere }),
+
       // Open tickets (excluding resolved/closed)
       prisma.ticket.count({
         where: {
-          status: {
-            in: ['OPEN', 'PENDING_MD_APPROVAL', 'PENDING_THIRD_PARTY', 'IN_PROGRESS']
-          }
+          ...ticketWhere,
+          status: { in: ['OPEN', 'PENDING_MD_APPROVAL', 'PENDING_THIRD_PARTY', 'IN_PROGRESS'] }
         }
       }),
-      
+
       // Pending MD approval
       prisma.ticket.count({
-        where: {
-          status: 'PENDING_MD_APPROVAL'
-        }
+        where: { ...ticketWhere, status: 'PENDING_MD_APPROVAL' }
       }),
-      
+
       // Pending third party
       prisma.ticket.count({
-        where: {
-          status: 'PENDING_THIRD_PARTY'
-        }
+        where: { ...ticketWhere, status: 'PENDING_THIRD_PARTY' }
       }),
-      
+
       // In progress
       prisma.ticket.count({
-        where: {
-          status: 'IN_PROGRESS'
-        }
+        where: { ...ticketWhere, status: 'IN_PROGRESS' }
       }),
-      
+
       // Resolved today
       prisma.ticket.count({
         where: {
+          ...ticketWhere,
           status: 'RESOLVED',
-          updatedAt: {
-            gte: startToday,
-            lte: endToday
-          }
+          updatedAt: { gte: startToday, lte: endToday }
         }
       }),
-      
+
       // Resolved this week
       prisma.ticket.count({
         where: {
+          ...ticketWhere,
           status: 'RESOLVED',
-          updatedAt: {
-            gte: startWeek
-          }
+          updatedAt: { gte: startWeek }
         }
       }),
-      
+
       // Resolved this month
       prisma.ticket.count({
         where: {
+          ...ticketWhere,
           status: 'RESOLVED',
-          updatedAt: {
-            gte: startMonth
-          }
+          updatedAt: { gte: startMonth }
         }
       }),
-      
-      // Tickets by category
+
+      // Tickets by category (branch location)
       prisma.ticket.groupBy({
         by: ['category'],
-        _count: true
+        _count: true,
+        where: ticketWhere
       }),
-      
+
       // Tickets by priority
       prisma.ticket.groupBy({
         by: ['priority'],
-        _count: true
+        _count: true,
+        where: ticketWhere
       }),
-      
+
       // Tickets by status
       prisma.ticket.groupBy({
         by: ['status'],
-        _count: true
+        _count: true,
+        where: ticketWhere
       }),
-      
-      // Total users
+
+      // Total users (no filter)
       prisma.user.count(),
-      
+
       // Active users (logged in within last 30 days)
       prisma.user.count({
         where: {
-          updatedAt: {
-            gte: startMonth
-          },
+          updatedAt: { gte: startMonth },
           isActive: true
         }
       }),
-      
+
       // New users today
       prisma.user.count({
-        where: {
-          createdAt: {
-            gte: startToday,
-            lte: endToday
-          }
-        }
+        where: { createdAt: { gte: startToday, lte: endToday } }
       }),
-      
+
       // New users this week
       prisma.user.count({
-        where: {
-          createdAt: {
-            gte: startWeek
-          }
-        }
+        where: { createdAt: { gte: startWeek } }
       }),
-      
-      // Users by role
+
+      // Users by role (no filter)
       prisma.user.groupBy({
         by: ['role'],
         _count: true
       }),
-      
-      // MD approval stats
+
+      // MD approval stats (only for tickets in filtered set)
       prisma.ticket.groupBy({
         by: ['mdApproval'],
         _count: true,
         where: {
-          mdApproval: {
-            not: null
-          }
+          ...ticketWhere,
+          mdApproval: { not: null }
         }
       })
     ])
 
-    // Format category counts
-    const categoryCounts = {
-      HR: 0,
-      IT: 0,
-      TECHNICAL: 0
-    }
-    ticketsByCategory.forEach(item => {
-      categoryCounts[item.category] = item._count
-    })
+    // Format results (unchanged)
+    const categoryCounts = { HR: 0, IT: 0, TECHNICAL: 0 }
+    ticketsByCategory.forEach(item => { categoryCounts[item.category] = item._count })
 
-    // Format priority counts
-    const priorityCounts = {
-      LOW: 0,
-      MEDIUM: 0,
-      HIGH: 0,
-      CRITICAL: 0
-    }
-    ticketsByPriority.forEach(item => {
-      priorityCounts[item.priority] = item._count
-    })
+    const priorityCounts = { LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0 }
+    ticketsByPriority.forEach(item => { priorityCounts[item.priority] = item._count })
 
-    // Format status counts
     const statusCounts = {}
-    ticketsByStatus.forEach(item => {
-      statusCounts[item.status] = item._count
-    })
+    ticketsByStatus.forEach(item => { statusCounts[item.status] = item._count })
 
-    // Format role counts
-    const roleStats = {
-      admins: 0,
-      mds: 0,
-      employees: 0
-    }
+    const roleStats = { admins: 0, mds: 0, employees: 0 }
     roleCounts.forEach(item => {
       if (item.role === 'ADMIN' || item.role === 'SUPER_ADMIN') roleStats.admins += item._count
       else if (item.role === 'MD') roleStats.mds = item._count
       else if (item.role === 'EMPLOYEE') roleStats.employees = item._count
     })
 
-    // Format MD approval stats
-    const mdApprovalStats = {
-      pending: 0,
-      approved: 0,
-      rejected: 0
-    }
+    const mdApprovalStats = { pending: 0, approved: 0, rejected: 0 }
     mdApprovals.forEach(item => {
       if (item.mdApproval === 'PENDING') mdApprovalStats.pending = item._count
       else if (item.mdApproval === 'APPROVED') mdApprovalStats.approved = item._count
       else if (item.mdApproval === 'REJECTED') mdApprovalStats.rejected = item._count
     })
 
-    // Calculate average response time (this would need a more complex query in production)
     const avgResponseTime = '2.5h'
     const avgResolutionTime = '24h'
 
     return NextResponse.json({
       stats: {
-        // Ticket stats
         totalTickets,
         openTickets,
         pendingApproval,
@@ -252,15 +225,11 @@ export async function GET(request) {
         resolvedThisMonth,
         avgResponseTime,
         avgResolutionTime,
-        
-        // User stats
         totalUsers,
         activeUsers,
         newUsersToday,
         newUsersThisWeek,
         ...roleStats,
-        
-        // Breakdowns
         ticketsByCategory: categoryCounts,
         ticketsByPriority: priorityCounts,
         ticketsByStatus: statusCounts,
@@ -270,9 +239,6 @@ export async function GET(request) {
 
   } catch (error) {
     console.error('Error fetching admin stats:', error)
-    return NextResponse.json(
-      { message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }

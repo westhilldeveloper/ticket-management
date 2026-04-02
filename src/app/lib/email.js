@@ -125,6 +125,8 @@ export const sendServiceAssignmentEmail = async (email, ticketId, ticketNumber, 
 }
 
 
+
+
 export const sendStatusUpdateEmail = async (email, ticketNumber, status, review) => {
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -139,6 +141,33 @@ export const sendStatusUpdateEmail = async (email, ticketNumber, status, review)
   return await sendEmail({
     to: email,
     subject: `Ticket Status Updated: ${ticketNumber}`,
+    html,
+  })
+}
+
+export const sendPasswordResetEmail = async (email, newPassword) => {
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #2563eb;">Password Reset</h2>
+      <p>Your password has been reset by an administrator.</p>
+      <p><strong>Your new password is:</strong> 
+        <code style="font-size: 16px; background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">${newPassword}</code>
+      </p>
+      <p>Please log in with this password and change it immediately for security reasons.</p>
+      <p>If you did not request this password reset, please contact support immediately.</p>
+      <p style="margin-top: 20px;">
+        <a href="${process.env.NEXTAUTH_URL}/login" 
+           style="display: inline-block; background-color: #2563eb; color: white; 
+                  padding: 12px 24px; text-decoration: none; border-radius: 6px;">
+          Log In Now
+        </a>
+      </p>
+    </div>
+  `
+  
+  return await sendEmail({
+    to: email,
+    subject: 'Password Reset - Ticket Management System',
     html,
   })
 }

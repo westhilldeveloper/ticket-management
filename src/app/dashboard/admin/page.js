@@ -70,92 +70,101 @@ export default function AdminDashboard() {
   })
 
   useEffect(() => {
+  if (user) {
     fetchDashboardData()
-  }, [])
+  }
+}, [user])
 
   const fetchDashboardData = async () => {
-    try {
-      setLoading(true)
-      
-      // Fetch all tickets for stats
-      const ticketsRes = await fetch('/api/tickets?limit=100')
-      const ticketsData = await ticketsRes.json()
-      
-      if (ticketsRes.ok) {
-        const tickets = ticketsData.tickets || []
-        
-        // Calculate stats
-        const openTickets = tickets.filter(t => t.status === 'OPEN').length
-        const pendingApproval = tickets.filter(t => t.status === 'PENDING_MD_APPROVAL').length
-        const inProgress = tickets.filter(t => t.status === 'IN_PROGRESS').length
-        const resolvedToday = tickets.filter(t => {
-          const today = new Date()
-          const ticketDate = new Date(t.updatedAt)
-          return (t.status === 'RESOLVED' || t.status === 'CLOSED') &&
-            ticketDate.toDateString() === today.toDateString()
-        }).length
-
-        // Category distribution
-        const hrTickets = tickets.filter(t => t.category === 'HR').length
-        const itTickets = tickets.filter(t => t.category === 'IT').length
-        const techTickets = tickets.filter(t => t.category === 'TECHNICAL').length
-
-        setCategoryData({
-          labels: ['HR', 'IT', 'Technical'],
-          datasets: [{
-            data: [hrTickets, itTickets, techTickets],
-            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B']
-          }]
-        })
-
-        // Weekly data
-        const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        const weeklyCounts = [0, 0, 0, 0, 0, 0, 0]
-        
-        tickets.forEach(ticket => {
-          const date = new Date(ticket.createdAt)
-          const dayIndex = date.getDay()
-          weeklyCounts[dayIndex]++
-        })
-
-        setWeeklyData({
-          labels: weekDays,
-          datasets: [{
-            label: 'Tickets Created',
-            data: weeklyCounts,
-            backgroundColor: '#3B82F6'
-          }]
-        })
-
-        setStats({
-          totalTickets: tickets.length,
-          openTickets,
-          pendingApproval,
-          inProgress,
-          resolvedToday,
-          avgResponseTime: '2.5h',
-          totalUsers: 150,
-          activeUsers: 120
-        })
-
-        // Recent tickets
-        setRecentTickets(tickets.slice(0, 5))
-      }
-
-      // Fetch pending approvals
-      const pendingRes = await fetch('/api/tickets?status=PENDING_MD_APPROVAL&limit=5')
-      const pendingData = await pendingRes.json()
-      
-      if (pendingRes.ok) {
-        setPendingApprovals(pendingData.tickets || [])
-      }
-
-    } catch (error) {
-      console.error('Error fetching admin dashboard data:', error)
-    } finally {
-      setLoading(false)
+  try {
+    setLoading(true)
+    
+    // Build department filter based on role
+    let departmentParam = ''
+    if (user?.role === 'ADMIN' && user?.department && user?.role !== 'SUPER_ADMIN') {
+      departmentParam = `&department=${encodeURIComponent(user.department)}`
     }
+    // For SUPER_ADMIN, MD, or others, no filter (show all)
+    
+    // Fetch all tickets for stats (limit to 100 for performance)
+    const ticketsRes = await fetch(`/api/tickets?limit=100${departmentParam}`)
+    const ticketsData = await ticketsRes.json()
+    
+    if (ticketsRes.ok) {
+      const tickets = ticketsData.tickets || []
+      
+      // Calculate stats from filtered tickets
+      const openTickets = tickets.filter(t => t.status === 'OPEN').length
+      const pendingApproval = tickets.filter(t => t.status === 'PENDING_MD_APPROVAL').length
+      const inProgress = tickets.filter(t => t.status === 'IN_PROGRESS').length
+      const resolvedToday = tickets.filter(t => {
+        const today = new Date()
+        const ticketDate = new Date(t.updatedAt)
+        return (t.status === 'RESOLVED' || t.status === 'CLOSED') &&
+          ticketDate.toDateString() === today.toDateString()
+      }).length
+
+      // Category distribution (based on branch location, not mainCategory)
+      const hrTickets = tickets.filter(t => t.category === 'HR').length
+      const itTickets = tickets.filter(t => t.category === 'IT').length
+      const techTickets = tickets.filter(t => t.category === 'TECHNICAL').length
+
+      setCategoryData({
+        labels: ['HR', 'IT', 'Technical'],
+        datasets: [{
+          data: [hrTickets, itTickets, techTickets],
+          backgroundColor: ['#3B82F6', '#10B981', '#F59E0B']
+        }]
+      })
+
+      // Weekly data (based on creation date)
+      const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      const weeklyCounts = [0, 0, 0, 0, 0, 0, 0]
+      
+      tickets.forEach(ticket => {
+        const date = new Date(ticket.createdAt)
+        const dayIndex = date.getDay()
+        weeklyCounts[dayIndex]++
+      })
+
+      setWeeklyData({
+        labels: weekDays,
+        datasets: [{
+          label: 'Tickets Created',
+          data: weeklyCounts,
+          backgroundColor: '#3B82F6'
+        }]
+      })
+
+      setStats({
+        totalTickets: tickets.length,
+        openTickets,
+        pendingApproval,
+        inProgress,
+        resolvedToday,
+        avgResponseTime: '2.5h',
+        totalUsers: 150,
+        activeUsers: 120
+      })
+
+      // Recent tickets (first 5 from filtered list)
+      setRecentTickets(tickets.slice(0, 5))
+    }
+
+    // Fetch pending approvals with same department filter
+    const pendingRes = await fetch(`/api/tickets?status=PENDING_MD_APPROVAL&limit=5${departmentParam}`)
+    const pendingData = await pendingRes.json()
+    
+    if (pendingRes.ok) {
+      setPendingApprovals(pendingData.tickets || [])
+    }
+
+  } catch (error) {
+    console.error('Error fetching admin dashboard data:', error)
+  } finally {
+    setLoading(false)
   }
+}
 
   if (loading) {
     return (

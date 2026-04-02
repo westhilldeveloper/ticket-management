@@ -2,8 +2,8 @@
 
 import  React,{ useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/app/context/AuthContext';
 import Link from 'next/link'
-import { useAuth } from '@/app/context/AuthContext'
 import { useSocket } from '@/app/context/SocketContext'
 import { useToast } from '@/app/context/ToastContext'
 import DashboardLayout from '@/app/components/layouts/DashboardLayout'
@@ -112,10 +112,13 @@ export default function TicketDetailsPage({ params }) {
       })
       const data = await response.json()
       setUsers(data.users || [])
+      console.log("responser===>", response)
     } catch (error) {
       console.error('Error fetching users:', error)
     }
   }
+
+  
 
   const handleAddReview = async () => {
     if (!review.trim()) {
@@ -588,58 +591,90 @@ export default function TicketDetailsPage({ params }) {
           <div className="space-y-6">
             {/* Quick Info Card */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-4">Ticket Information</h3>
-              
-              <div className="space-y-3">
-                <div className="flex items-start">
-                  <FiUser className="mr-3 text-gray-400 mt-0.5" />
-                  <div>
-                    <p className="text-xs text-gray-500">Created By</p>
-                    <p className="text-sm font-medium text-gray-900">{ticket.createdBy?.name}</p>
-                    <p className="text-xs text-gray-500">{ticket.createdBy?.department}</p>
-                  </div>
-                </div>
+  <h3 className="text-sm font-medium text-gray-500 mb-4">Ticket Information</h3>
+  
+  <div className="space-y-3">
+    {/* Created By */}
+    <div className="flex items-start">
+      <FiUser className="mr-3 text-gray-400 mt-0.5" />
+      <div>
+        <p className="text-xs text-gray-500">Created By</p>
+        <p className="text-sm font-medium text-gray-900">{ticket.createdBy?.name}</p>
+        <p className="text-xs text-gray-500">{ticket.createdBy?.department}</p>
+      </div>
+    </div>
 
-                <div className="flex items-start">
-                  <FiMail className="mr-3 text-gray-400 mt-0.5" />
-                  <div>
-                    <p className="text-xs text-gray-500">Email</p>
-                    <p className="text-sm text-gray-900">{ticket.createdBy?.email}</p>
-                  </div>
-                </div>
+    {/* Email */}
+    <div className="flex items-start">
+      <FiMail className="mr-3 text-gray-400 mt-0.5" />
+      <div>
+        <p className="text-xs text-gray-500">Email</p>
+        <p className="text-sm text-gray-900">{ticket.createdBy?.email}</p>
+      </div>
+    </div>
 
-                {ticket.assignedTo && (
-                  <div className="flex items-start">
-                    <FiUsers className="mr-3 text-gray-400 mt-0.5" />
-                    <div>
-                      <p className="text-xs text-gray-500">Assigned To</p>
-                      <p className="text-sm font-medium text-gray-900">{ticket.assignedTo.name}</p>
-                    </div>
-                  </div>
-                )}
+    {/* Assigned To */}
+    {ticket.assignedTo && (
+      <div className="flex items-start">
+        <FiUsers className="mr-3 text-gray-400 mt-0.5" />
+        <div>
+          <p className="text-xs text-gray-500">Assigned To</p>
+          <p className="text-sm font-medium text-gray-900">{ticket.assignedTo.name}</p>
+        </div>
+      </div>
+    )}
 
-                <div className="flex items-start">
-                  <FiCalendar className="mr-3 text-gray-400 mt-0.5" />
-                  <div>
-                    <p className="text-xs text-gray-500">Created</p>
-                    <p className="text-sm text-gray-900">
-                      {format(new Date(ticket.createdAt), 'PPP')}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}
-                    </p>
-                  </div>
-                </div>
+    {/* Created Date */}
+    <div className="flex items-start">
+      <FiCalendar className="mr-3 text-gray-400 mt-0.5" />
+      <div>
+        <p className="text-xs text-gray-500">Created</p>
+        <p className="text-sm text-gray-900">
+          {format(new Date(ticket.createdAt), 'PPP')}
+        </p>
+        <p className="text-xs text-gray-500">
+          {formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}
+        </p>
+      </div>
+    </div>
 
-                <div className="flex items-start">
-                  <FiTag className="mr-3 text-gray-400 mt-0.5" />
-                  <div>
-                    <p className="text-xs text-gray-500">Category</p>
-                    <p className="text-sm text-gray-900">{ticket.category}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+    {/* Branch (fix: use ticket.category) */}
+    <div className="flex items-start">
+      <FiTag className="mr-3 text-gray-400 mt-0.5" />
+      <div>
+        <p className="text-xs text-gray-500">Branch</p>
+        <p className="text-sm text-gray-900">{user.branch || 'Not specified'}</p>
+      </div>
+    </div>
+
+    {/* NEW: Main Category */}
+    <div className="flex items-start">
+      <FiTag className="mr-3 text-gray-400 mt-0.5" />
+      <div>
+        <p className="text-xs text-gray-500">{ticket.requestServiceType} FOR</p>
+        <p className="text-sm text-gray-900">{ticket.mainCategory || 'Not specified'}</p>
+      </div>
+    </div>
+
+    {/* NEW: Request / Service Type */}
+    <div className="flex items-start">
+      <FiTag className="mr-3 text-gray-400 mt-0.5" />
+      <div>
+        <p className="text-xs text-gray-500">Request / Service</p>
+        <p className="text-sm text-gray-900">{ticket.requestServiceType || 'Not specified'}</p>
+      </div>
+    </div>
+
+    {/* NEW: Item / Service Type */}
+    <div className="flex items-start">
+      <FiTag className="mr-3 text-gray-400 mt-0.5" />
+      <div>
+        <p className="text-xs text-gray-500">Item / Service Type</p>
+        <p className="text-sm text-gray-900">{ticket.itemType || 'Not specified'}</p>
+      </div>
+    </div>
+  </div>
+</div>
 
             {/* Timeline Card */}
             <div className="bg-white rounded-xl shadow-lg p-6">

@@ -12,6 +12,7 @@ export default function Signup() {
     password: '',
     confirmPassword: '',
     department: '',
+     branch: '',
     consent: false, // GDPR consent
   });
   const [errors, setErrors] = useState({});
@@ -20,8 +21,8 @@ export default function Signup() {
   const [showOTP, setShowOTP] = useState(false);
   const { signup } = useAuth();
 
-  const departments = ['HR', 'IT', 'Finance', 'Operations', 'Sales', 'Marketing'];
-
+  const departments = ['HR', 'IT', 'Finance', 'Operations', 'Sales', 'Marketing','Chits','Travels',];
+  const branches =['ENATHU', 'POOVATTOOR', 'KODUMON', 'HARIPAD', 'THRIPPUNITHURA', 'CHETTIKULANGARA', 'MUTHUKULAM', 'KARUNAGAPALLY', 'CHETTIKULANGARA MAIN', 'KULATHUPUZHA', 'MULAKKUZHA', 'KATTANAM', 'KUMBANAD', 'RANNI', 'VAIKOM', 'ALAPPUZHA', 'PALLIKATHODU', 'PUTHOOR', 'PATHANAMTHITTA', 'MANNAR', 'PRAVINKODU', 'KOTTARAKKARA', 'ANCHAL', 'THRIPPUNITHURA TOWN', 'MUVATTUPUZHA', 'KOTHAMANGALAM', 'THOPPUMPODY', 'PATHANAPURAM', 'MATTANCHERRY', 'ATHANI', 'KECHERY', 'VADANAPALLI', 'KALMANDAPAM']
   // Email domain validation – exact match only
   const isValidEmail = (email) => {
     const allowedDomains = ['westhillinternational.com', 'finovestgroup.com'];
@@ -41,7 +42,7 @@ export default function Signup() {
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-
+    
     const email = formData.email.trim();
     if (!email) {
       newErrors.email = 'Email is required';
@@ -62,6 +63,10 @@ export default function Signup() {
 
     if (!formData.department) {
       newErrors.department = 'Department is required';
+    }
+
+    if (!formData.branch) {   // ✅ Validate branch
+      newErrors.branch = 'Branch is required';
     }
 
     // GDPR consent (optional but recommended)
@@ -214,6 +219,34 @@ export default function Signup() {
               {errors.department && (
                 <p id="department-error" className="error-text">
                   {errors.department}
+                </p>
+              )}
+            </div>
+
+             <div>
+              <label htmlFor="branch" className="block text-sm font-medium text-gray-700">
+                Branch
+              </label>
+              <select
+                id="branch"
+                name="branch"
+                required
+                aria-invalid={!!errors.branch}
+                aria-describedby={errors.branch ? 'branch-error' : undefined}
+                className="mt-1 input-field"
+                value={formData.branch}
+                onChange={handleChange}
+              >
+                <option value="">Select Branch</option>
+                {branches.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
+                ))}
+              </select>
+              {errors.branch && (
+                <p id="branch-error" className="error-text">
+                  {errors.branch}
                 </p>
               )}
             </div>

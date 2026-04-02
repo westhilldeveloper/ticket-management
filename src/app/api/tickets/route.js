@@ -28,6 +28,9 @@ export async function POST(request) {
     const priority = formData.get('priority') || 'MEDIUM'
     const review = formData.get('review')
     const attachments = formData.getAll('attachments')
+    const mainCategory = formData.get('mainCategory')
+    const requestServiceType = formData.get('requestServiceType')
+    const itemType = formData.get('itemType')
 
     // Validate required fields
     if (!title || !description || !category) {
@@ -75,6 +78,9 @@ export async function POST(request) {
         description,
         category,
         priority,
+        mainCategory,      // new
+        requestServiceType,// new
+        itemType,
         attachment: attachmentUrls.join(','),
         attachmentPublicId: attachmentPublicIds.join(','),
         createdById: user.id,
@@ -197,34 +203,40 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const page = parseInt(searchParams.get('page') || '1')
     const skip = (page - 1) * limit
+    const departmentParam = searchParams.get('department')
+    const allParam = searchParams.get('all') === 'true'
 
     // Build where clause based on user role
     let where = {}
-    
-    // FIXED: Proper role-based access control
+
     if (user.role === 'EMPLOYEE') {
       // Employees can only see their own tickets
       where.createdById = user.id
     } else if (user.role === 'ADMIN') {
-      // Admins can see:
-      // 1. Tickets they created
-      // 2. Tickets assigned to them
-      // 3. All tickets (since admins should manage all tickets)
-      // Let's make it simple: admins can see all tickets
-      where = {} // Empty where clause means all tickets
+      if (allParam) {
+        // Admin wants all tickets, no department restriction
+        // but still apply other filters
+      } else if (departmentParam) {
+        // Admin explicitly wants a specific department
+        where.createdBy = { department: departmentParam }
+      } else if (user.department) {
+        // Default: restrict to admin's own department
+        where.createdBy = { department: user.department }
+      }
+      // If no department and not all, then where remains {} (all tickets)
     } else if (user.role === 'MD') {
       // MD can see all tickets (especially those pending approval)
-      where = {} // Empty where clause means all tickets
+      // where remains {}
     } else if (user.role === 'SUPER_ADMIN') {
       // Super admin can see all tickets
-      where = {} // Empty where clause means all tickets
+      // where remains {}
     }
 
-    // Apply filters
+    // Apply additional filters
     if (status) {
       where.status = status
     }
-    
+
     if (category) {
       where.category = category
     }

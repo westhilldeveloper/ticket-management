@@ -31,6 +31,7 @@ export async function GET(request) {
         email: true,
         name: true,
         role: true,
+        branch: true,
         department: true,
         isActive: true
       }

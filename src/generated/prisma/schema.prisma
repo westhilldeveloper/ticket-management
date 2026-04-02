@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -10,76 +7,66 @@ datasource db {
   provider = "postgresql"
 }
 
-// User model for authentication and authorization
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  password      String?
-  name          String
-  role          Role      @default(EMPLOYEE)
-  department    String? // Department name (simplified approach)
-  isActive      Boolean   @default(true)
-  emailVerified Boolean   @default(false)
-  otp           String? // One-time password for verification
-  otpExpiry     DateTime? // OTP expiry time
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relations
-  createdTickets  Ticket[]        @relation("UserTickets")
-  assignedTickets Ticket[]        @relation("AssignedTickets")
-  reviews         Review[]
-  historyEntries  TicketHistory[]
-  notifications   Notification[]
-  auditLogs       AuditLog[]
-
-  // Department relations (if using Department model)
-  headedDepartment    Department?  @relation("DepartmentHead") // User can be head of one department
-  memberOfDepartments Department[] @relation("DepartmentMembers") // User can be member of multiple departments
+  id                  String          @id @default(uuid())
+  email               String          @unique
+  password            String?
+  name                String
+  branch              String?
+  role                Role            @default(EMPLOYEE)
+  department          String?
+  isActive            Boolean         @default(true)
+  emailVerified       Boolean         @default(false)
+  otp                 String?
+  otpExpiry           DateTime?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  auditLogs           AuditLog[]
+  headedDepartment    Department?     @relation("DepartmentHead")
+  notifications       Notification[]
+  reviews             Review[]
+  historyEntries      TicketHistory[]
+  assignedTickets     Ticket[]        @relation("AssignedTickets")
+  createdTickets      Ticket[]        @relation("UserTickets")
+  memberOfDepartments Department[]    @relation("DepartmentMembers")
 
   @@map("users")
 }
 
-// Ticket model for all support requests
 model Ticket {
-  id                 String   @id @default(uuid())
-  ticketNumber       String   @unique
+  id                 String              @id @default(uuid())
+  ticketNumber       String              @unique
   title              String
-  description        String?  @db.Text
+  description        String?
+  mainCategory       MainCategory?
+  requestServiceType RequestServiceType?
+  itemType           String?
+  serviceDetails     Json?
+  count              String?
   category           String
-  priority           Priority @default(MEDIUM)
-  status             Status   @default(OPEN)
-  attachment         String? // URL to uploaded file in Cloudinary
-  attachmentPublicId String? // Cloudinary public ID for deletion
+  priority           Priority            @default(MEDIUM)
+  status             Status              @default(OPEN)
+  attachment         String?
+  attachmentPublicId String?
   serialNumber       String?
-
-  // Foreign keys
-  createdById  String
-  assignedToId String?
-
-  // MD Approval fields
-  mdApproval        MDFeedback? @default(PENDING)
-  mdApprovedAt      DateTime?
-  mdRejectedAt      DateTime?
-  mdRejectReason    String?     @db.Text
-  mdApprovalComment String?     @db.Text
-
-  // Third party fields
-  thirdParty        Boolean @default(false)
-  thirdPartyStatus  String? // Status of third party service
-  thirdPartyDetails String? @db.Text
-
-  // Timestamps
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  closedAt  DateTime?
-
-  // Relations
-  createdBy     User            @relation("UserTickets", fields: [createdById], references: [id])
-  assignedTo    User?           @relation("AssignedTickets", fields: [assignedToId], references: [id])
-  history       TicketHistory[]
-  reviews       Review[]
-  notifications Notification[]
+  createdById        String
+  assignedToId       String?
+  mdApproval         MDFeedback?         @default(PENDING)
+  mdApprovedAt       DateTime?
+  mdRejectedAt       DateTime?
+  mdRejectReason     String?
+  mdApprovalComment  String?
+  thirdParty         Boolean             @default(false)
+  thirdPartyStatus   String?
+  thirdPartyDetails  String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  closedAt           DateTime?
+  notifications      Notification[]
+  reviews            Review[]
+  history            TicketHistory[]
+  assignedTo         User?               @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  createdBy          User                @relation("UserTickets", fields: [createdById], references: [id])
 
   @@index([createdById])
   @@index([assignedToId])
@@ -89,38 +76,32 @@ model Ticket {
   @@map("tickets")
 }
 
-// Reviews for tickets (comments/feedback)
 model Review {
   id          String     @id @default(uuid())
-  content     String     @db.Text
+  content     String
   reviewType  ReviewType
   createdById String
   ticketId    String
   createdAt   DateTime   @default(now())
-
-  // Relations
-  createdBy User   @relation(fields: [createdById], references: [id])
-  ticket    Ticket @relation(fields: [ticketId], references: [id])
+  createdBy   User       @relation(fields: [createdById], references: [id])
+  ticket      Ticket     @relation(fields: [ticketId], references: [id])
 
   @@index([ticketId])
   @@index([createdById])
   @@map("reviews")
 }
 
-// Ticket history for audit trail
 model TicketHistory {
   id          String   @id @default(uuid())
-  action      String // e.g., "CREATED", "STATUS_CHANGED", "ASSIGNED", "REVIEW_ADDED"
-  description String?  @db.Text
-  oldValue    String? // Previous value for status changes
-  newValue    String? // New value for status changes
+  action      String
+  description String?
+  oldValue    String?
+  newValue    String?
   createdById String
   ticketId    String
   createdAt   DateTime @default(now())
-
-  // Relations
-  createdBy User   @relation(fields: [createdById], references: [id])
-  ticket    Ticket @relation(fields: [ticketId], references: [id])
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  ticket      Ticket   @relation(fields: [ticketId], references: [id])
 
   @@index([ticketId])
   @@index([createdById])
@@ -128,12 +109,11 @@ model TicketHistory {
   @@map("ticket_history")
 }
 
-// Notification model for real-time and email notifications
 model Notification {
   id          String           @id @default(uuid())
   type        NotificationType
   title       String
-  message     String           @db.Text
+  message     String
   userId      String
   ticketId    String?
   read        Boolean          @default(false)
@@ -141,10 +121,8 @@ model Notification {
   emailSent   Boolean          @default(false)
   emailSentAt DateTime?
   createdAt   DateTime         @default(now())
-
-  // Relations
-  user   User    @relation(fields: [userId], references: [id])
-  ticket Ticket? @relation(fields: [ticketId], references: [id])
+  ticket      Ticket?          @relation(fields: [ticketId], references: [id])
+  user        User             @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([read])
@@ -152,28 +130,24 @@ model Notification {
   @@map("notifications")
 }
 
-// Department model for organization structure
 model Department {
   id          String   @id @default(uuid())
   name        String   @unique
   description String?
-  headId      String?  @unique // User ID of department head (must be unique for one-to-one)
+  headId      String?  @unique
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  // Relations
-  head    User?  @relation("DepartmentHead", fields: [headId], references: [id])
-  members User[] @relation("DepartmentMembers")
+  head        User?    @relation("DepartmentHead", fields: [headId], references: [id])
+  members     User[]   @relation("DepartmentMembers")
 
   @@map("departments")
 }
 
-// Settings model for system configuration
 model SystemSetting {
   id          String   @id @default(uuid())
   key         String   @unique
-  value       String   @db.Text
+  value       String
   description String?
   category    String   @default("general")
   isPublic    Boolean  @default(false)
@@ -183,20 +157,17 @@ model SystemSetting {
   @@map("system_settings")
 }
 
-// Audit log for super admin tracking
 model AuditLog {
   id         String   @id @default(uuid())
   action     String
-  entityType String // "USER", "TICKET", "SETTING", etc.
+  entityType String
   entityId   String?
   userId     String?
-  details    Json? // Using Json type for flexible data
+  details    Json?
   ipAddress  String?
   userAgent  String?
   createdAt  DateTime @default(now())
-
-  // Relations
-  user User? @relation(fields: [userId], references: [id])
+  user       User?    @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([entityType])
@@ -204,7 +175,6 @@ model AuditLog {
   @@map("audit_logs")
 }
 
-// Enums
 enum Role {
   EMPLOYEE
   ADMIN
@@ -270,4 +240,15 @@ enum NotificationType {
   THIRD_PARTY_UPDATE
 
   @@map("notification_types")
+}
+
+enum MainCategory {
+  IT
+  ADMIN
+  HR
+}
+
+enum RequestServiceType {
+  REQUEST
+  SERVICE
 }

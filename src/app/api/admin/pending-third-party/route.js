@@ -21,63 +21,38 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url)
-    const limit = parseInt(searchParams.get('limit') || '10')
     const departmentParam = searchParams.get('department')
-    const requestServiceType = searchParams.get('requestServiceType')   // ✅ moved inside
+    const requestServiceType = searchParams.get('requestServiceType')
 
-    let ticketFilter = {}
+    let ticketWhere = { thirdParty: true }
     if (user.role === 'ADMIN') {
       if (departmentParam && departmentParam !== user.department) {
         return NextResponse.json({ message: 'Access denied' }, { status: 403 })
       }
       if (user.department) {
-        ticketFilter.mainCategory = user.department
+        ticketWhere.mainCategory = user.department
       }
     } else if (user.role === 'SUPER_ADMIN' && departmentParam) {
-      ticketFilter.mainCategory = departmentParam
+      ticketWhere.mainCategory = departmentParam
     }
     if (requestServiceType) {
-      ticketFilter.requestServiceType = requestServiceType
+      ticketWhere.requestServiceType = requestServiceType
     }
 
-    const history = await prisma.ticketHistory.findMany({
-      where: { ticket: ticketFilter },
-      take: limit,
+    const tickets = await prisma.ticket.findMany({
+      where: ticketWhere,
       orderBy: { createdAt: 'desc' },
+      take: 10,
       include: {
-        createdBy: { select: { name: true } },
-        ticket: { select: { id: true, ticketNumber: true, title: true } }
+        createdBy: { select: { id: true, name: true, email: true } },
+        assignedTo: { select: { id: true, name: true } }
       }
     })
 
-    const activities = history.map(item => ({
-      id: item.id,
-      type: getActivityType(item.action),
-      description: item.description || `${item.action} on ticket #${item.ticket?.ticketNumber}`,
-      createdAt: item.createdAt,
-      user: item.createdBy?.name,
-      ticketId: item.ticket?.id,
-      ticketNumber: item.ticket?.ticketNumber
-    }))
-
-    return NextResponse.json({ activities })
+    return NextResponse.json({ tickets })
 
   } catch (error) {
-    console.error('Error fetching recent activities:', error)
+    console.error('Error fetching pending third-party tickets:', error)
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
-}
-
-function getActivityType(action) {
-  const typeMap = {
-    'TICKET_CREATED': 'TICKET_CREATED',
-    'STATUS_CHANGED': 'STATUS_CHANGED',
-    'ASSIGNED': 'ASSIGNED',
-    'REVIEW_ADDED': 'REVIEW_ADDED',
-    'MD_APPROVED': 'MD_APPROVED',
-    'MD_REJECTED': 'MD_REJECTED',
-    'ADMIN_ACTION': 'ADMIN_ACTION',
-    'TICKET_CLOSED': 'TICKET_CLOSED'
-  }
-  return typeMap[action] || 'SYSTEM_UPDATE'
 }

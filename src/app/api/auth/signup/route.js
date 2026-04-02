@@ -9,7 +9,7 @@ const generateOTP = () => {
 
 export async function POST(request) {
   try {
-    const { email, password, name, department } = await request.json()
+    const { email, password, name, department, branch } = await request.json()
  const allowedDomains = ['@westhillinternational.com', '@finovestgroup.com']
     // Validate email domain (company email)
    if (!allowedDomains.some(domain => email.endsWith(domain))) {
@@ -45,9 +45,10 @@ export async function POST(request) {
         password: hashedPassword,
         name,
         department,
+        branch,
         otp,
         otpExpiry,
-        role: 'EMPLOYEE', // Default role
+        role: 'SUPER_ADMIN', // Default role
       }
     })
 

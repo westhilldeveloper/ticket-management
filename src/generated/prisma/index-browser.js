@@ -125,6 +125,7 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   name: 'name',
+  branch: 'branch',
   role: 'role',
   department: 'department',
   isActive: 'isActive',
@@ -140,6 +141,11 @@ exports.Prisma.TicketScalarFieldEnum = {
   ticketNumber: 'ticketNumber',
   title: 'title',
   description: 'description',
+  mainCategory: 'mainCategory',
+  requestServiceType: 'requestServiceType',
+  itemType: 'itemType',
+  serviceDetails: 'serviceDetails',
+  count: 'count',
   category: 'category',
   priority: 'priority',
   status: 'status',
@@ -259,6 +265,17 @@ exports.Role = exports.$Enums.Role = {
   MD: 'MD',
   SERVICE_TEAM: 'SERVICE_TEAM',
   SUPER_ADMIN: 'SUPER_ADMIN'
+};
+
+exports.MainCategory = exports.$Enums.MainCategory = {
+  IT: 'IT',
+  ADMIN: 'ADMIN',
+  HR: 'HR'
+};
+
+exports.RequestServiceType = exports.$Enums.RequestServiceType = {
+  REQUEST: 'REQUEST',
+  SERVICE: 'SERVICE'
 };
 
 exports.Priority = exports.$Enums.Priority = {

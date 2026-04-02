@@ -130,6 +130,23 @@ export const NotificationType: {
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
 
+
+export const MainCategory: {
+  IT: 'IT',
+  ADMIN: 'ADMIN',
+  HR: 'HR'
+};
+
+export type MainCategory = (typeof MainCategory)[keyof typeof MainCategory]
+
+
+export const RequestServiceType: {
+  REQUEST: 'REQUEST',
+  SERVICE: 'SERVICE'
+};
+
+export type RequestServiceType = (typeof RequestServiceType)[keyof typeof RequestServiceType]
+
 }
 
 export type Role = $Enums.Role
@@ -155,6 +172,14 @@ export const MDFeedback: typeof $Enums.MDFeedback
 export type NotificationType = $Enums.NotificationType
 
 export const NotificationType: typeof $Enums.NotificationType
+
+export type MainCategory = $Enums.MainCategory
+
+export const MainCategory: typeof $Enums.MainCategory
+
+export type RequestServiceType = $Enums.RequestServiceType
+
+export const RequestServiceType: typeof $Enums.RequestServiceType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1605,22 +1630,22 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    createdTickets: number
-    assignedTickets: number
+    auditLogs: number
+    notifications: number
     reviews: number
     historyEntries: number
-    notifications: number
-    auditLogs: number
+    assignedTickets: number
+    createdTickets: number
     memberOfDepartments: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    createdTickets?: boolean | UserCountOutputTypeCountCreatedTicketsArgs
-    assignedTickets?: boolean | UserCountOutputTypeCountAssignedTicketsArgs
+    auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
+    notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     reviews?: boolean | UserCountOutputTypeCountReviewsArgs
     historyEntries?: boolean | UserCountOutputTypeCountHistoryEntriesArgs
-    notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
-    auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
+    assignedTickets?: boolean | UserCountOutputTypeCountAssignedTicketsArgs
+    createdTickets?: boolean | UserCountOutputTypeCountCreatedTicketsArgs
     memberOfDepartments?: boolean | UserCountOutputTypeCountMemberOfDepartmentsArgs
   }
 
@@ -1638,15 +1663,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountCreatedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TicketWhereInput
+  export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountAssignedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TicketWhereInput
+  export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
   }
 
   /**
@@ -1666,15 +1691,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: NotificationWhereInput
+  export type UserCountOutputTypeCountAssignedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AuditLogWhereInput
+  export type UserCountOutputTypeCountCreatedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketWhereInput
   }
 
   /**
@@ -1690,15 +1715,15 @@ export namespace Prisma {
    */
 
   export type TicketCountOutputType = {
-    history: number
-    reviews: number
     notifications: number
+    reviews: number
+    history: number
   }
 
   export type TicketCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    history?: boolean | TicketCountOutputTypeCountHistoryArgs
-    reviews?: boolean | TicketCountOutputTypeCountReviewsArgs
     notifications?: boolean | TicketCountOutputTypeCountNotificationsArgs
+    reviews?: boolean | TicketCountOutputTypeCountReviewsArgs
+    history?: boolean | TicketCountOutputTypeCountHistoryArgs
   }
 
   // Custom InputTypes
@@ -1715,8 +1740,8 @@ export namespace Prisma {
   /**
    * TicketCountOutputType without action
    */
-  export type TicketCountOutputTypeCountHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TicketHistoryWhereInput
+  export type TicketCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
   }
 
   /**
@@ -1729,8 +1754,8 @@ export namespace Prisma {
   /**
    * TicketCountOutputType without action
    */
-  export type TicketCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: NotificationWhereInput
+  export type TicketCountOutputTypeCountHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketHistoryWhereInput
   }
 
 
@@ -1784,6 +1809,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
+    branch: string | null
     role: $Enums.Role | null
     department: string | null
     isActive: boolean | null
@@ -1799,6 +1825,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
+    branch: string | null
     role: $Enums.Role | null
     department: string | null
     isActive: boolean | null
@@ -1814,6 +1841,7 @@ export namespace Prisma {
     email: number
     password: number
     name: number
+    branch: number
     role: number
     department: number
     isActive: number
@@ -1831,6 +1859,7 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
+    branch?: true
     role?: true
     department?: true
     isActive?: true
@@ -1846,6 +1875,7 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
+    branch?: true
     role?: true
     department?: true
     isActive?: true
@@ -1861,6 +1891,7 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
+    branch?: true
     role?: true
     department?: true
     isActive?: true
@@ -1949,6 +1980,7 @@ export namespace Prisma {
     email: string
     password: string | null
     name: string
+    branch: string | null
     role: $Enums.Role
     department: string | null
     isActive: boolean
@@ -1981,6 +2013,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
+    branch?: boolean
     role?: boolean
     department?: boolean
     isActive?: boolean
@@ -1989,13 +2022,13 @@ export namespace Prisma {
     otpExpiry?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    createdTickets?: boolean | User$createdTicketsArgs<ExtArgs>
-    assignedTickets?: boolean | User$assignedTicketsArgs<ExtArgs>
-    reviews?: boolean | User$reviewsArgs<ExtArgs>
-    historyEntries?: boolean | User$historyEntriesArgs<ExtArgs>
-    notifications?: boolean | User$notificationsArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     headedDepartment?: boolean | User$headedDepartmentArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
+    reviews?: boolean | User$reviewsArgs<ExtArgs>
+    historyEntries?: boolean | User$historyEntriesArgs<ExtArgs>
+    assignedTickets?: boolean | User$assignedTicketsArgs<ExtArgs>
+    createdTickets?: boolean | User$createdTicketsArgs<ExtArgs>
     memberOfDepartments?: boolean | User$memberOfDepartmentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -2005,6 +2038,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
+    branch?: boolean
     role?: boolean
     department?: boolean
     isActive?: boolean
@@ -2020,6 +2054,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
+    branch?: boolean
     role?: boolean
     department?: boolean
     isActive?: boolean
@@ -2035,6 +2070,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
+    branch?: boolean
     role?: boolean
     department?: boolean
     isActive?: boolean
@@ -2045,15 +2081,15 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "department" | "isActive" | "emailVerified" | "otp" | "otpExpiry" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "branch" | "role" | "department" | "isActive" | "emailVerified" | "otp" | "otpExpiry" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    createdTickets?: boolean | User$createdTicketsArgs<ExtArgs>
-    assignedTickets?: boolean | User$assignedTicketsArgs<ExtArgs>
-    reviews?: boolean | User$reviewsArgs<ExtArgs>
-    historyEntries?: boolean | User$historyEntriesArgs<ExtArgs>
-    notifications?: boolean | User$notificationsArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     headedDepartment?: boolean | User$headedDepartmentArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
+    reviews?: boolean | User$reviewsArgs<ExtArgs>
+    historyEntries?: boolean | User$historyEntriesArgs<ExtArgs>
+    assignedTickets?: boolean | User$assignedTicketsArgs<ExtArgs>
+    createdTickets?: boolean | User$createdTicketsArgs<ExtArgs>
     memberOfDepartments?: boolean | User$memberOfDepartmentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2063,13 +2099,13 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      createdTickets: Prisma.$TicketPayload<ExtArgs>[]
-      assignedTickets: Prisma.$TicketPayload<ExtArgs>[]
-      reviews: Prisma.$ReviewPayload<ExtArgs>[]
-      historyEntries: Prisma.$TicketHistoryPayload<ExtArgs>[]
-      notifications: Prisma.$NotificationPayload<ExtArgs>[]
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
       headedDepartment: Prisma.$DepartmentPayload<ExtArgs> | null
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      reviews: Prisma.$ReviewPayload<ExtArgs>[]
+      historyEntries: Prisma.$TicketHistoryPayload<ExtArgs>[]
+      assignedTickets: Prisma.$TicketPayload<ExtArgs>[]
+      createdTickets: Prisma.$TicketPayload<ExtArgs>[]
       memberOfDepartments: Prisma.$DepartmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -2077,6 +2113,7 @@ export namespace Prisma {
       email: string
       password: string | null
       name: string
+      branch: string | null
       role: $Enums.Role
       department: string | null
       isActive: boolean
@@ -2479,13 +2516,13 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    createdTickets<T extends User$createdTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    assignedTickets<T extends User$assignedTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    reviews<T extends User$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    historyEntries<T extends User$historyEntriesArgs<ExtArgs> = {}>(args?: Subset<T, User$historyEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     auditLogs<T extends User$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     headedDepartment<T extends User$headedDepartmentArgs<ExtArgs> = {}>(args?: Subset<T, User$headedDepartmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviews<T extends User$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    historyEntries<T extends User$historyEntriesArgs<ExtArgs> = {}>(args?: Subset<T, User$historyEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    assignedTickets<T extends User$assignedTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    createdTickets<T extends User$createdTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     memberOfDepartments<T extends User$memberOfDepartmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$memberOfDepartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2520,6 +2557,7 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly name: FieldRef<"User", 'String'>
+    readonly branch: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly department: FieldRef<"User", 'String'>
     readonly isActive: FieldRef<"User", 'Boolean'>
@@ -2916,51 +2954,70 @@ export namespace Prisma {
   }
 
   /**
-   * User.createdTickets
+   * User.auditLogs
    */
-  export type User$createdTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Ticket
+     * Select specific fields to fetch from the AuditLog
      */
-    select?: TicketSelect<ExtArgs> | null
+    select?: AuditLogSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Ticket
+     * Omit specific fields from the AuditLog
      */
-    omit?: TicketOmit<ExtArgs> | null
+    omit?: AuditLogOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: TicketInclude<ExtArgs> | null
-    where?: TicketWhereInput
-    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[]
-    cursor?: TicketWhereUniqueInput
+    include?: AuditLogInclude<ExtArgs> | null
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    cursor?: AuditLogWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[]
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
   }
 
   /**
-   * User.assignedTickets
+   * User.headedDepartment
    */
-  export type User$assignedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$headedDepartmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Ticket
+     * Select specific fields to fetch from the Department
      */
-    select?: TicketSelect<ExtArgs> | null
+    select?: DepartmentSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Ticket
+     * Omit specific fields from the Department
      */
-    omit?: TicketOmit<ExtArgs> | null
+    omit?: DepartmentOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: TicketInclude<ExtArgs> | null
-    where?: TicketWhereInput
-    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[]
-    cursor?: TicketWhereUniqueInput
+    include?: DepartmentInclude<ExtArgs> | null
+    where?: DepartmentWhereInput
+  }
+
+  /**
+   * User.notifications
+   */
+  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[]
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
   }
 
   /**
@@ -3012,70 +3069,51 @@ export namespace Prisma {
   }
 
   /**
-   * User.notifications
+   * User.assignedTickets
    */
-  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$assignedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Notification
+     * Select specific fields to fetch from the Ticket
      */
-    select?: NotificationSelect<ExtArgs> | null
+    select?: TicketSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Notification
+     * Omit specific fields from the Ticket
      */
-    omit?: NotificationOmit<ExtArgs> | null
+    omit?: TicketOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: NotificationInclude<ExtArgs> | null
-    where?: NotificationWhereInput
-    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
-    cursor?: NotificationWhereUniqueInput
+    include?: TicketInclude<ExtArgs> | null
+    where?: TicketWhereInput
+    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[]
+    cursor?: TicketWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[]
   }
 
   /**
-   * User.auditLogs
+   * User.createdTickets
    */
-  export type User$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$createdTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AuditLog
+     * Select specific fields to fetch from the Ticket
      */
-    select?: AuditLogSelect<ExtArgs> | null
+    select?: TicketSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the AuditLog
+     * Omit specific fields from the Ticket
      */
-    omit?: AuditLogOmit<ExtArgs> | null
+    omit?: TicketOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: AuditLogInclude<ExtArgs> | null
-    where?: AuditLogWhereInput
-    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
-    cursor?: AuditLogWhereUniqueInput
+    include?: TicketInclude<ExtArgs> | null
+    where?: TicketWhereInput
+    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[]
+    cursor?: TicketWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
-  }
-
-  /**
-   * User.headedDepartment
-   */
-  export type User$headedDepartmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Department
-     */
-    select?: DepartmentSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Department
-     */
-    omit?: DepartmentOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: DepartmentInclude<ExtArgs> | null
-    where?: DepartmentWhereInput
+    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[]
   }
 
   /**
@@ -3136,6 +3174,10 @@ export namespace Prisma {
     ticketNumber: string | null
     title: string | null
     description: string | null
+    mainCategory: $Enums.MainCategory | null
+    requestServiceType: $Enums.RequestServiceType | null
+    itemType: string | null
+    count: string | null
     category: string | null
     priority: $Enums.Priority | null
     status: $Enums.Status | null
@@ -3162,6 +3204,10 @@ export namespace Prisma {
     ticketNumber: string | null
     title: string | null
     description: string | null
+    mainCategory: $Enums.MainCategory | null
+    requestServiceType: $Enums.RequestServiceType | null
+    itemType: string | null
+    count: string | null
     category: string | null
     priority: $Enums.Priority | null
     status: $Enums.Status | null
@@ -3188,6 +3234,11 @@ export namespace Prisma {
     ticketNumber: number
     title: number
     description: number
+    mainCategory: number
+    requestServiceType: number
+    itemType: number
+    serviceDetails: number
+    count: number
     category: number
     priority: number
     status: number
@@ -3216,6 +3267,10 @@ export namespace Prisma {
     ticketNumber?: true
     title?: true
     description?: true
+    mainCategory?: true
+    requestServiceType?: true
+    itemType?: true
+    count?: true
     category?: true
     priority?: true
     status?: true
@@ -3242,6 +3297,10 @@ export namespace Prisma {
     ticketNumber?: true
     title?: true
     description?: true
+    mainCategory?: true
+    requestServiceType?: true
+    itemType?: true
+    count?: true
     category?: true
     priority?: true
     status?: true
@@ -3268,6 +3327,11 @@ export namespace Prisma {
     ticketNumber?: true
     title?: true
     description?: true
+    mainCategory?: true
+    requestServiceType?: true
+    itemType?: true
+    serviceDetails?: true
+    count?: true
     category?: true
     priority?: true
     status?: true
@@ -3367,6 +3431,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description: string | null
+    mainCategory: $Enums.MainCategory | null
+    requestServiceType: $Enums.RequestServiceType | null
+    itemType: string | null
+    serviceDetails: JsonValue | null
+    count: string | null
     category: string
     priority: $Enums.Priority
     status: $Enums.Status
@@ -3410,6 +3479,11 @@ export namespace Prisma {
     ticketNumber?: boolean
     title?: boolean
     description?: boolean
+    mainCategory?: boolean
+    requestServiceType?: boolean
+    itemType?: boolean
+    serviceDetails?: boolean
+    count?: boolean
     category?: boolean
     priority?: boolean
     status?: boolean
@@ -3429,11 +3503,11 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     closedAt?: boolean
-    createdBy?: boolean | UserDefaultArgs<ExtArgs>
-    assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
-    history?: boolean | Ticket$historyArgs<ExtArgs>
-    reviews?: boolean | Ticket$reviewsArgs<ExtArgs>
     notifications?: boolean | Ticket$notificationsArgs<ExtArgs>
+    reviews?: boolean | Ticket$reviewsArgs<ExtArgs>
+    history?: boolean | Ticket$historyArgs<ExtArgs>
+    assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | TicketCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["ticket"]>
 
@@ -3442,6 +3516,11 @@ export namespace Prisma {
     ticketNumber?: boolean
     title?: boolean
     description?: boolean
+    mainCategory?: boolean
+    requestServiceType?: boolean
+    itemType?: boolean
+    serviceDetails?: boolean
+    count?: boolean
     category?: boolean
     priority?: boolean
     status?: boolean
@@ -3461,8 +3540,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     closedAt?: boolean
-    createdBy?: boolean | UserDefaultArgs<ExtArgs>
     assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["ticket"]>
 
   export type TicketSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3470,6 +3549,11 @@ export namespace Prisma {
     ticketNumber?: boolean
     title?: boolean
     description?: boolean
+    mainCategory?: boolean
+    requestServiceType?: boolean
+    itemType?: boolean
+    serviceDetails?: boolean
+    count?: boolean
     category?: boolean
     priority?: boolean
     status?: boolean
@@ -3489,8 +3573,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     closedAt?: boolean
-    createdBy?: boolean | UserDefaultArgs<ExtArgs>
     assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["ticket"]>
 
   export type TicketSelectScalar = {
@@ -3498,6 +3582,11 @@ export namespace Prisma {
     ticketNumber?: boolean
     title?: boolean
     description?: boolean
+    mainCategory?: boolean
+    requestServiceType?: boolean
+    itemType?: boolean
+    serviceDetails?: boolean
+    count?: boolean
     category?: boolean
     priority?: boolean
     status?: boolean
@@ -3519,38 +3608,43 @@ export namespace Prisma {
     closedAt?: boolean
   }
 
-  export type TicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ticketNumber" | "title" | "description" | "category" | "priority" | "status" | "attachment" | "attachmentPublicId" | "serialNumber" | "createdById" | "assignedToId" | "mdApproval" | "mdApprovedAt" | "mdRejectedAt" | "mdRejectReason" | "mdApprovalComment" | "thirdParty" | "thirdPartyStatus" | "thirdPartyDetails" | "createdAt" | "updatedAt" | "closedAt", ExtArgs["result"]["ticket"]>
+  export type TicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ticketNumber" | "title" | "description" | "mainCategory" | "requestServiceType" | "itemType" | "serviceDetails" | "count" | "category" | "priority" | "status" | "attachment" | "attachmentPublicId" | "serialNumber" | "createdById" | "assignedToId" | "mdApproval" | "mdApprovedAt" | "mdRejectedAt" | "mdRejectReason" | "mdApprovalComment" | "thirdParty" | "thirdPartyStatus" | "thirdPartyDetails" | "createdAt" | "updatedAt" | "closedAt", ExtArgs["result"]["ticket"]>
   export type TicketInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    createdBy?: boolean | UserDefaultArgs<ExtArgs>
-    assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
-    history?: boolean | Ticket$historyArgs<ExtArgs>
-    reviews?: boolean | Ticket$reviewsArgs<ExtArgs>
     notifications?: boolean | Ticket$notificationsArgs<ExtArgs>
+    reviews?: boolean | Ticket$reviewsArgs<ExtArgs>
+    history?: boolean | Ticket$historyArgs<ExtArgs>
+    assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | TicketCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TicketIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    createdBy?: boolean | UserDefaultArgs<ExtArgs>
     assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TicketIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    createdBy?: boolean | UserDefaultArgs<ExtArgs>
     assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $TicketPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Ticket"
     objects: {
-      createdBy: Prisma.$UserPayload<ExtArgs>
-      assignedTo: Prisma.$UserPayload<ExtArgs> | null
-      history: Prisma.$TicketHistoryPayload<ExtArgs>[]
-      reviews: Prisma.$ReviewPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      reviews: Prisma.$ReviewPayload<ExtArgs>[]
+      history: Prisma.$TicketHistoryPayload<ExtArgs>[]
+      assignedTo: Prisma.$UserPayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       ticketNumber: string
       title: string
       description: string | null
+      mainCategory: $Enums.MainCategory | null
+      requestServiceType: $Enums.RequestServiceType | null
+      itemType: string | null
+      serviceDetails: Prisma.JsonValue | null
+      count: string | null
       category: string
       priority: $Enums.Priority
       status: $Enums.Status
@@ -3964,11 +4058,11 @@ export namespace Prisma {
    */
   export interface Prisma__TicketClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    assignedTo<T extends Ticket$assignedToArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$assignedToArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    history<T extends Ticket$historyArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    reviews<T extends Ticket$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends Ticket$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviews<T extends Ticket$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    history<T extends Ticket$historyArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    assignedTo<T extends Ticket$assignedToArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$assignedToArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4002,6 +4096,11 @@ export namespace Prisma {
     readonly ticketNumber: FieldRef<"Ticket", 'String'>
     readonly title: FieldRef<"Ticket", 'String'>
     readonly description: FieldRef<"Ticket", 'String'>
+    readonly mainCategory: FieldRef<"Ticket", 'MainCategory'>
+    readonly requestServiceType: FieldRef<"Ticket", 'RequestServiceType'>
+    readonly itemType: FieldRef<"Ticket", 'String'>
+    readonly serviceDetails: FieldRef<"Ticket", 'Json'>
+    readonly count: FieldRef<"Ticket", 'String'>
     readonly category: FieldRef<"Ticket", 'String'>
     readonly priority: FieldRef<"Ticket", 'Priority'>
     readonly status: FieldRef<"Ticket", 'Status'>
@@ -4417,46 +4516,27 @@ export namespace Prisma {
   }
 
   /**
-   * Ticket.assignedTo
+   * Ticket.notifications
    */
-  export type Ticket$assignedToArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Ticket$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the User
+     * Select specific fields to fetch from the Notification
      */
-    select?: UserSelect<ExtArgs> | null
+    select?: NotificationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the User
+     * Omit specific fields from the Notification
      */
-    omit?: UserOmit<ExtArgs> | null
+    omit?: NotificationOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-  }
-
-  /**
-   * Ticket.history
-   */
-  export type Ticket$historyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TicketHistory
-     */
-    select?: TicketHistorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TicketHistory
-     */
-    omit?: TicketHistoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TicketHistoryInclude<ExtArgs> | null
-    where?: TicketHistoryWhereInput
-    orderBy?: TicketHistoryOrderByWithRelationInput | TicketHistoryOrderByWithRelationInput[]
-    cursor?: TicketHistoryWhereUniqueInput
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: TicketHistoryScalarFieldEnum | TicketHistoryScalarFieldEnum[]
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
   }
 
   /**
@@ -4484,27 +4564,46 @@ export namespace Prisma {
   }
 
   /**
-   * Ticket.notifications
+   * Ticket.history
    */
-  export type Ticket$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Ticket$historyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Notification
+     * Select specific fields to fetch from the TicketHistory
      */
-    select?: NotificationSelect<ExtArgs> | null
+    select?: TicketHistorySelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Notification
+     * Omit specific fields from the TicketHistory
      */
-    omit?: NotificationOmit<ExtArgs> | null
+    omit?: TicketHistoryOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: NotificationInclude<ExtArgs> | null
-    where?: NotificationWhereInput
-    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
-    cursor?: NotificationWhereUniqueInput
+    include?: TicketHistoryInclude<ExtArgs> | null
+    where?: TicketHistoryWhereInput
+    orderBy?: TicketHistoryOrderByWithRelationInput | TicketHistoryOrderByWithRelationInput[]
+    cursor?: TicketHistoryWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+    distinct?: TicketHistoryScalarFieldEnum | TicketHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * Ticket.assignedTo
+   */
+  export type Ticket$assignedToArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -6922,8 +7021,8 @@ export namespace Prisma {
     emailSent?: boolean
     emailSentAt?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     ticket?: boolean | Notification$ticketArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6938,8 +7037,8 @@ export namespace Prisma {
     emailSent?: boolean
     emailSentAt?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     ticket?: boolean | Notification$ticketArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6954,8 +7053,8 @@ export namespace Prisma {
     emailSent?: boolean
     emailSentAt?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     ticket?: boolean | Notification$ticketArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectScalar = {
@@ -6974,23 +7073,23 @@ export namespace Prisma {
 
   export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "title" | "message" | "userId" | "ticketId" | "read" | "readAt" | "emailSent" | "emailSentAt" | "createdAt", ExtArgs["result"]["notification"]>
   export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     ticket?: boolean | Notification$ticketArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type NotificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     ticket?: boolean | Notification$ticketArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type NotificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     ticket?: boolean | Notification$ticketArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $NotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Notification"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
       ticket: Prisma.$TicketPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7398,8 +7497,8 @@ export namespace Prisma {
    */
   export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     ticket<T extends Notification$ticketArgs<ExtArgs> = {}>(args?: Subset<T, Notification$ticketArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11184,6 +11283,7 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     name: 'name',
+    branch: 'branch',
     role: 'role',
     department: 'department',
     isActive: 'isActive',
@@ -11202,6 +11302,11 @@ export namespace Prisma {
     ticketNumber: 'ticketNumber',
     title: 'title',
     description: 'description',
+    mainCategory: 'mainCategory',
+    requestServiceType: 'requestServiceType',
+    itemType: 'itemType',
+    serviceDetails: 'serviceDetails',
+    count: 'count',
     category: 'category',
     priority: 'priority',
     status: 'status',
@@ -11407,6 +11512,48 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'MainCategory'
+   */
+  export type EnumMainCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MainCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'MainCategory[]'
+   */
+  export type ListEnumMainCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MainCategory[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'RequestServiceType'
+   */
+  export type EnumRequestServiceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RequestServiceType'>
+    
+
+
+  /**
+   * Reference to a field of type 'RequestServiceType[]'
+   */
+  export type ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RequestServiceType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
    * Reference to a field of type 'Priority'
    */
   export type EnumPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Priority'>
@@ -11477,20 +11624,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
-   * Reference to a field of type 'QueryMode'
-   */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -11515,6 +11648,7 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringNullableFilter<"User"> | string | null
     name?: StringFilter<"User"> | string
+    branch?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     department?: StringNullableFilter<"User"> | string | null
     isActive?: BoolFilter<"User"> | boolean
@@ -11523,13 +11657,13 @@ export namespace Prisma {
     otpExpiry?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    createdTickets?: TicketListRelationFilter
-    assignedTickets?: TicketListRelationFilter
-    reviews?: ReviewListRelationFilter
-    historyEntries?: TicketHistoryListRelationFilter
-    notifications?: NotificationListRelationFilter
     auditLogs?: AuditLogListRelationFilter
     headedDepartment?: XOR<DepartmentNullableScalarRelationFilter, DepartmentWhereInput> | null
+    notifications?: NotificationListRelationFilter
+    reviews?: ReviewListRelationFilter
+    historyEntries?: TicketHistoryListRelationFilter
+    assignedTickets?: TicketListRelationFilter
+    createdTickets?: TicketListRelationFilter
     memberOfDepartments?: DepartmentListRelationFilter
   }
 
@@ -11538,6 +11672,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrderInput | SortOrder
     name?: SortOrder
+    branch?: SortOrderInput | SortOrder
     role?: SortOrder
     department?: SortOrderInput | SortOrder
     isActive?: SortOrder
@@ -11546,13 +11681,13 @@ export namespace Prisma {
     otpExpiry?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    createdTickets?: TicketOrderByRelationAggregateInput
-    assignedTickets?: TicketOrderByRelationAggregateInput
-    reviews?: ReviewOrderByRelationAggregateInput
-    historyEntries?: TicketHistoryOrderByRelationAggregateInput
-    notifications?: NotificationOrderByRelationAggregateInput
     auditLogs?: AuditLogOrderByRelationAggregateInput
     headedDepartment?: DepartmentOrderByWithRelationInput
+    notifications?: NotificationOrderByRelationAggregateInput
+    reviews?: ReviewOrderByRelationAggregateInput
+    historyEntries?: TicketHistoryOrderByRelationAggregateInput
+    assignedTickets?: TicketOrderByRelationAggregateInput
+    createdTickets?: TicketOrderByRelationAggregateInput
     memberOfDepartments?: DepartmentOrderByRelationAggregateInput
   }
 
@@ -11564,6 +11699,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringNullableFilter<"User"> | string | null
     name?: StringFilter<"User"> | string
+    branch?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     department?: StringNullableFilter<"User"> | string | null
     isActive?: BoolFilter<"User"> | boolean
@@ -11572,13 +11708,13 @@ export namespace Prisma {
     otpExpiry?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    createdTickets?: TicketListRelationFilter
-    assignedTickets?: TicketListRelationFilter
-    reviews?: ReviewListRelationFilter
-    historyEntries?: TicketHistoryListRelationFilter
-    notifications?: NotificationListRelationFilter
     auditLogs?: AuditLogListRelationFilter
     headedDepartment?: XOR<DepartmentNullableScalarRelationFilter, DepartmentWhereInput> | null
+    notifications?: NotificationListRelationFilter
+    reviews?: ReviewListRelationFilter
+    historyEntries?: TicketHistoryListRelationFilter
+    assignedTickets?: TicketListRelationFilter
+    createdTickets?: TicketListRelationFilter
     memberOfDepartments?: DepartmentListRelationFilter
   }, "id" | "email">
 
@@ -11587,6 +11723,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrderInput | SortOrder
     name?: SortOrder
+    branch?: SortOrderInput | SortOrder
     role?: SortOrder
     department?: SortOrderInput | SortOrder
     isActive?: SortOrder
@@ -11608,6 +11745,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
     name?: StringWithAggregatesFilter<"User"> | string
+    branch?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     department?: StringNullableWithAggregatesFilter<"User"> | string | null
     isActive?: BoolWithAggregatesFilter<"User"> | boolean
@@ -11626,6 +11764,11 @@ export namespace Prisma {
     ticketNumber?: StringFilter<"Ticket"> | string
     title?: StringFilter<"Ticket"> | string
     description?: StringNullableFilter<"Ticket"> | string | null
+    mainCategory?: EnumMainCategoryNullableFilter<"Ticket"> | $Enums.MainCategory | null
+    requestServiceType?: EnumRequestServiceTypeNullableFilter<"Ticket"> | $Enums.RequestServiceType | null
+    itemType?: StringNullableFilter<"Ticket"> | string | null
+    serviceDetails?: JsonNullableFilter<"Ticket">
+    count?: StringNullableFilter<"Ticket"> | string | null
     category?: StringFilter<"Ticket"> | string
     priority?: EnumPriorityFilter<"Ticket"> | $Enums.Priority
     status?: EnumStatusFilter<"Ticket"> | $Enums.Status
@@ -11645,11 +11788,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Ticket"> | Date | string
     updatedAt?: DateTimeFilter<"Ticket"> | Date | string
     closedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
-    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
-    assignedTo?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-    history?: TicketHistoryListRelationFilter
-    reviews?: ReviewListRelationFilter
     notifications?: NotificationListRelationFilter
+    reviews?: ReviewListRelationFilter
+    history?: TicketHistoryListRelationFilter
+    assignedTo?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type TicketOrderByWithRelationInput = {
@@ -11657,6 +11800,11 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
+    mainCategory?: SortOrderInput | SortOrder
+    requestServiceType?: SortOrderInput | SortOrder
+    itemType?: SortOrderInput | SortOrder
+    serviceDetails?: SortOrderInput | SortOrder
+    count?: SortOrderInput | SortOrder
     category?: SortOrder
     priority?: SortOrder
     status?: SortOrder
@@ -11676,11 +11824,11 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     closedAt?: SortOrderInput | SortOrder
-    createdBy?: UserOrderByWithRelationInput
-    assignedTo?: UserOrderByWithRelationInput
-    history?: TicketHistoryOrderByRelationAggregateInput
-    reviews?: ReviewOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
+    reviews?: ReviewOrderByRelationAggregateInput
+    history?: TicketHistoryOrderByRelationAggregateInput
+    assignedTo?: UserOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
   }
 
   export type TicketWhereUniqueInput = Prisma.AtLeast<{
@@ -11691,6 +11839,11 @@ export namespace Prisma {
     NOT?: TicketWhereInput | TicketWhereInput[]
     title?: StringFilter<"Ticket"> | string
     description?: StringNullableFilter<"Ticket"> | string | null
+    mainCategory?: EnumMainCategoryNullableFilter<"Ticket"> | $Enums.MainCategory | null
+    requestServiceType?: EnumRequestServiceTypeNullableFilter<"Ticket"> | $Enums.RequestServiceType | null
+    itemType?: StringNullableFilter<"Ticket"> | string | null
+    serviceDetails?: JsonNullableFilter<"Ticket">
+    count?: StringNullableFilter<"Ticket"> | string | null
     category?: StringFilter<"Ticket"> | string
     priority?: EnumPriorityFilter<"Ticket"> | $Enums.Priority
     status?: EnumStatusFilter<"Ticket"> | $Enums.Status
@@ -11710,11 +11863,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Ticket"> | Date | string
     updatedAt?: DateTimeFilter<"Ticket"> | Date | string
     closedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
-    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
-    assignedTo?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-    history?: TicketHistoryListRelationFilter
-    reviews?: ReviewListRelationFilter
     notifications?: NotificationListRelationFilter
+    reviews?: ReviewListRelationFilter
+    history?: TicketHistoryListRelationFilter
+    assignedTo?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "ticketNumber">
 
   export type TicketOrderByWithAggregationInput = {
@@ -11722,6 +11875,11 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
+    mainCategory?: SortOrderInput | SortOrder
+    requestServiceType?: SortOrderInput | SortOrder
+    itemType?: SortOrderInput | SortOrder
+    serviceDetails?: SortOrderInput | SortOrder
+    count?: SortOrderInput | SortOrder
     category?: SortOrder
     priority?: SortOrder
     status?: SortOrder
@@ -11754,6 +11912,11 @@ export namespace Prisma {
     ticketNumber?: StringWithAggregatesFilter<"Ticket"> | string
     title?: StringWithAggregatesFilter<"Ticket"> | string
     description?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
+    mainCategory?: EnumMainCategoryNullableWithAggregatesFilter<"Ticket"> | $Enums.MainCategory | null
+    requestServiceType?: EnumRequestServiceTypeNullableWithAggregatesFilter<"Ticket"> | $Enums.RequestServiceType | null
+    itemType?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
+    serviceDetails?: JsonNullableWithAggregatesFilter<"Ticket">
+    count?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
     category?: StringWithAggregatesFilter<"Ticket"> | string
     priority?: EnumPriorityWithAggregatesFilter<"Ticket"> | $Enums.Priority
     status?: EnumStatusWithAggregatesFilter<"Ticket"> | $Enums.Status
@@ -11926,8 +12089,8 @@ export namespace Prisma {
     emailSent?: BoolFilter<"Notification"> | boolean
     emailSentAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     createdAt?: DateTimeFilter<"Notification"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     ticket?: XOR<TicketNullableScalarRelationFilter, TicketWhereInput> | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type NotificationOrderByWithRelationInput = {
@@ -11942,8 +12105,8 @@ export namespace Prisma {
     emailSent?: SortOrder
     emailSentAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    user?: UserOrderByWithRelationInput
     ticket?: TicketOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type NotificationWhereUniqueInput = Prisma.AtLeast<{
@@ -11961,8 +12124,8 @@ export namespace Prisma {
     emailSent?: BoolFilter<"Notification"> | boolean
     emailSentAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     createdAt?: DateTimeFilter<"Notification"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     ticket?: XOR<TicketNullableScalarRelationFilter, TicketWhereInput> | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type NotificationOrderByWithAggregationInput = {
@@ -12214,6 +12377,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -12222,13 +12386,13 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
   }
 
@@ -12237,6 +12401,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -12245,13 +12410,13 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
   }
 
@@ -12260,6 +12425,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -12268,13 +12434,13 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
   }
 
@@ -12283,6 +12449,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -12291,13 +12458,13 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
   }
 
@@ -12306,6 +12473,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -12321,6 +12489,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -12336,6 +12505,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -12351,6 +12521,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
     category: string
     priority?: $Enums.Priority
     status?: $Enums.Status
@@ -12368,11 +12543,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
-    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
-    history?: TicketHistoryCreateNestedManyWithoutTicketInput
-    reviews?: ReviewCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    reviews?: ReviewCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryCreateNestedManyWithoutTicketInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
+    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
   }
 
   export type TicketUncheckedCreateInput = {
@@ -12380,6 +12555,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
     category: string
     priority?: $Enums.Priority
     status?: $Enums.Status
@@ -12399,9 +12579,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUpdateInput = {
@@ -12409,6 +12589,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -12426,11 +12611,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
-    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
-    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
-    reviews?: ReviewUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    reviews?: ReviewUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
   }
 
   export type TicketUncheckedUpdateInput = {
@@ -12438,6 +12623,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -12457,9 +12647,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketCreateManyInput = {
@@ -12467,6 +12657,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
     category: string
     priority?: $Enums.Priority
     status?: $Enums.Status
@@ -12493,6 +12688,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -12517,6 +12717,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -12684,8 +12889,8 @@ export namespace Prisma {
     emailSent?: boolean
     emailSentAt?: Date | string | null
     createdAt?: Date | string
-    user: UserCreateNestedOneWithoutNotificationsInput
     ticket?: TicketCreateNestedOneWithoutNotificationsInput
+    user: UserCreateNestedOneWithoutNotificationsInput
   }
 
   export type NotificationUncheckedCreateInput = {
@@ -12712,8 +12917,8 @@ export namespace Prisma {
     emailSent?: BoolFieldUpdateOperationsInput | boolean
     emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
     ticket?: TicketUpdateOneWithoutNotificationsNestedInput
+    user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
   }
 
   export type NotificationUncheckedUpdateInput = {
@@ -13067,10 +13272,21 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type TicketListRelationFilter = {
-    every?: TicketWhereInput
-    some?: TicketWhereInput
-    none?: TicketWhereInput
+  export type AuditLogListRelationFilter = {
+    every?: AuditLogWhereInput
+    some?: AuditLogWhereInput
+    none?: AuditLogWhereInput
+  }
+
+  export type DepartmentNullableScalarRelationFilter = {
+    is?: DepartmentWhereInput | null
+    isNot?: DepartmentWhereInput | null
+  }
+
+  export type NotificationListRelationFilter = {
+    every?: NotificationWhereInput
+    some?: NotificationWhereInput
+    none?: NotificationWhereInput
   }
 
   export type ReviewListRelationFilter = {
@@ -13085,21 +13301,10 @@ export namespace Prisma {
     none?: TicketHistoryWhereInput
   }
 
-  export type NotificationListRelationFilter = {
-    every?: NotificationWhereInput
-    some?: NotificationWhereInput
-    none?: NotificationWhereInput
-  }
-
-  export type AuditLogListRelationFilter = {
-    every?: AuditLogWhereInput
-    some?: AuditLogWhereInput
-    none?: AuditLogWhereInput
-  }
-
-  export type DepartmentNullableScalarRelationFilter = {
-    is?: DepartmentWhereInput | null
-    isNot?: DepartmentWhereInput | null
+  export type TicketListRelationFilter = {
+    every?: TicketWhereInput
+    some?: TicketWhereInput
+    none?: TicketWhereInput
   }
 
   export type DepartmentListRelationFilter = {
@@ -13113,7 +13318,11 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type TicketOrderByRelationAggregateInput = {
+  export type AuditLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NotificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13125,11 +13334,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type NotificationOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type AuditLogOrderByRelationAggregateInput = {
+  export type TicketOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13142,6 +13347,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    branch?: SortOrder
     role?: SortOrder
     department?: SortOrder
     isActive?: SortOrder
@@ -13157,6 +13363,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    branch?: SortOrder
     role?: SortOrder
     department?: SortOrder
     isActive?: SortOrder
@@ -13172,6 +13379,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    branch?: SortOrder
     role?: SortOrder
     department?: SortOrder
     isActive?: SortOrder
@@ -13264,6 +13472,43 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type EnumMainCategoryNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.MainCategory | EnumMainCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumMainCategoryNullableFilter<$PrismaModel> | $Enums.MainCategory | null
+  }
+
+  export type EnumRequestServiceTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRequestServiceTypeNullableFilter<$PrismaModel> | $Enums.RequestServiceType | null
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
   export type EnumPriorityFilter<$PrismaModel = never> = {
     equals?: $Enums.Priority | EnumPriorityFieldRefInput<$PrismaModel>
     in?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
@@ -13285,14 +13530,14 @@ export namespace Prisma {
     not?: NestedEnumMDFeedbackNullableFilter<$PrismaModel> | $Enums.MDFeedback | null
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
   }
 
   export type TicketCountOrderByAggregateInput = {
@@ -13300,6 +13545,11 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    mainCategory?: SortOrder
+    requestServiceType?: SortOrder
+    itemType?: SortOrder
+    serviceDetails?: SortOrder
+    count?: SortOrder
     category?: SortOrder
     priority?: SortOrder
     status?: SortOrder
@@ -13326,6 +13576,10 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    mainCategory?: SortOrder
+    requestServiceType?: SortOrder
+    itemType?: SortOrder
+    count?: SortOrder
     category?: SortOrder
     priority?: SortOrder
     status?: SortOrder
@@ -13352,6 +13606,10 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    mainCategory?: SortOrder
+    requestServiceType?: SortOrder
+    itemType?: SortOrder
+    count?: SortOrder
     category?: SortOrder
     priority?: SortOrder
     status?: SortOrder
@@ -13371,6 +13629,52 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     closedAt?: SortOrder
+  }
+
+  export type EnumMainCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MainCategory | EnumMainCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumMainCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.MainCategory | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumMainCategoryNullableFilter<$PrismaModel>
+    _max?: NestedEnumMainCategoryNullableFilter<$PrismaModel>
+  }
+
+  export type EnumRequestServiceTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRequestServiceTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.RequestServiceType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRequestServiceTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumRequestServiceTypeNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumPriorityWithAggregatesFilter<$PrismaModel = never> = {
@@ -13621,29 +13925,6 @@ export namespace Prisma {
     updatedBy?: SortOrder
     updatedAt?: SortOrder
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type AuditLogCountOrderByAggregateInput = {
     id?: SortOrder
@@ -13678,45 +13959,25 @@ export namespace Prisma {
     userAgent?: SortOrder
     createdAt?: SortOrder
   }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
+  export type AuditLogCreateNestedManyWithoutUserInput = {
+    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
+    createMany?: AuditLogCreateManyUserInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
-  export type TicketCreateNestedManyWithoutCreatedByInput = {
-    create?: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput> | TicketCreateWithoutCreatedByInput[] | TicketUncheckedCreateWithoutCreatedByInput[]
-    connectOrCreate?: TicketCreateOrConnectWithoutCreatedByInput | TicketCreateOrConnectWithoutCreatedByInput[]
-    createMany?: TicketCreateManyCreatedByInputEnvelope
-    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+  export type DepartmentCreateNestedOneWithoutHeadInput = {
+    create?: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutHeadInput
+    connect?: DepartmentWhereUniqueInput
   }
 
-  export type TicketCreateNestedManyWithoutAssignedToInput = {
-    create?: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput> | TicketCreateWithoutAssignedToInput[] | TicketUncheckedCreateWithoutAssignedToInput[]
-    connectOrCreate?: TicketCreateOrConnectWithoutAssignedToInput | TicketCreateOrConnectWithoutAssignedToInput[]
-    createMany?: TicketCreateManyAssignedToInputEnvelope
-    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+  export type NotificationCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type ReviewCreateNestedManyWithoutCreatedByInput = {
@@ -13733,24 +13994,18 @@ export namespace Prisma {
     connect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
   }
 
-  export type NotificationCreateNestedManyWithoutUserInput = {
-    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
-    createMany?: NotificationCreateManyUserInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  export type TicketCreateNestedManyWithoutAssignedToInput = {
+    create?: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput> | TicketCreateWithoutAssignedToInput[] | TicketUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutAssignedToInput | TicketCreateOrConnectWithoutAssignedToInput[]
+    createMany?: TicketCreateManyAssignedToInputEnvelope
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
   }
 
-  export type AuditLogCreateNestedManyWithoutUserInput = {
-    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
-    createMany?: AuditLogCreateManyUserInputEnvelope
-    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-  }
-
-  export type DepartmentCreateNestedOneWithoutHeadInput = {
-    create?: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
-    connectOrCreate?: DepartmentCreateOrConnectWithoutHeadInput
-    connect?: DepartmentWhereUniqueInput
+  export type TicketCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput> | TicketCreateWithoutCreatedByInput[] | TicketUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutCreatedByInput | TicketCreateOrConnectWithoutCreatedByInput[]
+    createMany?: TicketCreateManyCreatedByInputEnvelope
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
   }
 
   export type DepartmentCreateNestedManyWithoutMembersInput = {
@@ -13759,18 +14014,24 @@ export namespace Prisma {
     connect?: DepartmentWhereUniqueInput | DepartmentWhereUniqueInput[]
   }
 
-  export type TicketUncheckedCreateNestedManyWithoutCreatedByInput = {
-    create?: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput> | TicketCreateWithoutCreatedByInput[] | TicketUncheckedCreateWithoutCreatedByInput[]
-    connectOrCreate?: TicketCreateOrConnectWithoutCreatedByInput | TicketCreateOrConnectWithoutCreatedByInput[]
-    createMany?: TicketCreateManyCreatedByInputEnvelope
-    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+  export type AuditLogUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
+    createMany?: AuditLogCreateManyUserInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
-  export type TicketUncheckedCreateNestedManyWithoutAssignedToInput = {
-    create?: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput> | TicketCreateWithoutAssignedToInput[] | TicketUncheckedCreateWithoutAssignedToInput[]
-    connectOrCreate?: TicketCreateOrConnectWithoutAssignedToInput | TicketCreateOrConnectWithoutAssignedToInput[]
-    createMany?: TicketCreateManyAssignedToInputEnvelope
-    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+  export type DepartmentUncheckedCreateNestedOneWithoutHeadInput = {
+    create?: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutHeadInput
+    connect?: DepartmentWhereUniqueInput
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type ReviewUncheckedCreateNestedManyWithoutCreatedByInput = {
@@ -13787,24 +14048,18 @@ export namespace Prisma {
     connect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
   }
 
-  export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
-    createMany?: NotificationCreateManyUserInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  export type TicketUncheckedCreateNestedManyWithoutAssignedToInput = {
+    create?: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput> | TicketCreateWithoutAssignedToInput[] | TicketUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutAssignedToInput | TicketCreateOrConnectWithoutAssignedToInput[]
+    createMany?: TicketCreateManyAssignedToInputEnvelope
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
   }
 
-  export type AuditLogUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
-    createMany?: AuditLogCreateManyUserInputEnvelope
-    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-  }
-
-  export type DepartmentUncheckedCreateNestedOneWithoutHeadInput = {
-    create?: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
-    connectOrCreate?: DepartmentCreateOrConnectWithoutHeadInput
-    connect?: DepartmentWhereUniqueInput
+  export type TicketUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput> | TicketCreateWithoutCreatedByInput[] | TicketUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutCreatedByInput | TicketCreateOrConnectWithoutCreatedByInput[]
+    createMany?: TicketCreateManyCreatedByInputEnvelope
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
   }
 
   export type DepartmentUncheckedCreateNestedManyWithoutMembersInput = {
@@ -13837,32 +14092,42 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type TicketUpdateManyWithoutCreatedByNestedInput = {
-    create?: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput> | TicketCreateWithoutCreatedByInput[] | TicketUncheckedCreateWithoutCreatedByInput[]
-    connectOrCreate?: TicketCreateOrConnectWithoutCreatedByInput | TicketCreateOrConnectWithoutCreatedByInput[]
-    upsert?: TicketUpsertWithWhereUniqueWithoutCreatedByInput | TicketUpsertWithWhereUniqueWithoutCreatedByInput[]
-    createMany?: TicketCreateManyCreatedByInputEnvelope
-    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    update?: TicketUpdateWithWhereUniqueWithoutCreatedByInput | TicketUpdateWithWhereUniqueWithoutCreatedByInput[]
-    updateMany?: TicketUpdateManyWithWhereWithoutCreatedByInput | TicketUpdateManyWithWhereWithoutCreatedByInput[]
-    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
+  export type AuditLogUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutUserInput | AuditLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AuditLogCreateManyUserInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutUserInput | AuditLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutUserInput | AuditLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
-  export type TicketUpdateManyWithoutAssignedToNestedInput = {
-    create?: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput> | TicketCreateWithoutAssignedToInput[] | TicketUncheckedCreateWithoutAssignedToInput[]
-    connectOrCreate?: TicketCreateOrConnectWithoutAssignedToInput | TicketCreateOrConnectWithoutAssignedToInput[]
-    upsert?: TicketUpsertWithWhereUniqueWithoutAssignedToInput | TicketUpsertWithWhereUniqueWithoutAssignedToInput[]
-    createMany?: TicketCreateManyAssignedToInputEnvelope
-    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    update?: TicketUpdateWithWhereUniqueWithoutAssignedToInput | TicketUpdateWithWhereUniqueWithoutAssignedToInput[]
-    updateMany?: TicketUpdateManyWithWhereWithoutAssignedToInput | TicketUpdateManyWithWhereWithoutAssignedToInput[]
-    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
+  export type DepartmentUpdateOneWithoutHeadNestedInput = {
+    create?: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutHeadInput
+    upsert?: DepartmentUpsertWithoutHeadInput
+    disconnect?: DepartmentWhereInput | boolean
+    delete?: DepartmentWhereInput | boolean
+    connect?: DepartmentWhereUniqueInput
+    update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutHeadInput, DepartmentUpdateWithoutHeadInput>, DepartmentUncheckedUpdateWithoutHeadInput>
+  }
+
+  export type NotificationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
   export type ReviewUpdateManyWithoutCreatedByNestedInput = {
@@ -13893,42 +14158,32 @@ export namespace Prisma {
     deleteMany?: TicketHistoryScalarWhereInput | TicketHistoryScalarWhereInput[]
   }
 
-  export type NotificationUpdateManyWithoutUserNestedInput = {
-    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: NotificationCreateManyUserInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  export type TicketUpdateManyWithoutAssignedToNestedInput = {
+    create?: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput> | TicketCreateWithoutAssignedToInput[] | TicketUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutAssignedToInput | TicketCreateOrConnectWithoutAssignedToInput[]
+    upsert?: TicketUpsertWithWhereUniqueWithoutAssignedToInput | TicketUpsertWithWhereUniqueWithoutAssignedToInput[]
+    createMany?: TicketCreateManyAssignedToInputEnvelope
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    update?: TicketUpdateWithWhereUniqueWithoutAssignedToInput | TicketUpdateWithWhereUniqueWithoutAssignedToInput[]
+    updateMany?: TicketUpdateManyWithWhereWithoutAssignedToInput | TicketUpdateManyWithWhereWithoutAssignedToInput[]
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
   }
 
-  export type AuditLogUpdateManyWithoutUserNestedInput = {
-    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
-    upsert?: AuditLogUpsertWithWhereUniqueWithoutUserInput | AuditLogUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: AuditLogCreateManyUserInputEnvelope
-    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    update?: AuditLogUpdateWithWhereUniqueWithoutUserInput | AuditLogUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: AuditLogUpdateManyWithWhereWithoutUserInput | AuditLogUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
-  }
-
-  export type DepartmentUpdateOneWithoutHeadNestedInput = {
-    create?: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
-    connectOrCreate?: DepartmentCreateOrConnectWithoutHeadInput
-    upsert?: DepartmentUpsertWithoutHeadInput
-    disconnect?: DepartmentWhereInput | boolean
-    delete?: DepartmentWhereInput | boolean
-    connect?: DepartmentWhereUniqueInput
-    update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutHeadInput, DepartmentUpdateWithoutHeadInput>, DepartmentUncheckedUpdateWithoutHeadInput>
+  export type TicketUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput> | TicketCreateWithoutCreatedByInput[] | TicketUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutCreatedByInput | TicketCreateOrConnectWithoutCreatedByInput[]
+    upsert?: TicketUpsertWithWhereUniqueWithoutCreatedByInput | TicketUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: TicketCreateManyCreatedByInputEnvelope
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    update?: TicketUpdateWithWhereUniqueWithoutCreatedByInput | TicketUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: TicketUpdateManyWithWhereWithoutCreatedByInput | TicketUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
   }
 
   export type DepartmentUpdateManyWithoutMembersNestedInput = {
@@ -13944,32 +14199,42 @@ export namespace Prisma {
     deleteMany?: DepartmentScalarWhereInput | DepartmentScalarWhereInput[]
   }
 
-  export type TicketUncheckedUpdateManyWithoutCreatedByNestedInput = {
-    create?: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput> | TicketCreateWithoutCreatedByInput[] | TicketUncheckedCreateWithoutCreatedByInput[]
-    connectOrCreate?: TicketCreateOrConnectWithoutCreatedByInput | TicketCreateOrConnectWithoutCreatedByInput[]
-    upsert?: TicketUpsertWithWhereUniqueWithoutCreatedByInput | TicketUpsertWithWhereUniqueWithoutCreatedByInput[]
-    createMany?: TicketCreateManyCreatedByInputEnvelope
-    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    update?: TicketUpdateWithWhereUniqueWithoutCreatedByInput | TicketUpdateWithWhereUniqueWithoutCreatedByInput[]
-    updateMany?: TicketUpdateManyWithWhereWithoutCreatedByInput | TicketUpdateManyWithWhereWithoutCreatedByInput[]
-    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
+  export type AuditLogUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutUserInput | AuditLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AuditLogCreateManyUserInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutUserInput | AuditLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutUserInput | AuditLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
-  export type TicketUncheckedUpdateManyWithoutAssignedToNestedInput = {
-    create?: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput> | TicketCreateWithoutAssignedToInput[] | TicketUncheckedCreateWithoutAssignedToInput[]
-    connectOrCreate?: TicketCreateOrConnectWithoutAssignedToInput | TicketCreateOrConnectWithoutAssignedToInput[]
-    upsert?: TicketUpsertWithWhereUniqueWithoutAssignedToInput | TicketUpsertWithWhereUniqueWithoutAssignedToInput[]
-    createMany?: TicketCreateManyAssignedToInputEnvelope
-    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
-    update?: TicketUpdateWithWhereUniqueWithoutAssignedToInput | TicketUpdateWithWhereUniqueWithoutAssignedToInput[]
-    updateMany?: TicketUpdateManyWithWhereWithoutAssignedToInput | TicketUpdateManyWithWhereWithoutAssignedToInput[]
-    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
+  export type DepartmentUncheckedUpdateOneWithoutHeadNestedInput = {
+    create?: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutHeadInput
+    upsert?: DepartmentUpsertWithoutHeadInput
+    disconnect?: DepartmentWhereInput | boolean
+    delete?: DepartmentWhereInput | boolean
+    connect?: DepartmentWhereUniqueInput
+    update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutHeadInput, DepartmentUpdateWithoutHeadInput>, DepartmentUncheckedUpdateWithoutHeadInput>
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
   export type ReviewUncheckedUpdateManyWithoutCreatedByNestedInput = {
@@ -14000,42 +14265,32 @@ export namespace Prisma {
     deleteMany?: TicketHistoryScalarWhereInput | TicketHistoryScalarWhereInput[]
   }
 
-  export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: NotificationCreateManyUserInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  export type TicketUncheckedUpdateManyWithoutAssignedToNestedInput = {
+    create?: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput> | TicketCreateWithoutAssignedToInput[] | TicketUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutAssignedToInput | TicketCreateOrConnectWithoutAssignedToInput[]
+    upsert?: TicketUpsertWithWhereUniqueWithoutAssignedToInput | TicketUpsertWithWhereUniqueWithoutAssignedToInput[]
+    createMany?: TicketCreateManyAssignedToInputEnvelope
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    update?: TicketUpdateWithWhereUniqueWithoutAssignedToInput | TicketUpdateWithWhereUniqueWithoutAssignedToInput[]
+    updateMany?: TicketUpdateManyWithWhereWithoutAssignedToInput | TicketUpdateManyWithWhereWithoutAssignedToInput[]
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
   }
 
-  export type AuditLogUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
-    upsert?: AuditLogUpsertWithWhereUniqueWithoutUserInput | AuditLogUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: AuditLogCreateManyUserInputEnvelope
-    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    update?: AuditLogUpdateWithWhereUniqueWithoutUserInput | AuditLogUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: AuditLogUpdateManyWithWhereWithoutUserInput | AuditLogUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
-  }
-
-  export type DepartmentUncheckedUpdateOneWithoutHeadNestedInput = {
-    create?: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
-    connectOrCreate?: DepartmentCreateOrConnectWithoutHeadInput
-    upsert?: DepartmentUpsertWithoutHeadInput
-    disconnect?: DepartmentWhereInput | boolean
-    delete?: DepartmentWhereInput | boolean
-    connect?: DepartmentWhereUniqueInput
-    update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutHeadInput, DepartmentUpdateWithoutHeadInput>, DepartmentUncheckedUpdateWithoutHeadInput>
+  export type TicketUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput> | TicketCreateWithoutCreatedByInput[] | TicketUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutCreatedByInput | TicketCreateOrConnectWithoutCreatedByInput[]
+    upsert?: TicketUpsertWithWhereUniqueWithoutCreatedByInput | TicketUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: TicketCreateManyCreatedByInputEnvelope
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    update?: TicketUpdateWithWhereUniqueWithoutCreatedByInput | TicketUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: TicketUpdateManyWithWhereWithoutCreatedByInput | TicketUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
   }
 
   export type DepartmentUncheckedUpdateManyWithoutMembersNestedInput = {
@@ -14051,23 +14306,11 @@ export namespace Prisma {
     deleteMany?: DepartmentScalarWhereInput | DepartmentScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutCreatedTicketsInput = {
-    create?: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCreatedTicketsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type UserCreateNestedOneWithoutAssignedTicketsInput = {
-    create?: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAssignedTicketsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type TicketHistoryCreateNestedManyWithoutTicketInput = {
-    create?: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput> | TicketHistoryCreateWithoutTicketInput[] | TicketHistoryUncheckedCreateWithoutTicketInput[]
-    connectOrCreate?: TicketHistoryCreateOrConnectWithoutTicketInput | TicketHistoryCreateOrConnectWithoutTicketInput[]
-    createMany?: TicketHistoryCreateManyTicketInputEnvelope
-    connect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
+  export type NotificationCreateNestedManyWithoutTicketInput = {
+    create?: XOR<NotificationCreateWithoutTicketInput, NotificationUncheckedCreateWithoutTicketInput> | NotificationCreateWithoutTicketInput[] | NotificationUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutTicketInput | NotificationCreateOrConnectWithoutTicketInput[]
+    createMany?: NotificationCreateManyTicketInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type ReviewCreateNestedManyWithoutTicketInput = {
@@ -14077,18 +14320,30 @@ export namespace Prisma {
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
-  export type NotificationCreateNestedManyWithoutTicketInput = {
-    create?: XOR<NotificationCreateWithoutTicketInput, NotificationUncheckedCreateWithoutTicketInput> | NotificationCreateWithoutTicketInput[] | NotificationUncheckedCreateWithoutTicketInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutTicketInput | NotificationCreateOrConnectWithoutTicketInput[]
-    createMany?: NotificationCreateManyTicketInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-  }
-
-  export type TicketHistoryUncheckedCreateNestedManyWithoutTicketInput = {
+  export type TicketHistoryCreateNestedManyWithoutTicketInput = {
     create?: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput> | TicketHistoryCreateWithoutTicketInput[] | TicketHistoryUncheckedCreateWithoutTicketInput[]
     connectOrCreate?: TicketHistoryCreateOrConnectWithoutTicketInput | TicketHistoryCreateOrConnectWithoutTicketInput[]
     createMany?: TicketHistoryCreateManyTicketInputEnvelope
     connect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedOneWithoutAssignedTicketsInput = {
+    create?: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedTicketsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCreatedTicketsInput = {
+    create?: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedTicketsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutTicketInput = {
+    create?: XOR<NotificationCreateWithoutTicketInput, NotificationUncheckedCreateWithoutTicketInput> | NotificationCreateWithoutTicketInput[] | NotificationUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutTicketInput | NotificationCreateOrConnectWithoutTicketInput[]
+    createMany?: NotificationCreateManyTicketInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type ReviewUncheckedCreateNestedManyWithoutTicketInput = {
@@ -14098,11 +14353,19 @@ export namespace Prisma {
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
-  export type NotificationUncheckedCreateNestedManyWithoutTicketInput = {
-    create?: XOR<NotificationCreateWithoutTicketInput, NotificationUncheckedCreateWithoutTicketInput> | NotificationCreateWithoutTicketInput[] | NotificationUncheckedCreateWithoutTicketInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutTicketInput | NotificationCreateOrConnectWithoutTicketInput[]
-    createMany?: NotificationCreateManyTicketInputEnvelope
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  export type TicketHistoryUncheckedCreateNestedManyWithoutTicketInput = {
+    create?: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput> | TicketHistoryCreateWithoutTicketInput[] | TicketHistoryUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: TicketHistoryCreateOrConnectWithoutTicketInput | TicketHistoryCreateOrConnectWithoutTicketInput[]
+    createMany?: TicketHistoryCreateManyTicketInputEnvelope
+    connect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
+  }
+
+  export type NullableEnumMainCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.MainCategory | null
+  }
+
+  export type NullableEnumRequestServiceTypeFieldUpdateOperationsInput = {
+    set?: $Enums.RequestServiceType | null
   }
 
   export type EnumPriorityFieldUpdateOperationsInput = {
@@ -14115,52 +14378,6 @@ export namespace Prisma {
 
   export type NullableEnumMDFeedbackFieldUpdateOperationsInput = {
     set?: $Enums.MDFeedback | null
-  }
-
-  export type UserUpdateOneRequiredWithoutCreatedTicketsNestedInput = {
-    create?: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCreatedTicketsInput
-    upsert?: UserUpsertWithoutCreatedTicketsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedTicketsInput, UserUpdateWithoutCreatedTicketsInput>, UserUncheckedUpdateWithoutCreatedTicketsInput>
-  }
-
-  export type UserUpdateOneWithoutAssignedTicketsNestedInput = {
-    create?: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAssignedTicketsInput
-    upsert?: UserUpsertWithoutAssignedTicketsInput
-    disconnect?: UserWhereInput | boolean
-    delete?: UserWhereInput | boolean
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAssignedTicketsInput, UserUpdateWithoutAssignedTicketsInput>, UserUncheckedUpdateWithoutAssignedTicketsInput>
-  }
-
-  export type TicketHistoryUpdateManyWithoutTicketNestedInput = {
-    create?: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput> | TicketHistoryCreateWithoutTicketInput[] | TicketHistoryUncheckedCreateWithoutTicketInput[]
-    connectOrCreate?: TicketHistoryCreateOrConnectWithoutTicketInput | TicketHistoryCreateOrConnectWithoutTicketInput[]
-    upsert?: TicketHistoryUpsertWithWhereUniqueWithoutTicketInput | TicketHistoryUpsertWithWhereUniqueWithoutTicketInput[]
-    createMany?: TicketHistoryCreateManyTicketInputEnvelope
-    set?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
-    disconnect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
-    delete?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
-    connect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
-    update?: TicketHistoryUpdateWithWhereUniqueWithoutTicketInput | TicketHistoryUpdateWithWhereUniqueWithoutTicketInput[]
-    updateMany?: TicketHistoryUpdateManyWithWhereWithoutTicketInput | TicketHistoryUpdateManyWithWhereWithoutTicketInput[]
-    deleteMany?: TicketHistoryScalarWhereInput | TicketHistoryScalarWhereInput[]
-  }
-
-  export type ReviewUpdateManyWithoutTicketNestedInput = {
-    create?: XOR<ReviewCreateWithoutTicketInput, ReviewUncheckedCreateWithoutTicketInput> | ReviewCreateWithoutTicketInput[] | ReviewUncheckedCreateWithoutTicketInput[]
-    connectOrCreate?: ReviewCreateOrConnectWithoutTicketInput | ReviewCreateOrConnectWithoutTicketInput[]
-    upsert?: ReviewUpsertWithWhereUniqueWithoutTicketInput | ReviewUpsertWithWhereUniqueWithoutTicketInput[]
-    createMany?: ReviewCreateManyTicketInputEnvelope
-    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
-    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
-    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
-    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
-    update?: ReviewUpdateWithWhereUniqueWithoutTicketInput | ReviewUpdateWithWhereUniqueWithoutTicketInput[]
-    updateMany?: ReviewUpdateManyWithWhereWithoutTicketInput | ReviewUpdateManyWithWhereWithoutTicketInput[]
-    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
   }
 
   export type NotificationUpdateManyWithoutTicketNestedInput = {
@@ -14177,7 +14394,21 @@ export namespace Prisma {
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
-  export type TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput = {
+  export type ReviewUpdateManyWithoutTicketNestedInput = {
+    create?: XOR<ReviewCreateWithoutTicketInput, ReviewUncheckedCreateWithoutTicketInput> | ReviewCreateWithoutTicketInput[] | ReviewUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutTicketInput | ReviewCreateOrConnectWithoutTicketInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutTicketInput | ReviewUpsertWithWhereUniqueWithoutTicketInput[]
+    createMany?: ReviewCreateManyTicketInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutTicketInput | ReviewUpdateWithWhereUniqueWithoutTicketInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutTicketInput | ReviewUpdateManyWithWhereWithoutTicketInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type TicketHistoryUpdateManyWithoutTicketNestedInput = {
     create?: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput> | TicketHistoryCreateWithoutTicketInput[] | TicketHistoryUncheckedCreateWithoutTicketInput[]
     connectOrCreate?: TicketHistoryCreateOrConnectWithoutTicketInput | TicketHistoryCreateOrConnectWithoutTicketInput[]
     upsert?: TicketHistoryUpsertWithWhereUniqueWithoutTicketInput | TicketHistoryUpsertWithWhereUniqueWithoutTicketInput[]
@@ -14189,6 +14420,38 @@ export namespace Prisma {
     update?: TicketHistoryUpdateWithWhereUniqueWithoutTicketInput | TicketHistoryUpdateWithWhereUniqueWithoutTicketInput[]
     updateMany?: TicketHistoryUpdateManyWithWhereWithoutTicketInput | TicketHistoryUpdateManyWithWhereWithoutTicketInput[]
     deleteMany?: TicketHistoryScalarWhereInput | TicketHistoryScalarWhereInput[]
+  }
+
+  export type UserUpdateOneWithoutAssignedTicketsNestedInput = {
+    create?: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedTicketsInput
+    upsert?: UserUpsertWithoutAssignedTicketsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAssignedTicketsInput, UserUpdateWithoutAssignedTicketsInput>, UserUncheckedUpdateWithoutAssignedTicketsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCreatedTicketsNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedTicketsInput
+    upsert?: UserUpsertWithoutCreatedTicketsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedTicketsInput, UserUpdateWithoutCreatedTicketsInput>, UserUncheckedUpdateWithoutCreatedTicketsInput>
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutTicketNestedInput = {
+    create?: XOR<NotificationCreateWithoutTicketInput, NotificationUncheckedCreateWithoutTicketInput> | NotificationCreateWithoutTicketInput[] | NotificationUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutTicketInput | NotificationCreateOrConnectWithoutTicketInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutTicketInput | NotificationUpsertWithWhereUniqueWithoutTicketInput[]
+    createMany?: NotificationCreateManyTicketInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutTicketInput | NotificationUpdateWithWhereUniqueWithoutTicketInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutTicketInput | NotificationUpdateManyWithWhereWithoutTicketInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
   export type ReviewUncheckedUpdateManyWithoutTicketNestedInput = {
@@ -14205,18 +14468,18 @@ export namespace Prisma {
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
   }
 
-  export type NotificationUncheckedUpdateManyWithoutTicketNestedInput = {
-    create?: XOR<NotificationCreateWithoutTicketInput, NotificationUncheckedCreateWithoutTicketInput> | NotificationCreateWithoutTicketInput[] | NotificationUncheckedCreateWithoutTicketInput[]
-    connectOrCreate?: NotificationCreateOrConnectWithoutTicketInput | NotificationCreateOrConnectWithoutTicketInput[]
-    upsert?: NotificationUpsertWithWhereUniqueWithoutTicketInput | NotificationUpsertWithWhereUniqueWithoutTicketInput[]
-    createMany?: NotificationCreateManyTicketInputEnvelope
-    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-    update?: NotificationUpdateWithWhereUniqueWithoutTicketInput | NotificationUpdateWithWhereUniqueWithoutTicketInput[]
-    updateMany?: NotificationUpdateManyWithWhereWithoutTicketInput | NotificationUpdateManyWithWhereWithoutTicketInput[]
-    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  export type TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput = {
+    create?: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput> | TicketHistoryCreateWithoutTicketInput[] | TicketHistoryUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: TicketHistoryCreateOrConnectWithoutTicketInput | TicketHistoryCreateOrConnectWithoutTicketInput[]
+    upsert?: TicketHistoryUpsertWithWhereUniqueWithoutTicketInput | TicketHistoryUpsertWithWhereUniqueWithoutTicketInput[]
+    createMany?: TicketHistoryCreateManyTicketInputEnvelope
+    set?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
+    disconnect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
+    delete?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
+    connect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
+    update?: TicketHistoryUpdateWithWhereUniqueWithoutTicketInput | TicketHistoryUpdateWithWhereUniqueWithoutTicketInput[]
+    updateMany?: TicketHistoryUpdateManyWithWhereWithoutTicketInput | TicketHistoryUpdateManyWithWhereWithoutTicketInput[]
+    deleteMany?: TicketHistoryScalarWhereInput | TicketHistoryScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutReviewsInput = {
@@ -14279,28 +14542,20 @@ export namespace Prisma {
     update?: XOR<XOR<TicketUpdateToOneWithWhereWithoutHistoryInput, TicketUpdateWithoutHistoryInput>, TicketUncheckedUpdateWithoutHistoryInput>
   }
 
-  export type UserCreateNestedOneWithoutNotificationsInput = {
-    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type TicketCreateNestedOneWithoutNotificationsInput = {
     create?: XOR<TicketCreateWithoutNotificationsInput, TicketUncheckedCreateWithoutNotificationsInput>
     connectOrCreate?: TicketCreateOrConnectWithoutNotificationsInput
     connect?: TicketWhereUniqueInput
   }
 
-  export type EnumNotificationTypeFieldUpdateOperationsInput = {
-    set?: $Enums.NotificationType
-  }
-
-  export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+  export type UserCreateNestedOneWithoutNotificationsInput = {
     create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
-    upsert?: UserUpsertWithoutNotificationsInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type EnumNotificationTypeFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationType
   }
 
   export type TicketUpdateOneWithoutNotificationsNestedInput = {
@@ -14311,6 +14566,14 @@ export namespace Prisma {
     delete?: TicketWhereInput | boolean
     connect?: TicketWhereUniqueInput
     update?: XOR<XOR<TicketUpdateToOneWithWhereWithoutNotificationsInput, TicketUpdateWithoutNotificationsInput>, TicketUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    upsert?: UserUpsertWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
   }
 
   export type UserCreateNestedOneWithoutHeadedDepartmentInput = {
@@ -14547,6 +14810,20 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumMainCategoryNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.MainCategory | EnumMainCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumMainCategoryNullableFilter<$PrismaModel> | $Enums.MainCategory | null
+  }
+
+  export type NestedEnumRequestServiceTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRequestServiceTypeNullableFilter<$PrismaModel> | $Enums.RequestServiceType | null
+  }
+
   export type NestedEnumPriorityFilter<$PrismaModel = never> = {
     equals?: $Enums.Priority | EnumPriorityFieldRefInput<$PrismaModel>
     in?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
@@ -14566,6 +14843,49 @@ export namespace Prisma {
     in?: $Enums.MDFeedback[] | ListEnumMDFeedbackFieldRefInput<$PrismaModel> | null
     notIn?: $Enums.MDFeedback[] | ListEnumMDFeedbackFieldRefInput<$PrismaModel> | null
     not?: NestedEnumMDFeedbackNullableFilter<$PrismaModel> | $Enums.MDFeedback | null
+  }
+
+  export type NestedEnumMainCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MainCategory | EnumMainCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumMainCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.MainCategory | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumMainCategoryNullableFilter<$PrismaModel>
+    _max?: NestedEnumMainCategoryNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRequestServiceTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRequestServiceTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.RequestServiceType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRequestServiceTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumRequestServiceTypeNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumPriorityWithAggregatesFilter<$PrismaModel = never> = {
@@ -14631,159 +14951,97 @@ export namespace Prisma {
     _min?: NestedEnumNotificationTypeFilter<$PrismaModel>
     _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
   }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
 
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type TicketCreateWithoutCreatedByInput = {
+  export type AuditLogCreateWithoutUserInput = {
     id?: string
-    ticketNumber: string
-    title: string
-    description?: string | null
-    category: string
-    priority?: $Enums.Priority
-    status?: $Enums.Status
-    attachment?: string | null
-    attachmentPublicId?: string | null
-    serialNumber?: string | null
-    mdApproval?: $Enums.MDFeedback | null
-    mdApprovedAt?: Date | string | null
-    mdRejectedAt?: Date | string | null
-    mdRejectReason?: string | null
-    mdApprovalComment?: string | null
-    thirdParty?: boolean
-    thirdPartyStatus?: string | null
-    thirdPartyDetails?: string | null
+    action: string
+    entityType: string
+    entityId?: string | null
+    details?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
-    closedAt?: Date | string | null
-    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
-    history?: TicketHistoryCreateNestedManyWithoutTicketInput
-    reviews?: ReviewCreateNestedManyWithoutTicketInput
-    notifications?: NotificationCreateNestedManyWithoutTicketInput
   }
 
-  export type TicketUncheckedCreateWithoutCreatedByInput = {
+  export type AuditLogUncheckedCreateWithoutUserInput = {
     id?: string
-    ticketNumber: string
-    title: string
-    description?: string | null
-    category: string
-    priority?: $Enums.Priority
-    status?: $Enums.Status
-    attachment?: string | null
-    attachmentPublicId?: string | null
-    serialNumber?: string | null
-    assignedToId?: string | null
-    mdApproval?: $Enums.MDFeedback | null
-    mdApprovedAt?: Date | string | null
-    mdRejectedAt?: Date | string | null
-    mdRejectReason?: string | null
-    mdApprovalComment?: string | null
-    thirdParty?: boolean
-    thirdPartyStatus?: string | null
-    thirdPartyDetails?: string | null
+    action: string
+    entityType: string
+    entityId?: string | null
+    details?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
-    closedAt?: Date | string | null
-    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
   }
 
-  export type TicketCreateOrConnectWithoutCreatedByInput = {
-    where: TicketWhereUniqueInput
-    create: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput>
+  export type AuditLogCreateOrConnectWithoutUserInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput>
   }
 
-  export type TicketCreateManyCreatedByInputEnvelope = {
-    data: TicketCreateManyCreatedByInput | TicketCreateManyCreatedByInput[]
+  export type AuditLogCreateManyUserInputEnvelope = {
+    data: AuditLogCreateManyUserInput | AuditLogCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
-  export type TicketCreateWithoutAssignedToInput = {
+  export type DepartmentCreateWithoutHeadInput = {
     id?: string
-    ticketNumber: string
-    title: string
+    name: string
     description?: string | null
-    category: string
-    priority?: $Enums.Priority
-    status?: $Enums.Status
-    attachment?: string | null
-    attachmentPublicId?: string | null
-    serialNumber?: string | null
-    mdApproval?: $Enums.MDFeedback | null
-    mdApprovedAt?: Date | string | null
-    mdRejectedAt?: Date | string | null
-    mdRejectReason?: string | null
-    mdApprovalComment?: string | null
-    thirdParty?: boolean
-    thirdPartyStatus?: string | null
-    thirdPartyDetails?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    closedAt?: Date | string | null
-    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
-    history?: TicketHistoryCreateNestedManyWithoutTicketInput
-    reviews?: ReviewCreateNestedManyWithoutTicketInput
-    notifications?: NotificationCreateNestedManyWithoutTicketInput
+    members?: UserCreateNestedManyWithoutMemberOfDepartmentsInput
   }
 
-  export type TicketUncheckedCreateWithoutAssignedToInput = {
+  export type DepartmentUncheckedCreateWithoutHeadInput = {
     id?: string
-    ticketNumber: string
-    title: string
+    name: string
     description?: string | null
-    category: string
-    priority?: $Enums.Priority
-    status?: $Enums.Status
-    attachment?: string | null
-    attachmentPublicId?: string | null
-    serialNumber?: string | null
-    createdById: string
-    mdApproval?: $Enums.MDFeedback | null
-    mdApprovedAt?: Date | string | null
-    mdRejectedAt?: Date | string | null
-    mdRejectReason?: string | null
-    mdApprovalComment?: string | null
-    thirdParty?: boolean
-    thirdPartyStatus?: string | null
-    thirdPartyDetails?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    closedAt?: Date | string | null
-    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    members?: UserUncheckedCreateNestedManyWithoutMemberOfDepartmentsInput
   }
 
-  export type TicketCreateOrConnectWithoutAssignedToInput = {
-    where: TicketWhereUniqueInput
-    create: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput>
+  export type DepartmentCreateOrConnectWithoutHeadInput = {
+    where: DepartmentWhereUniqueInput
+    create: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
   }
 
-  export type TicketCreateManyAssignedToInputEnvelope = {
-    data: TicketCreateManyAssignedToInput | TicketCreateManyAssignedToInput[]
+  export type NotificationCreateWithoutUserInput = {
+    id?: string
+    type: $Enums.NotificationType
+    title: string
+    message: string
+    read?: boolean
+    readAt?: Date | string | null
+    emailSent?: boolean
+    emailSentAt?: Date | string | null
+    createdAt?: Date | string
+    ticket?: TicketCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateWithoutUserInput = {
+    id?: string
+    type: $Enums.NotificationType
+    title: string
+    message: string
+    ticketId?: string | null
+    read?: boolean
+    readAt?: Date | string | null
+    emailSent?: boolean
+    emailSentAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type NotificationCreateOrConnectWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationCreateManyUserInputEnvelope = {
+    data: NotificationCreateManyUserInput | NotificationCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -14843,97 +15101,156 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type NotificationCreateWithoutUserInput = {
+  export type TicketCreateWithoutAssignedToInput = {
     id?: string
-    type: $Enums.NotificationType
+    ticketNumber: string
     title: string
-    message: string
-    read?: boolean
-    readAt?: Date | string | null
-    emailSent?: boolean
-    emailSentAt?: Date | string | null
+    description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
+    category: string
+    priority?: $Enums.Priority
+    status?: $Enums.Status
+    attachment?: string | null
+    attachmentPublicId?: string | null
+    serialNumber?: string | null
+    mdApproval?: $Enums.MDFeedback | null
+    mdApprovedAt?: Date | string | null
+    mdRejectedAt?: Date | string | null
+    mdRejectReason?: string | null
+    mdApprovalComment?: string | null
+    thirdParty?: boolean
+    thirdPartyStatus?: string | null
+    thirdPartyDetails?: string | null
     createdAt?: Date | string
-    ticket?: TicketCreateNestedOneWithoutNotificationsInput
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
+    notifications?: NotificationCreateNestedManyWithoutTicketInput
+    reviews?: ReviewCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryCreateNestedManyWithoutTicketInput
+    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
   }
 
-  export type NotificationUncheckedCreateWithoutUserInput = {
+  export type TicketUncheckedCreateWithoutAssignedToInput = {
     id?: string
-    type: $Enums.NotificationType
+    ticketNumber: string
     title: string
-    message: string
-    ticketId?: string | null
-    read?: boolean
-    readAt?: Date | string | null
-    emailSent?: boolean
-    emailSentAt?: Date | string | null
+    description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
+    category: string
+    priority?: $Enums.Priority
+    status?: $Enums.Status
+    attachment?: string | null
+    attachmentPublicId?: string | null
+    serialNumber?: string | null
+    createdById: string
+    mdApproval?: $Enums.MDFeedback | null
+    mdApprovedAt?: Date | string | null
+    mdRejectedAt?: Date | string | null
+    mdRejectReason?: string | null
+    mdApprovalComment?: string | null
+    thirdParty?: boolean
+    thirdPartyStatus?: string | null
+    thirdPartyDetails?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
+    notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
   }
 
-  export type NotificationCreateOrConnectWithoutUserInput = {
-    where: NotificationWhereUniqueInput
-    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  export type TicketCreateOrConnectWithoutAssignedToInput = {
+    where: TicketWhereUniqueInput
+    create: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput>
   }
 
-  export type NotificationCreateManyUserInputEnvelope = {
-    data: NotificationCreateManyUserInput | NotificationCreateManyUserInput[]
+  export type TicketCreateManyAssignedToInputEnvelope = {
+    data: TicketCreateManyAssignedToInput | TicketCreateManyAssignedToInput[]
     skipDuplicates?: boolean
   }
 
-  export type AuditLogCreateWithoutUserInput = {
+  export type TicketCreateWithoutCreatedByInput = {
     id?: string
-    action: string
-    entityType: string
-    entityId?: string | null
-    details?: NullableJsonNullValueInput | InputJsonValue
-    ipAddress?: string | null
-    userAgent?: string | null
+    ticketNumber: string
+    title: string
+    description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
+    category: string
+    priority?: $Enums.Priority
+    status?: $Enums.Status
+    attachment?: string | null
+    attachmentPublicId?: string | null
+    serialNumber?: string | null
+    mdApproval?: $Enums.MDFeedback | null
+    mdApprovedAt?: Date | string | null
+    mdRejectedAt?: Date | string | null
+    mdRejectReason?: string | null
+    mdApprovalComment?: string | null
+    thirdParty?: boolean
+    thirdPartyStatus?: string | null
+    thirdPartyDetails?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
+    notifications?: NotificationCreateNestedManyWithoutTicketInput
+    reviews?: ReviewCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryCreateNestedManyWithoutTicketInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
   }
 
-  export type AuditLogUncheckedCreateWithoutUserInput = {
+  export type TicketUncheckedCreateWithoutCreatedByInput = {
     id?: string
-    action: string
-    entityType: string
-    entityId?: string | null
-    details?: NullableJsonNullValueInput | InputJsonValue
-    ipAddress?: string | null
-    userAgent?: string | null
+    ticketNumber: string
+    title: string
+    description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
+    category: string
+    priority?: $Enums.Priority
+    status?: $Enums.Status
+    attachment?: string | null
+    attachmentPublicId?: string | null
+    serialNumber?: string | null
+    assignedToId?: string | null
+    mdApproval?: $Enums.MDFeedback | null
+    mdApprovedAt?: Date | string | null
+    mdRejectedAt?: Date | string | null
+    mdRejectReason?: string | null
+    mdApprovalComment?: string | null
+    thirdParty?: boolean
+    thirdPartyStatus?: string | null
+    thirdPartyDetails?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
+    notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
   }
 
-  export type AuditLogCreateOrConnectWithoutUserInput = {
-    where: AuditLogWhereUniqueInput
-    create: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput>
+  export type TicketCreateOrConnectWithoutCreatedByInput = {
+    where: TicketWhereUniqueInput
+    create: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput>
   }
 
-  export type AuditLogCreateManyUserInputEnvelope = {
-    data: AuditLogCreateManyUserInput | AuditLogCreateManyUserInput[]
+  export type TicketCreateManyCreatedByInputEnvelope = {
+    data: TicketCreateManyCreatedByInput | TicketCreateManyCreatedByInput[]
     skipDuplicates?: boolean
-  }
-
-  export type DepartmentCreateWithoutHeadInput = {
-    id?: string
-    name: string
-    description?: string | null
-    isActive?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: UserCreateNestedManyWithoutMemberOfDepartmentsInput
-  }
-
-  export type DepartmentUncheckedCreateWithoutHeadInput = {
-    id?: string
-    name: string
-    description?: string | null
-    isActive?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: UserUncheckedCreateNestedManyWithoutMemberOfDepartmentsInput
-  }
-
-  export type DepartmentCreateOrConnectWithoutHeadInput = {
-    where: DepartmentWhereUniqueInput
-    create: XOR<DepartmentCreateWithoutHeadInput, DepartmentUncheckedCreateWithoutHeadInput>
   }
 
   export type DepartmentCreateWithoutMembersInput = {
@@ -14959,158 +15276,6 @@ export namespace Prisma {
   export type DepartmentCreateOrConnectWithoutMembersInput = {
     where: DepartmentWhereUniqueInput
     create: XOR<DepartmentCreateWithoutMembersInput, DepartmentUncheckedCreateWithoutMembersInput>
-  }
-
-  export type TicketUpsertWithWhereUniqueWithoutCreatedByInput = {
-    where: TicketWhereUniqueInput
-    update: XOR<TicketUpdateWithoutCreatedByInput, TicketUncheckedUpdateWithoutCreatedByInput>
-    create: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput>
-  }
-
-  export type TicketUpdateWithWhereUniqueWithoutCreatedByInput = {
-    where: TicketWhereUniqueInput
-    data: XOR<TicketUpdateWithoutCreatedByInput, TicketUncheckedUpdateWithoutCreatedByInput>
-  }
-
-  export type TicketUpdateManyWithWhereWithoutCreatedByInput = {
-    where: TicketScalarWhereInput
-    data: XOR<TicketUpdateManyMutationInput, TicketUncheckedUpdateManyWithoutCreatedByInput>
-  }
-
-  export type TicketScalarWhereInput = {
-    AND?: TicketScalarWhereInput | TicketScalarWhereInput[]
-    OR?: TicketScalarWhereInput[]
-    NOT?: TicketScalarWhereInput | TicketScalarWhereInput[]
-    id?: StringFilter<"Ticket"> | string
-    ticketNumber?: StringFilter<"Ticket"> | string
-    title?: StringFilter<"Ticket"> | string
-    description?: StringNullableFilter<"Ticket"> | string | null
-    category?: StringFilter<"Ticket"> | string
-    priority?: EnumPriorityFilter<"Ticket"> | $Enums.Priority
-    status?: EnumStatusFilter<"Ticket"> | $Enums.Status
-    attachment?: StringNullableFilter<"Ticket"> | string | null
-    attachmentPublicId?: StringNullableFilter<"Ticket"> | string | null
-    serialNumber?: StringNullableFilter<"Ticket"> | string | null
-    createdById?: StringFilter<"Ticket"> | string
-    assignedToId?: StringNullableFilter<"Ticket"> | string | null
-    mdApproval?: EnumMDFeedbackNullableFilter<"Ticket"> | $Enums.MDFeedback | null
-    mdApprovedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
-    mdRejectedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
-    mdRejectReason?: StringNullableFilter<"Ticket"> | string | null
-    mdApprovalComment?: StringNullableFilter<"Ticket"> | string | null
-    thirdParty?: BoolFilter<"Ticket"> | boolean
-    thirdPartyStatus?: StringNullableFilter<"Ticket"> | string | null
-    thirdPartyDetails?: StringNullableFilter<"Ticket"> | string | null
-    createdAt?: DateTimeFilter<"Ticket"> | Date | string
-    updatedAt?: DateTimeFilter<"Ticket"> | Date | string
-    closedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
-  }
-
-  export type TicketUpsertWithWhereUniqueWithoutAssignedToInput = {
-    where: TicketWhereUniqueInput
-    update: XOR<TicketUpdateWithoutAssignedToInput, TicketUncheckedUpdateWithoutAssignedToInput>
-    create: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput>
-  }
-
-  export type TicketUpdateWithWhereUniqueWithoutAssignedToInput = {
-    where: TicketWhereUniqueInput
-    data: XOR<TicketUpdateWithoutAssignedToInput, TicketUncheckedUpdateWithoutAssignedToInput>
-  }
-
-  export type TicketUpdateManyWithWhereWithoutAssignedToInput = {
-    where: TicketScalarWhereInput
-    data: XOR<TicketUpdateManyMutationInput, TicketUncheckedUpdateManyWithoutAssignedToInput>
-  }
-
-  export type ReviewUpsertWithWhereUniqueWithoutCreatedByInput = {
-    where: ReviewWhereUniqueInput
-    update: XOR<ReviewUpdateWithoutCreatedByInput, ReviewUncheckedUpdateWithoutCreatedByInput>
-    create: XOR<ReviewCreateWithoutCreatedByInput, ReviewUncheckedCreateWithoutCreatedByInput>
-  }
-
-  export type ReviewUpdateWithWhereUniqueWithoutCreatedByInput = {
-    where: ReviewWhereUniqueInput
-    data: XOR<ReviewUpdateWithoutCreatedByInput, ReviewUncheckedUpdateWithoutCreatedByInput>
-  }
-
-  export type ReviewUpdateManyWithWhereWithoutCreatedByInput = {
-    where: ReviewScalarWhereInput
-    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutCreatedByInput>
-  }
-
-  export type ReviewScalarWhereInput = {
-    AND?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
-    OR?: ReviewScalarWhereInput[]
-    NOT?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
-    id?: StringFilter<"Review"> | string
-    content?: StringFilter<"Review"> | string
-    reviewType?: EnumReviewTypeFilter<"Review"> | $Enums.ReviewType
-    createdById?: StringFilter<"Review"> | string
-    ticketId?: StringFilter<"Review"> | string
-    createdAt?: DateTimeFilter<"Review"> | Date | string
-  }
-
-  export type TicketHistoryUpsertWithWhereUniqueWithoutCreatedByInput = {
-    where: TicketHistoryWhereUniqueInput
-    update: XOR<TicketHistoryUpdateWithoutCreatedByInput, TicketHistoryUncheckedUpdateWithoutCreatedByInput>
-    create: XOR<TicketHistoryCreateWithoutCreatedByInput, TicketHistoryUncheckedCreateWithoutCreatedByInput>
-  }
-
-  export type TicketHistoryUpdateWithWhereUniqueWithoutCreatedByInput = {
-    where: TicketHistoryWhereUniqueInput
-    data: XOR<TicketHistoryUpdateWithoutCreatedByInput, TicketHistoryUncheckedUpdateWithoutCreatedByInput>
-  }
-
-  export type TicketHistoryUpdateManyWithWhereWithoutCreatedByInput = {
-    where: TicketHistoryScalarWhereInput
-    data: XOR<TicketHistoryUpdateManyMutationInput, TicketHistoryUncheckedUpdateManyWithoutCreatedByInput>
-  }
-
-  export type TicketHistoryScalarWhereInput = {
-    AND?: TicketHistoryScalarWhereInput | TicketHistoryScalarWhereInput[]
-    OR?: TicketHistoryScalarWhereInput[]
-    NOT?: TicketHistoryScalarWhereInput | TicketHistoryScalarWhereInput[]
-    id?: StringFilter<"TicketHistory"> | string
-    action?: StringFilter<"TicketHistory"> | string
-    description?: StringNullableFilter<"TicketHistory"> | string | null
-    oldValue?: StringNullableFilter<"TicketHistory"> | string | null
-    newValue?: StringNullableFilter<"TicketHistory"> | string | null
-    createdById?: StringFilter<"TicketHistory"> | string
-    ticketId?: StringFilter<"TicketHistory"> | string
-    createdAt?: DateTimeFilter<"TicketHistory"> | Date | string
-  }
-
-  export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
-    where: NotificationWhereUniqueInput
-    update: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
-    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
-  }
-
-  export type NotificationUpdateWithWhereUniqueWithoutUserInput = {
-    where: NotificationWhereUniqueInput
-    data: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
-  }
-
-  export type NotificationUpdateManyWithWhereWithoutUserInput = {
-    where: NotificationScalarWhereInput
-    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type NotificationScalarWhereInput = {
-    AND?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-    OR?: NotificationScalarWhereInput[]
-    NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-    id?: StringFilter<"Notification"> | string
-    type?: EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
-    title?: StringFilter<"Notification"> | string
-    message?: StringFilter<"Notification"> | string
-    userId?: StringFilter<"Notification"> | string
-    ticketId?: StringNullableFilter<"Notification"> | string | null
-    read?: BoolFilter<"Notification"> | boolean
-    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
-    emailSent?: BoolFilter<"Notification"> | boolean
-    emailSentAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
-    createdAt?: DateTimeFilter<"Notification"> | Date | string
   }
 
   export type AuditLogUpsertWithWhereUniqueWithoutUserInput = {
@@ -15175,6 +15340,163 @@ export namespace Prisma {
     members?: UserUncheckedUpdateManyWithoutMemberOfDepartmentsNestedInput
   }
 
+  export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    update: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationUpdateWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    data: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type NotificationUpdateManyWithWhereWithoutUserInput = {
+    where: NotificationScalarWhereInput
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type NotificationScalarWhereInput = {
+    AND?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    OR?: NotificationScalarWhereInput[]
+    NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    id?: StringFilter<"Notification"> | string
+    type?: EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
+    title?: StringFilter<"Notification"> | string
+    message?: StringFilter<"Notification"> | string
+    userId?: StringFilter<"Notification"> | string
+    ticketId?: StringNullableFilter<"Notification"> | string | null
+    read?: BoolFilter<"Notification"> | boolean
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    emailSent?: BoolFilter<"Notification"> | boolean
+    emailSentAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+  }
+
+  export type ReviewUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: ReviewWhereUniqueInput
+    update: XOR<ReviewUpdateWithoutCreatedByInput, ReviewUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<ReviewCreateWithoutCreatedByInput, ReviewUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ReviewUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: ReviewWhereUniqueInput
+    data: XOR<ReviewUpdateWithoutCreatedByInput, ReviewUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type ReviewUpdateManyWithWhereWithoutCreatedByInput = {
+    where: ReviewScalarWhereInput
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type ReviewScalarWhereInput = {
+    AND?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+    OR?: ReviewScalarWhereInput[]
+    NOT?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+    id?: StringFilter<"Review"> | string
+    content?: StringFilter<"Review"> | string
+    reviewType?: EnumReviewTypeFilter<"Review"> | $Enums.ReviewType
+    createdById?: StringFilter<"Review"> | string
+    ticketId?: StringFilter<"Review"> | string
+    createdAt?: DateTimeFilter<"Review"> | Date | string
+  }
+
+  export type TicketHistoryUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: TicketHistoryWhereUniqueInput
+    update: XOR<TicketHistoryUpdateWithoutCreatedByInput, TicketHistoryUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<TicketHistoryCreateWithoutCreatedByInput, TicketHistoryUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type TicketHistoryUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: TicketHistoryWhereUniqueInput
+    data: XOR<TicketHistoryUpdateWithoutCreatedByInput, TicketHistoryUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type TicketHistoryUpdateManyWithWhereWithoutCreatedByInput = {
+    where: TicketHistoryScalarWhereInput
+    data: XOR<TicketHistoryUpdateManyMutationInput, TicketHistoryUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type TicketHistoryScalarWhereInput = {
+    AND?: TicketHistoryScalarWhereInput | TicketHistoryScalarWhereInput[]
+    OR?: TicketHistoryScalarWhereInput[]
+    NOT?: TicketHistoryScalarWhereInput | TicketHistoryScalarWhereInput[]
+    id?: StringFilter<"TicketHistory"> | string
+    action?: StringFilter<"TicketHistory"> | string
+    description?: StringNullableFilter<"TicketHistory"> | string | null
+    oldValue?: StringNullableFilter<"TicketHistory"> | string | null
+    newValue?: StringNullableFilter<"TicketHistory"> | string | null
+    createdById?: StringFilter<"TicketHistory"> | string
+    ticketId?: StringFilter<"TicketHistory"> | string
+    createdAt?: DateTimeFilter<"TicketHistory"> | Date | string
+  }
+
+  export type TicketUpsertWithWhereUniqueWithoutAssignedToInput = {
+    where: TicketWhereUniqueInput
+    update: XOR<TicketUpdateWithoutAssignedToInput, TicketUncheckedUpdateWithoutAssignedToInput>
+    create: XOR<TicketCreateWithoutAssignedToInput, TicketUncheckedCreateWithoutAssignedToInput>
+  }
+
+  export type TicketUpdateWithWhereUniqueWithoutAssignedToInput = {
+    where: TicketWhereUniqueInput
+    data: XOR<TicketUpdateWithoutAssignedToInput, TicketUncheckedUpdateWithoutAssignedToInput>
+  }
+
+  export type TicketUpdateManyWithWhereWithoutAssignedToInput = {
+    where: TicketScalarWhereInput
+    data: XOR<TicketUpdateManyMutationInput, TicketUncheckedUpdateManyWithoutAssignedToInput>
+  }
+
+  export type TicketScalarWhereInput = {
+    AND?: TicketScalarWhereInput | TicketScalarWhereInput[]
+    OR?: TicketScalarWhereInput[]
+    NOT?: TicketScalarWhereInput | TicketScalarWhereInput[]
+    id?: StringFilter<"Ticket"> | string
+    ticketNumber?: StringFilter<"Ticket"> | string
+    title?: StringFilter<"Ticket"> | string
+    description?: StringNullableFilter<"Ticket"> | string | null
+    mainCategory?: EnumMainCategoryNullableFilter<"Ticket"> | $Enums.MainCategory | null
+    requestServiceType?: EnumRequestServiceTypeNullableFilter<"Ticket"> | $Enums.RequestServiceType | null
+    itemType?: StringNullableFilter<"Ticket"> | string | null
+    serviceDetails?: JsonNullableFilter<"Ticket">
+    count?: StringNullableFilter<"Ticket"> | string | null
+    category?: StringFilter<"Ticket"> | string
+    priority?: EnumPriorityFilter<"Ticket"> | $Enums.Priority
+    status?: EnumStatusFilter<"Ticket"> | $Enums.Status
+    attachment?: StringNullableFilter<"Ticket"> | string | null
+    attachmentPublicId?: StringNullableFilter<"Ticket"> | string | null
+    serialNumber?: StringNullableFilter<"Ticket"> | string | null
+    createdById?: StringFilter<"Ticket"> | string
+    assignedToId?: StringNullableFilter<"Ticket"> | string | null
+    mdApproval?: EnumMDFeedbackNullableFilter<"Ticket"> | $Enums.MDFeedback | null
+    mdApprovedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
+    mdRejectedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
+    mdRejectReason?: StringNullableFilter<"Ticket"> | string | null
+    mdApprovalComment?: StringNullableFilter<"Ticket"> | string | null
+    thirdParty?: BoolFilter<"Ticket"> | boolean
+    thirdPartyStatus?: StringNullableFilter<"Ticket"> | string | null
+    thirdPartyDetails?: StringNullableFilter<"Ticket"> | string | null
+    createdAt?: DateTimeFilter<"Ticket"> | Date | string
+    updatedAt?: DateTimeFilter<"Ticket"> | Date | string
+    closedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
+  }
+
+  export type TicketUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: TicketWhereUniqueInput
+    update: XOR<TicketUpdateWithoutCreatedByInput, TicketUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<TicketCreateWithoutCreatedByInput, TicketUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type TicketUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: TicketWhereUniqueInput
+    data: XOR<TicketUpdateWithoutCreatedByInput, TicketUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type TicketUpdateManyWithWhereWithoutCreatedByInput = {
+    where: TicketScalarWhereInput
+    data: XOR<TicketUpdateManyMutationInput, TicketUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
   export type DepartmentUpsertWithWhereUniqueWithoutMembersInput = {
     where: DepartmentWhereUniqueInput
     update: XOR<DepartmentUpdateWithoutMembersInput, DepartmentUncheckedUpdateWithoutMembersInput>
@@ -15202,160 +15524,6 @@ export namespace Prisma {
     isActive?: BoolFilter<"Department"> | boolean
     createdAt?: DateTimeFilter<"Department"> | Date | string
     updatedAt?: DateTimeFilter<"Department"> | Date | string
-  }
-
-  export type UserCreateWithoutCreatedTicketsInput = {
-    id?: string
-    email: string
-    password?: string | null
-    name: string
-    role?: $Enums.Role
-    department?: string | null
-    isActive?: boolean
-    emailVerified?: boolean
-    otp?: string | null
-    otpExpiry?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
-    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
-    headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
-    memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
-  }
-
-  export type UserUncheckedCreateWithoutCreatedTicketsInput = {
-    id?: string
-    email: string
-    password?: string | null
-    name: string
-    role?: $Enums.Role
-    department?: string | null
-    isActive?: boolean
-    emailVerified?: boolean
-    otp?: string | null
-    otpExpiry?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
-    headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
-    memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
-  }
-
-  export type UserCreateOrConnectWithoutCreatedTicketsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
-  }
-
-  export type UserCreateWithoutAssignedTicketsInput = {
-    id?: string
-    email: string
-    password?: string | null
-    name: string
-    role?: $Enums.Role
-    department?: string | null
-    isActive?: boolean
-    emailVerified?: boolean
-    otp?: string | null
-    otpExpiry?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
-    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
-    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
-    headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
-    memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
-  }
-
-  export type UserUncheckedCreateWithoutAssignedTicketsInput = {
-    id?: string
-    email: string
-    password?: string | null
-    name: string
-    role?: $Enums.Role
-    department?: string | null
-    isActive?: boolean
-    emailVerified?: boolean
-    otp?: string | null
-    otpExpiry?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
-    headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
-    memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
-  }
-
-  export type UserCreateOrConnectWithoutAssignedTicketsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
-  }
-
-  export type TicketHistoryCreateWithoutTicketInput = {
-    id?: string
-    action: string
-    description?: string | null
-    oldValue?: string | null
-    newValue?: string | null
-    createdAt?: Date | string
-    createdBy: UserCreateNestedOneWithoutHistoryEntriesInput
-  }
-
-  export type TicketHistoryUncheckedCreateWithoutTicketInput = {
-    id?: string
-    action: string
-    description?: string | null
-    oldValue?: string | null
-    newValue?: string | null
-    createdById: string
-    createdAt?: Date | string
-  }
-
-  export type TicketHistoryCreateOrConnectWithoutTicketInput = {
-    where: TicketHistoryWhereUniqueInput
-    create: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput>
-  }
-
-  export type TicketHistoryCreateManyTicketInputEnvelope = {
-    data: TicketHistoryCreateManyTicketInput | TicketHistoryCreateManyTicketInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ReviewCreateWithoutTicketInput = {
-    id?: string
-    content: string
-    reviewType: $Enums.ReviewType
-    createdAt?: Date | string
-    createdBy: UserCreateNestedOneWithoutReviewsInput
-  }
-
-  export type ReviewUncheckedCreateWithoutTicketInput = {
-    id?: string
-    content: string
-    reviewType: $Enums.ReviewType
-    createdById: string
-    createdAt?: Date | string
-  }
-
-  export type ReviewCreateOrConnectWithoutTicketInput = {
-    where: ReviewWhereUniqueInput
-    create: XOR<ReviewCreateWithoutTicketInput, ReviewUncheckedCreateWithoutTicketInput>
-  }
-
-  export type ReviewCreateManyTicketInputEnvelope = {
-    data: ReviewCreateManyTicketInput | ReviewCreateManyTicketInput[]
-    skipDuplicates?: boolean
   }
 
   export type NotificationCreateWithoutTicketInput = {
@@ -15394,146 +15562,162 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserUpsertWithoutCreatedTicketsInput = {
-    update: XOR<UserUpdateWithoutCreatedTicketsInput, UserUncheckedUpdateWithoutCreatedTicketsInput>
-    create: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
-    where?: UserWhereInput
+  export type ReviewCreateWithoutTicketInput = {
+    id?: string
+    content: string
+    reviewType: $Enums.ReviewType
+    createdAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutReviewsInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutCreatedTicketsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCreatedTicketsInput, UserUncheckedUpdateWithoutCreatedTicketsInput>
+  export type ReviewUncheckedCreateWithoutTicketInput = {
+    id?: string
+    content: string
+    reviewType: $Enums.ReviewType
+    createdById: string
+    createdAt?: Date | string
   }
 
-  export type UserUpdateWithoutCreatedTicketsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    department?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    otp?: NullableStringFieldUpdateOperationsInput | string | null
-    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
-    headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
-    memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    department?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    otp?: NullableStringFieldUpdateOperationsInput | string | null
-    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
-    headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
-    memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
-  }
-
-  export type UserUpsertWithoutAssignedTicketsInput = {
-    update: XOR<UserUpdateWithoutAssignedTicketsInput, UserUncheckedUpdateWithoutAssignedTicketsInput>
-    create: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutAssignedTicketsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutAssignedTicketsInput, UserUncheckedUpdateWithoutAssignedTicketsInput>
-  }
-
-  export type UserUpdateWithoutAssignedTicketsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    department?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    otp?: NullableStringFieldUpdateOperationsInput | string | null
-    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
-    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
-    headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
-    memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    department?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    otp?: NullableStringFieldUpdateOperationsInput | string | null
-    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
-    headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
-    memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
-  }
-
-  export type TicketHistoryUpsertWithWhereUniqueWithoutTicketInput = {
-    where: TicketHistoryWhereUniqueInput
-    update: XOR<TicketHistoryUpdateWithoutTicketInput, TicketHistoryUncheckedUpdateWithoutTicketInput>
-    create: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput>
-  }
-
-  export type TicketHistoryUpdateWithWhereUniqueWithoutTicketInput = {
-    where: TicketHistoryWhereUniqueInput
-    data: XOR<TicketHistoryUpdateWithoutTicketInput, TicketHistoryUncheckedUpdateWithoutTicketInput>
-  }
-
-  export type TicketHistoryUpdateManyWithWhereWithoutTicketInput = {
-    where: TicketHistoryScalarWhereInput
-    data: XOR<TicketHistoryUpdateManyMutationInput, TicketHistoryUncheckedUpdateManyWithoutTicketInput>
-  }
-
-  export type ReviewUpsertWithWhereUniqueWithoutTicketInput = {
+  export type ReviewCreateOrConnectWithoutTicketInput = {
     where: ReviewWhereUniqueInput
-    update: XOR<ReviewUpdateWithoutTicketInput, ReviewUncheckedUpdateWithoutTicketInput>
     create: XOR<ReviewCreateWithoutTicketInput, ReviewUncheckedCreateWithoutTicketInput>
   }
 
-  export type ReviewUpdateWithWhereUniqueWithoutTicketInput = {
-    where: ReviewWhereUniqueInput
-    data: XOR<ReviewUpdateWithoutTicketInput, ReviewUncheckedUpdateWithoutTicketInput>
+  export type ReviewCreateManyTicketInputEnvelope = {
+    data: ReviewCreateManyTicketInput | ReviewCreateManyTicketInput[]
+    skipDuplicates?: boolean
   }
 
-  export type ReviewUpdateManyWithWhereWithoutTicketInput = {
-    where: ReviewScalarWhereInput
-    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutTicketInput>
+  export type TicketHistoryCreateWithoutTicketInput = {
+    id?: string
+    action: string
+    description?: string | null
+    oldValue?: string | null
+    newValue?: string | null
+    createdAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutHistoryEntriesInput
+  }
+
+  export type TicketHistoryUncheckedCreateWithoutTicketInput = {
+    id?: string
+    action: string
+    description?: string | null
+    oldValue?: string | null
+    newValue?: string | null
+    createdById: string
+    createdAt?: Date | string
+  }
+
+  export type TicketHistoryCreateOrConnectWithoutTicketInput = {
+    where: TicketHistoryWhereUniqueInput
+    create: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput>
+  }
+
+  export type TicketHistoryCreateManyTicketInputEnvelope = {
+    data: TicketHistoryCreateManyTicketInput | TicketHistoryCreateManyTicketInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutAssignedTicketsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    name: string
+    branch?: string | null
+    role?: $Enums.Role
+    department?: string | null
+    isActive?: boolean
+    emailVerified?: boolean
+    otp?: string | null
+    otpExpiry?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
+    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
+    memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
+  }
+
+  export type UserUncheckedCreateWithoutAssignedTicketsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    name: string
+    branch?: string | null
+    role?: $Enums.Role
+    department?: string | null
+    isActive?: boolean
+    emailVerified?: boolean
+    otp?: string | null
+    otpExpiry?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
+    memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
+  }
+
+  export type UserCreateOrConnectWithoutAssignedTicketsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
+  }
+
+  export type UserCreateWithoutCreatedTicketsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    name: string
+    branch?: string | null
+    role?: $Enums.Role
+    department?: string | null
+    isActive?: boolean
+    emailVerified?: boolean
+    otp?: string | null
+    otpExpiry?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedTicketsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    name: string
+    branch?: string | null
+    role?: $Enums.Role
+    department?: string | null
+    isActive?: boolean
+    emailVerified?: boolean
+    otp?: string | null
+    otpExpiry?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedTicketsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
   }
 
   export type NotificationUpsertWithWhereUniqueWithoutTicketInput = {
@@ -15552,11 +15736,158 @@ export namespace Prisma {
     data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutTicketInput>
   }
 
+  export type ReviewUpsertWithWhereUniqueWithoutTicketInput = {
+    where: ReviewWhereUniqueInput
+    update: XOR<ReviewUpdateWithoutTicketInput, ReviewUncheckedUpdateWithoutTicketInput>
+    create: XOR<ReviewCreateWithoutTicketInput, ReviewUncheckedCreateWithoutTicketInput>
+  }
+
+  export type ReviewUpdateWithWhereUniqueWithoutTicketInput = {
+    where: ReviewWhereUniqueInput
+    data: XOR<ReviewUpdateWithoutTicketInput, ReviewUncheckedUpdateWithoutTicketInput>
+  }
+
+  export type ReviewUpdateManyWithWhereWithoutTicketInput = {
+    where: ReviewScalarWhereInput
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutTicketInput>
+  }
+
+  export type TicketHistoryUpsertWithWhereUniqueWithoutTicketInput = {
+    where: TicketHistoryWhereUniqueInput
+    update: XOR<TicketHistoryUpdateWithoutTicketInput, TicketHistoryUncheckedUpdateWithoutTicketInput>
+    create: XOR<TicketHistoryCreateWithoutTicketInput, TicketHistoryUncheckedCreateWithoutTicketInput>
+  }
+
+  export type TicketHistoryUpdateWithWhereUniqueWithoutTicketInput = {
+    where: TicketHistoryWhereUniqueInput
+    data: XOR<TicketHistoryUpdateWithoutTicketInput, TicketHistoryUncheckedUpdateWithoutTicketInput>
+  }
+
+  export type TicketHistoryUpdateManyWithWhereWithoutTicketInput = {
+    where: TicketHistoryScalarWhereInput
+    data: XOR<TicketHistoryUpdateManyMutationInput, TicketHistoryUncheckedUpdateManyWithoutTicketInput>
+  }
+
+  export type UserUpsertWithoutAssignedTicketsInput = {
+    update: XOR<UserUpdateWithoutAssignedTicketsInput, UserUncheckedUpdateWithoutAssignedTicketsInput>
+    create: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAssignedTicketsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAssignedTicketsInput, UserUncheckedUpdateWithoutAssignedTicketsInput>
+  }
+
+  export type UserUpdateWithoutAssignedTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    otp?: NullableStringFieldUpdateOperationsInput | string | null
+    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
+    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
+    memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    otp?: NullableStringFieldUpdateOperationsInput | string | null
+    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
+  }
+
+  export type UserUpsertWithoutCreatedTicketsInput = {
+    update: XOR<UserUpdateWithoutCreatedTicketsInput, UserUncheckedUpdateWithoutCreatedTicketsInput>
+    create: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedTicketsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedTicketsInput, UserUncheckedUpdateWithoutCreatedTicketsInput>
+  }
+
+  export type UserUpdateWithoutCreatedTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    otp?: NullableStringFieldUpdateOperationsInput | string | null
+    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    otp?: NullableStringFieldUpdateOperationsInput | string | null
+    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
+  }
+
   export type UserCreateWithoutReviewsInput = {
     id?: string
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -15565,12 +15896,12 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
-    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
   }
 
@@ -15579,6 +15910,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -15587,12 +15919,12 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
-    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
   }
 
@@ -15606,6 +15938,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
     category: string
     priority?: $Enums.Priority
     status?: $Enums.Status
@@ -15623,10 +15960,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
-    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
-    history?: TicketHistoryCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryCreateNestedManyWithoutTicketInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
+    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
   }
 
   export type TicketUncheckedCreateWithoutReviewsInput = {
@@ -15634,6 +15971,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
     category: string
     priority?: $Enums.Priority
     status?: $Enums.Status
@@ -15653,8 +15995,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutReviewsInput = {
@@ -15678,6 +16020,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -15686,12 +16029,12 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
-    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
   }
 
@@ -15700,6 +16043,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -15708,12 +16052,12 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
-    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
   }
 
@@ -15733,6 +16077,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -15750,10 +16099,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
-    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
-    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutReviewsInput = {
@@ -15761,6 +16110,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -15780,8 +16134,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type UserCreateWithoutHistoryEntriesInput = {
@@ -15789,6 +16143,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -15797,12 +16152,12 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
   }
 
@@ -15811,6 +16166,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -15819,12 +16175,12 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
   }
 
@@ -15838,6 +16194,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
     category: string
     priority?: $Enums.Priority
     status?: $Enums.Status
@@ -15855,10 +16216,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
-    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
-    reviews?: ReviewCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    reviews?: ReviewCreateNestedManyWithoutTicketInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
+    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
   }
 
   export type TicketUncheckedCreateWithoutHistoryInput = {
@@ -15866,6 +16227,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
     category: string
     priority?: $Enums.Priority
     status?: $Enums.Status
@@ -15885,8 +16251,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutHistoryInput = {
@@ -15910,6 +16276,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -15918,12 +16285,12 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
   }
 
@@ -15932,6 +16299,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -15940,12 +16308,12 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
   }
 
@@ -15965,6 +16333,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -15982,10 +16355,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
-    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
-    reviews?: ReviewUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    reviews?: ReviewUpdateManyWithoutTicketNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutHistoryInput = {
@@ -15993,6 +16366,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -16012,57 +16390,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
-  }
-
-  export type UserCreateWithoutNotificationsInput = {
-    id?: string
-    email: string
-    password?: string | null
-    name: string
-    role?: $Enums.Role
-    department?: string | null
-    isActive?: boolean
-    emailVerified?: boolean
-    otp?: string | null
-    otpExpiry?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
-    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
-    headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
-    memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
-  }
-
-  export type UserUncheckedCreateWithoutNotificationsInput = {
-    id?: string
-    email: string
-    password?: string | null
-    name: string
-    role?: $Enums.Role
-    department?: string | null
-    isActive?: boolean
-    emailVerified?: boolean
-    otp?: string | null
-    otpExpiry?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
-    headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
-    memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
-  }
-
-  export type UserCreateOrConnectWithoutNotificationsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketCreateWithoutNotificationsInput = {
@@ -16070,6 +16399,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
     category: string
     priority?: $Enums.Priority
     status?: $Enums.Status
@@ -16087,10 +16421,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
-    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
-    history?: TicketHistoryCreateNestedManyWithoutTicketInput
     reviews?: ReviewCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryCreateNestedManyWithoutTicketInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
+    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
   }
 
   export type TicketUncheckedCreateWithoutNotificationsInput = {
@@ -16098,6 +16432,11 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
     category: string
     priority?: $Enums.Priority
     status?: $Enums.Status
@@ -16117,8 +16456,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutNotificationsInput = {
@@ -16126,59 +16465,55 @@ export namespace Prisma {
     create: XOR<TicketCreateWithoutNotificationsInput, TicketUncheckedCreateWithoutNotificationsInput>
   }
 
-  export type UserUpsertWithoutNotificationsInput = {
-    update: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+  export type UserCreateWithoutNotificationsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    name: string
+    branch?: string | null
+    role?: $Enums.Role
+    department?: string | null
+    isActive?: boolean
+    emailVerified?: boolean
+    otp?: string | null
+    otpExpiry?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
+    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
+    memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
+  }
+
+  export type UserUncheckedCreateWithoutNotificationsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    name: string
+    branch?: string | null
+    role?: $Enums.Role
+    department?: string | null
+    isActive?: boolean
+    emailVerified?: boolean
+    otp?: string | null
+    otpExpiry?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
+    memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
+  }
+
+  export type UserCreateOrConnectWithoutNotificationsInput = {
+    where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
-  }
-
-  export type UserUpdateWithoutNotificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    department?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    otp?: NullableStringFieldUpdateOperationsInput | string | null
-    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
-    headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
-    memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutNotificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    department?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    otp?: NullableStringFieldUpdateOperationsInput | string | null
-    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
-    headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
-    memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
   }
 
   export type TicketUpsertWithoutNotificationsInput = {
@@ -16197,6 +16532,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -16214,10 +16554,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
-    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
-    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     reviews?: ReviewUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutNotificationsInput = {
@@ -16225,6 +16565,11 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -16244,8 +16589,65 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
+  }
+
+  export type UserUpsertWithoutNotificationsInput = {
+    update: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type UserUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    otp?: NullableStringFieldUpdateOperationsInput | string | null
+    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
+    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
+    memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    otp?: NullableStringFieldUpdateOperationsInput | string | null
+    otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
   }
 
   export type UserCreateWithoutHeadedDepartmentInput = {
@@ -16253,6 +16655,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -16261,12 +16664,12 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutCreatedByInput
     historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
-    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
   }
 
@@ -16275,6 +16678,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -16283,12 +16687,12 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
     historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
   }
 
@@ -16302,6 +16706,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -16310,13 +16715,13 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutMemberOfDepartmentsInput = {
@@ -16324,6 +16729,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -16332,13 +16738,13 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
-    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
+    historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutMemberOfDepartmentsInput = {
@@ -16362,6 +16768,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -16370,12 +16777,12 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
     historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
   }
 
@@ -16384,6 +16791,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -16392,12 +16800,12 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
     historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
   }
 
@@ -16425,6 +16833,7 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringNullableFilter<"User"> | string | null
     name?: StringFilter<"User"> | string
+    branch?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     department?: StringNullableFilter<"User"> | string | null
     isActive?: BoolFilter<"User"> | boolean
@@ -16440,6 +16849,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -16448,12 +16858,12 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutCreatedByInput
     historyEntries?: TicketHistoryCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
-    headedDepartment?: DepartmentCreateNestedOneWithoutHeadInput
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentCreateNestedManyWithoutMembersInput
   }
 
@@ -16462,6 +16872,7 @@ export namespace Prisma {
     email: string
     password?: string | null
     name: string
+    branch?: string | null
     role?: $Enums.Role
     department?: string | null
     isActive?: boolean
@@ -16470,12 +16881,12 @@ export namespace Prisma {
     otpExpiry?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
-    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutCreatedByInput
     historyEntries?: TicketHistoryUncheckedCreateNestedManyWithoutCreatedByInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
-    headedDepartment?: DepartmentUncheckedCreateNestedOneWithoutHeadInput
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
     memberOfDepartments?: DepartmentUncheckedCreateNestedManyWithoutMembersInput
   }
 
@@ -16500,6 +16911,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -16508,12 +16920,12 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
     historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
-    headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
+    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUpdateManyWithoutMembersNestedInput
   }
 
@@ -16522,6 +16934,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -16530,63 +16943,37 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
     historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
-    headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
     memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
   }
 
-  export type TicketCreateManyCreatedByInput = {
+  export type AuditLogCreateManyUserInput = {
     id?: string
-    ticketNumber: string
-    title: string
-    description?: string | null
-    category: string
-    priority?: $Enums.Priority
-    status?: $Enums.Status
-    attachment?: string | null
-    attachmentPublicId?: string | null
-    serialNumber?: string | null
-    assignedToId?: string | null
-    mdApproval?: $Enums.MDFeedback | null
-    mdApprovedAt?: Date | string | null
-    mdRejectedAt?: Date | string | null
-    mdRejectReason?: string | null
-    mdApprovalComment?: string | null
-    thirdParty?: boolean
-    thirdPartyStatus?: string | null
-    thirdPartyDetails?: string | null
+    action: string
+    entityType: string
+    entityId?: string | null
+    details?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
-    closedAt?: Date | string | null
   }
 
-  export type TicketCreateManyAssignedToInput = {
+  export type NotificationCreateManyUserInput = {
     id?: string
-    ticketNumber: string
+    type: $Enums.NotificationType
     title: string
-    description?: string | null
-    category: string
-    priority?: $Enums.Priority
-    status?: $Enums.Status
-    attachment?: string | null
-    attachmentPublicId?: string | null
-    serialNumber?: string | null
-    createdById: string
-    mdApproval?: $Enums.MDFeedback | null
-    mdApprovedAt?: Date | string | null
-    mdRejectedAt?: Date | string | null
-    mdRejectReason?: string | null
-    mdApprovalComment?: string | null
-    thirdParty?: boolean
-    thirdPartyStatus?: string | null
-    thirdPartyDetails?: string | null
+    message: string
+    ticketId?: string | null
+    read?: boolean
+    readAt?: Date | string | null
+    emailSent?: boolean
+    emailSentAt?: Date | string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
-    closedAt?: Date | string | null
   }
 
   export type ReviewCreateManyCreatedByInput = {
@@ -16607,190 +16994,136 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type NotificationCreateManyUserInput = {
+  export type TicketCreateManyAssignedToInput = {
     id?: string
-    type: $Enums.NotificationType
+    ticketNumber: string
     title: string
-    message: string
-    ticketId?: string | null
-    read?: boolean
-    readAt?: Date | string | null
-    emailSent?: boolean
-    emailSentAt?: Date | string | null
+    description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
+    category: string
+    priority?: $Enums.Priority
+    status?: $Enums.Status
+    attachment?: string | null
+    attachmentPublicId?: string | null
+    serialNumber?: string | null
+    createdById: string
+    mdApproval?: $Enums.MDFeedback | null
+    mdApprovedAt?: Date | string | null
+    mdRejectedAt?: Date | string | null
+    mdRejectReason?: string | null
+    mdApprovalComment?: string | null
+    thirdParty?: boolean
+    thirdPartyStatus?: string | null
+    thirdPartyDetails?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
   }
 
-  export type AuditLogCreateManyUserInput = {
+  export type TicketCreateManyCreatedByInput = {
     id?: string
-    action: string
-    entityType: string
-    entityId?: string | null
-    details?: NullableJsonNullValueInput | InputJsonValue
-    ipAddress?: string | null
-    userAgent?: string | null
+    ticketNumber: string
+    title: string
+    description?: string | null
+    mainCategory?: $Enums.MainCategory | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
+    category: string
+    priority?: $Enums.Priority
+    status?: $Enums.Status
+    attachment?: string | null
+    attachmentPublicId?: string | null
+    serialNumber?: string | null
+    assignedToId?: string | null
+    mdApproval?: $Enums.MDFeedback | null
+    mdApprovedAt?: Date | string | null
+    mdRejectedAt?: Date | string | null
+    mdRejectReason?: string | null
+    mdApprovalComment?: string | null
+    thirdParty?: boolean
+    thirdPartyStatus?: string | null
+    thirdPartyDetails?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
   }
 
-  export type TicketUpdateWithoutCreatedByInput = {
+  export type AuditLogUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: StringFieldUpdateOperationsInput | string
-    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
-    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
-    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
-    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdParty?: BoolFieldUpdateOperationsInput | boolean
-    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
-    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
-    reviews?: ReviewUpdateManyWithoutTicketNestedInput
-    notifications?: NotificationUpdateManyWithoutTicketNestedInput
   }
 
-  export type TicketUncheckedUpdateWithoutCreatedByInput = {
+  export type AuditLogUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: StringFieldUpdateOperationsInput | string
-    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
-    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
-    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
-    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdParty?: BoolFieldUpdateOperationsInput | boolean
-    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
   }
 
-  export type TicketUncheckedUpdateManyWithoutCreatedByInput = {
+  export type AuditLogUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: StringFieldUpdateOperationsInput | string
-    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
-    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
-    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
-    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdParty?: BoolFieldUpdateOperationsInput | boolean
-    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type TicketUpdateWithoutAssignedToInput = {
+  export type NotificationUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: StringFieldUpdateOperationsInput | string
-    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
-    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
-    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
-    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdParty?: BoolFieldUpdateOperationsInput | boolean
-    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    read?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailSent?: BoolFieldUpdateOperationsInput | boolean
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
-    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
-    reviews?: ReviewUpdateManyWithoutTicketNestedInput
-    notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    ticket?: TicketUpdateOneWithoutNotificationsNestedInput
   }
 
-  export type TicketUncheckedUpdateWithoutAssignedToInput = {
+  export type NotificationUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: StringFieldUpdateOperationsInput | string
-    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
-    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
-    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    createdById?: StringFieldUpdateOperationsInput | string
-    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
-    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdParty?: BoolFieldUpdateOperationsInput | boolean
-    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    ticketId?: NullableStringFieldUpdateOperationsInput | string | null
+    read?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailSent?: BoolFieldUpdateOperationsInput | boolean
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
   }
 
-  export type TicketUncheckedUpdateManyWithoutAssignedToInput = {
+  export type NotificationUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: StringFieldUpdateOperationsInput | string
-    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
-    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
-    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    createdById?: StringFieldUpdateOperationsInput | string
-    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
-    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
-    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdParty?: BoolFieldUpdateOperationsInput | boolean
-    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    ticketId?: NullableStringFieldUpdateOperationsInput | string | null
+    read?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailSent?: BoolFieldUpdateOperationsInput | boolean
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ReviewUpdateWithoutCreatedByInput = {
@@ -16847,76 +17180,196 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type NotificationUpdateWithoutUserInput = {
+  export type TicketUpdateWithoutAssignedToInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    message?: StringFieldUpdateOperationsInput | string
-    read?: BoolFieldUpdateOperationsInput | boolean
-    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailSent?: BoolFieldUpdateOperationsInput | boolean
-    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
+    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdParty?: BoolFieldUpdateOperationsInput | boolean
+    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ticket?: TicketUpdateOneWithoutNotificationsNestedInput
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    reviews?: ReviewUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
   }
 
-  export type NotificationUncheckedUpdateWithoutUserInput = {
+  export type TicketUncheckedUpdateWithoutAssignedToInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    message?: StringFieldUpdateOperationsInput | string
-    ticketId?: NullableStringFieldUpdateOperationsInput | string | null
-    read?: BoolFieldUpdateOperationsInput | boolean
-    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailSent?: BoolFieldUpdateOperationsInput | boolean
-    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
+    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdParty?: BoolFieldUpdateOperationsInput | boolean
+    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
   }
 
-  export type NotificationUncheckedUpdateManyWithoutUserInput = {
+  export type TicketUncheckedUpdateManyWithoutAssignedToInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    message?: StringFieldUpdateOperationsInput | string
-    ticketId?: NullableStringFieldUpdateOperationsInput | string | null
-    read?: BoolFieldUpdateOperationsInput | boolean
-    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    emailSent?: BoolFieldUpdateOperationsInput | boolean
-    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
+    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdParty?: BoolFieldUpdateOperationsInput | boolean
+    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type AuditLogUpdateWithoutUserInput = {
+  export type TicketUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    entityType?: StringFieldUpdateOperationsInput | string
-    entityId?: NullableStringFieldUpdateOperationsInput | string | null
-    details?: NullableJsonNullValueInput | InputJsonValue
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    ticketNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
+    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdParty?: BoolFieldUpdateOperationsInput | boolean
+    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    reviews?: ReviewUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
   }
 
-  export type AuditLogUncheckedUpdateWithoutUserInput = {
+  export type TicketUncheckedUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    entityType?: StringFieldUpdateOperationsInput | string
-    entityId?: NullableStringFieldUpdateOperationsInput | string | null
-    details?: NullableJsonNullValueInput | InputJsonValue
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    ticketNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
+    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdParty?: BoolFieldUpdateOperationsInput | boolean
+    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
   }
 
-  export type AuditLogUncheckedUpdateManyWithoutUserInput = {
+  export type TicketUncheckedUpdateManyWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    entityType?: StringFieldUpdateOperationsInput | string
-    entityId?: NullableStringFieldUpdateOperationsInput | string | null
-    details?: NullableJsonNullValueInput | InputJsonValue
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    ticketNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
+    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdParty?: BoolFieldUpdateOperationsInput | boolean
+    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type DepartmentUpdateWithoutMembersInput = {
@@ -16949,24 +17402,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type TicketHistoryCreateManyTicketInput = {
-    id?: string
-    action: string
-    description?: string | null
-    oldValue?: string | null
-    newValue?: string | null
-    createdById: string
-    createdAt?: Date | string
-  }
-
-  export type ReviewCreateManyTicketInput = {
-    id?: string
-    content: string
-    reviewType: $Enums.ReviewType
-    createdById: string
-    createdAt?: Date | string
-  }
-
   export type NotificationCreateManyTicketInput = {
     id?: string
     type: $Enums.NotificationType
@@ -16980,58 +17415,22 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type TicketHistoryUpdateWithoutTicketInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    oldValue?: NullableStringFieldUpdateOperationsInput | string | null
-    newValue?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdBy?: UserUpdateOneRequiredWithoutHistoryEntriesNestedInput
+  export type ReviewCreateManyTicketInput = {
+    id?: string
+    content: string
+    reviewType: $Enums.ReviewType
+    createdById: string
+    createdAt?: Date | string
   }
 
-  export type TicketHistoryUncheckedUpdateWithoutTicketInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    oldValue?: NullableStringFieldUpdateOperationsInput | string | null
-    newValue?: NullableStringFieldUpdateOperationsInput | string | null
-    createdById?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TicketHistoryUncheckedUpdateManyWithoutTicketInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    oldValue?: NullableStringFieldUpdateOperationsInput | string | null
-    newValue?: NullableStringFieldUpdateOperationsInput | string | null
-    createdById?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ReviewUpdateWithoutTicketInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    reviewType?: EnumReviewTypeFieldUpdateOperationsInput | $Enums.ReviewType
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdBy?: UserUpdateOneRequiredWithoutReviewsNestedInput
-  }
-
-  export type ReviewUncheckedUpdateWithoutTicketInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    reviewType?: EnumReviewTypeFieldUpdateOperationsInput | $Enums.ReviewType
-    createdById?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ReviewUncheckedUpdateManyWithoutTicketInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    reviewType?: EnumReviewTypeFieldUpdateOperationsInput | $Enums.ReviewType
-    createdById?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type TicketHistoryCreateManyTicketInput = {
+    id?: string
+    action: string
+    description?: string | null
+    oldValue?: string | null
+    newValue?: string | null
+    createdById: string
+    createdAt?: Date | string
   }
 
   export type NotificationUpdateWithoutTicketInput = {
@@ -17073,11 +17472,66 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReviewUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    reviewType?: EnumReviewTypeFieldUpdateOperationsInput | $Enums.ReviewType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutReviewsNestedInput
+  }
+
+  export type ReviewUncheckedUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    reviewType?: EnumReviewTypeFieldUpdateOperationsInput | $Enums.ReviewType
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    reviewType?: EnumReviewTypeFieldUpdateOperationsInput | $Enums.ReviewType
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketHistoryUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    oldValue?: NullableStringFieldUpdateOperationsInput | string | null
+    newValue?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutHistoryEntriesNestedInput
+  }
+
+  export type TicketHistoryUncheckedUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    oldValue?: NullableStringFieldUpdateOperationsInput | string | null
+    newValue?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketHistoryUncheckedUpdateManyWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    oldValue?: NullableStringFieldUpdateOperationsInput | string | null
+    newValue?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserUpdateWithoutMemberOfDepartmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -17086,13 +17540,13 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     headedDepartment?: DepartmentUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMemberOfDepartmentsInput = {
@@ -17100,6 +17554,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -17108,13 +17563,13 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
-    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
-    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     headedDepartment?: DepartmentUncheckedUpdateOneWithoutHeadNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutCreatedByNestedInput
+    historyEntries?: TicketHistoryUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutMemberOfDepartmentsInput = {
@@ -17122,6 +17577,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     department?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
