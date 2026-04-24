@@ -40,6 +40,7 @@ export default function TicketDetailsPage({ params }) {
   const { socket, joinTicket, leaveTicket } = useSocket()
   const toast = useToast()
   const router = useRouter()
+  console.log("user====>",user)
 
   const [ticket, setTicket] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -125,7 +126,7 @@ export default function TicketDetailsPage({ params }) {
       toast.error('Please enter a review')
       return
     }
-
+ 
     try {
       setSubmitting(true)
       const response = await fetch(`/api/tickets/${id}/reviews`, {
@@ -366,6 +367,7 @@ export default function TicketDetailsPage({ params }) {
       'IN_PROGRESS': 'bg-blue-100 text-blue-800',
       'APPROVED_BY_MD': 'bg-green-100 text-green-800',
       'REJECTED_BY_MD': 'bg-red-100 text-red-800',
+      'REJECTED_BY_SERVICE': 'bg-red-100 text-red-800',
       'RESOLVED': 'bg-green-100 text-green-800',
       'CLOSED': 'bg-gray-100 text-gray-800'
     }
@@ -652,7 +654,7 @@ export default function TicketDetailsPage({ params }) {
       <FiTag className="mr-3 text-gray-400 mt-0.5" />
       <div>
         <p className="text-xs text-gray-500">{ticket.requestServiceType} FOR</p>
-        <p className="text-sm text-gray-900">{ticket.mainCategory || 'Not specified'}</p>
+        <p className="text-sm text-gray-900">{ticket.mainCategory?.name  || 'Not specified'}</p>
       </div>
     </div>
 

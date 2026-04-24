@@ -4,28 +4,22 @@ import { Pie } from 'react-chartjs-2'
 import { FiPieChart } from 'react-icons/fi'
 import { CHART_COLORS } from '../../utils/chartConfig'
 
-export default function CategoryChart({ stats }) {
-  // Provide default values to prevent undefined errors
-  const ticketsByCategory = stats?.ticketsByCategory || {}
-  
-  const data = {
-    labels: ['HR', 'IT', 'Technical'],
-    datasets: [
-      {
-        data: [
-          ticketsByCategory.HR || 0,
-          ticketsByCategory.IT || 0,
-          ticketsByCategory.TECHNICAL || 0
-        ],
-        backgroundColor: [
-          CHART_COLORS.primary,
-          CHART_COLORS.secondary,
-          CHART_COLORS.warning
-        ],
-        borderWidth: 0,
-        hoverOffset: 4
-      }
-    ]
+export default function CategoryChart({ data: chartData }) {
+  // If no data or empty labels, show empty state
+  const hasData = chartData?.datasets?.[0]?.data?.some(value => value > 0) || false
+
+  if (!hasData || !chartData?.labels?.length) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-md font-semibold text-gray-900">Tickets by Category</h2>
+          <FiPieChart className="text-gray-400" />
+        </div>
+        <div className="h-64 flex items-center justify-center text-gray-400">
+          No data available
+        </div>
+      </div>
+    )
   }
 
   const options = {
@@ -63,31 +57,14 @@ export default function CategoryChart({ stats }) {
     }
   }
 
-  // Show empty state if all values are zero
-  const hasData = (ticketsByCategory.HR || 0) + (ticketsByCategory.IT || 0) + (ticketsByCategory.TECHNICAL || 0) > 0
-
-  if (!hasData) {
-    return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Tickets by Category</h2>
-          <FiPieChart className="text-gray-400" />
-        </div>
-        <div className="h-64 flex items-center justify-center text-gray-400">
-          No data available
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-md font-semibold text-gray-900">Tickets by Category</h2>
         <FiPieChart className="text-gray-400" />
       </div>
-      <div className="h-24">
-        <Pie data={data} options={options} />
+      <div className="h-64">
+        <Pie data={chartData} options={options} />
       </div>
     </div>
   )

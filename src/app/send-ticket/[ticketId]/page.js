@@ -15,7 +15,7 @@ import AdminWorkSection from './components/AdminWorkSection'
 import CloseTicketButton from './components/CloseTicketButton'
 import StatusTimeline from './components/StatusTimeline'
 import ReviewsSection from './components/ReviewsSection'
-import DashboardLayout from '@/app/components/layouts/DashboardLayout'
+import DashboardLayout from '@/app/components/layouts/DashboardLayout' 
 
 export default function PublicTicketPage({ params }) {
   // Unwrap params (Next.js 15+)

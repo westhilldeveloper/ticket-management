@@ -21,16 +21,17 @@ export const SocketProvider = ({ children }) => {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
 
-    const socketInstance = io(process.env.NEXTAUTH_URL || 'http://localhost:3000', {
-      withCredentials: true,
+    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000', {
+      withCredentials: true
+      // transports: ['websocket'],
     });
 
     socketInstance.on('connect', () => {
-      console.log('Socket connected');
+      console.log('Socket connected:', socketInstance.id);
       setConnected(true);
-      // Register user with role
+
       socketInstance.emit('register', {
         userId: user.id,
         role: user.role,
@@ -39,7 +40,6 @@ export const SocketProvider = ({ children }) => {
 
     socketInstance.on('connect_error', (err) => {
       console.error('Socket connection error:', err);
-      // Optionally show toast
     });
 
     socketInstance.on('disconnect', () => {
@@ -47,8 +47,8 @@ export const SocketProvider = ({ children }) => {
       setConnected(false);
     });
 
-    // Global ticket update listener (optional)
     socketInstance.on('ticket-updated', (data) => {
+      console.log('Global ticket-updated received:', data);
       toast.success(`Ticket ${data.ticketNumber} status updated to ${data.status}`);
     });
 
@@ -57,7 +57,7 @@ export const SocketProvider = ({ children }) => {
     return () => {
       socketInstance.disconnect();
     };
-  }, [user]);
+  }, [user?.id, user?.role]);
 
   const joinTicket = (ticketId) => {
     if (socket) socket.emit('join-ticket', ticketId);

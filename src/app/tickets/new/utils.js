@@ -17,3 +17,4 @@ export const getFileIcon = (fileType) => {
   if (fileType?.includes('sheet') || fileType?.includes('excel')) return FiFileText;
   return FiPaperclip;
 };
+

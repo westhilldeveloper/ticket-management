@@ -53,6 +53,21 @@ export type SystemSetting = $Result.DefaultSelection<Prisma.$SystemSettingPayloa
  * 
  */
 export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
+/**
+ * Model ItemCategory
+ * 
+ */
+export type ItemCategory = $Result.DefaultSelection<Prisma.$ItemCategoryPayload>
+/**
+ * Model ItemType
+ * 
+ */
+export type ItemType = $Result.DefaultSelection<Prisma.$ItemTypePayload>
+/**
+ * Model DynamicCategory
+ * 
+ */
+export type DynamicCategory = $Result.DefaultSelection<Prisma.$DynamicCategoryPayload>
 
 /**
  * Enums
@@ -88,6 +103,7 @@ export const Status: {
   REJECTED_BY_MD: 'REJECTED_BY_MD',
   PENDING_SERVICE_ACCEPTANCE: 'PENDING_SERVICE_ACCEPTANCE',
   SERVICE_IN_PROGRESS: 'SERVICE_IN_PROGRESS',
+  REJECTED_BY_SERVICE: 'REJECTED_BY_SERVICE',
   SERVICE_RESOLVED: 'SERVICE_RESOLVED',
   RESOLVED: 'RESOLVED',
   CLOSED: 'CLOSED'
@@ -131,15 +147,6 @@ export const NotificationType: {
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
 
 
-export const MainCategory: {
-  IT: 'IT',
-  ADMIN: 'ADMIN',
-  HR: 'HR'
-};
-
-export type MainCategory = (typeof MainCategory)[keyof typeof MainCategory]
-
-
 export const RequestServiceType: {
   REQUEST: 'REQUEST',
   SERVICE: 'SERVICE'
@@ -172,10 +179,6 @@ export const MDFeedback: typeof $Enums.MDFeedback
 export type NotificationType = $Enums.NotificationType
 
 export const NotificationType: typeof $Enums.NotificationType
-
-export type MainCategory = $Enums.MainCategory
-
-export const MainCategory: typeof $Enums.MainCategory
 
 export type RequestServiceType = $Enums.RequestServiceType
 
@@ -381,6 +384,36 @@ export class PrismaClient<
     * ```
     */
   get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.itemCategory`: Exposes CRUD operations for the **ItemCategory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ItemCategories
+    * const itemCategories = await prisma.itemCategory.findMany()
+    * ```
+    */
+  get itemCategory(): Prisma.ItemCategoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.itemType`: Exposes CRUD operations for the **ItemType** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ItemTypes
+    * const itemTypes = await prisma.itemType.findMany()
+    * ```
+    */
+  get itemType(): Prisma.ItemTypeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.dynamicCategory`: Exposes CRUD operations for the **DynamicCategory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DynamicCategories
+    * const dynamicCategories = await prisma.dynamicCategory.findMany()
+    * ```
+    */
+  get dynamicCategory(): Prisma.DynamicCategoryDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -822,7 +855,10 @@ export namespace Prisma {
     Notification: 'Notification',
     Department: 'Department',
     SystemSetting: 'SystemSetting',
-    AuditLog: 'AuditLog'
+    AuditLog: 'AuditLog',
+    ItemCategory: 'ItemCategory',
+    ItemType: 'ItemType',
+    DynamicCategory: 'DynamicCategory'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -838,7 +874,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "ticket" | "review" | "ticketHistory" | "notification" | "department" | "systemSetting" | "auditLog"
+      modelProps: "user" | "ticket" | "review" | "ticketHistory" | "notification" | "department" | "systemSetting" | "auditLog" | "itemCategory" | "itemType" | "dynamicCategory"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1434,6 +1470,228 @@ export namespace Prisma {
           }
         }
       }
+      ItemCategory: {
+        payload: Prisma.$ItemCategoryPayload<ExtArgs>
+        fields: Prisma.ItemCategoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ItemCategoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ItemCategoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload>
+          }
+          findFirst: {
+            args: Prisma.ItemCategoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ItemCategoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload>
+          }
+          findMany: {
+            args: Prisma.ItemCategoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload>[]
+          }
+          create: {
+            args: Prisma.ItemCategoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload>
+          }
+          createMany: {
+            args: Prisma.ItemCategoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ItemCategoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload>[]
+          }
+          delete: {
+            args: Prisma.ItemCategoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload>
+          }
+          update: {
+            args: Prisma.ItemCategoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.ItemCategoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ItemCategoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ItemCategoryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload>[]
+          }
+          upsert: {
+            args: Prisma.ItemCategoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemCategoryPayload>
+          }
+          aggregate: {
+            args: Prisma.ItemCategoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateItemCategory>
+          }
+          groupBy: {
+            args: Prisma.ItemCategoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ItemCategoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ItemCategoryCountArgs<ExtArgs>
+            result: $Utils.Optional<ItemCategoryCountAggregateOutputType> | number
+          }
+        }
+      }
+      ItemType: {
+        payload: Prisma.$ItemTypePayload<ExtArgs>
+        fields: Prisma.ItemTypeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ItemTypeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ItemTypeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload>
+          }
+          findFirst: {
+            args: Prisma.ItemTypeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ItemTypeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload>
+          }
+          findMany: {
+            args: Prisma.ItemTypeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload>[]
+          }
+          create: {
+            args: Prisma.ItemTypeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload>
+          }
+          createMany: {
+            args: Prisma.ItemTypeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ItemTypeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload>[]
+          }
+          delete: {
+            args: Prisma.ItemTypeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload>
+          }
+          update: {
+            args: Prisma.ItemTypeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload>
+          }
+          deleteMany: {
+            args: Prisma.ItemTypeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ItemTypeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ItemTypeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload>[]
+          }
+          upsert: {
+            args: Prisma.ItemTypeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemTypePayload>
+          }
+          aggregate: {
+            args: Prisma.ItemTypeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateItemType>
+          }
+          groupBy: {
+            args: Prisma.ItemTypeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ItemTypeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ItemTypeCountArgs<ExtArgs>
+            result: $Utils.Optional<ItemTypeCountAggregateOutputType> | number
+          }
+        }
+      }
+      DynamicCategory: {
+        payload: Prisma.$DynamicCategoryPayload<ExtArgs>
+        fields: Prisma.DynamicCategoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DynamicCategoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DynamicCategoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload>
+          }
+          findFirst: {
+            args: Prisma.DynamicCategoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DynamicCategoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload>
+          }
+          findMany: {
+            args: Prisma.DynamicCategoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload>[]
+          }
+          create: {
+            args: Prisma.DynamicCategoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload>
+          }
+          createMany: {
+            args: Prisma.DynamicCategoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DynamicCategoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload>[]
+          }
+          delete: {
+            args: Prisma.DynamicCategoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload>
+          }
+          update: {
+            args: Prisma.DynamicCategoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.DynamicCategoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DynamicCategoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DynamicCategoryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload>[]
+          }
+          upsert: {
+            args: Prisma.DynamicCategoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DynamicCategoryPayload>
+          }
+          aggregate: {
+            args: Prisma.DynamicCategoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDynamicCategory>
+          }
+          groupBy: {
+            args: Prisma.DynamicCategoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DynamicCategoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DynamicCategoryCountArgs<ExtArgs>
+            result: $Utils.Optional<DynamicCategoryCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1550,6 +1808,9 @@ export namespace Prisma {
     department?: DepartmentOmit
     systemSetting?: SystemSettingOmit
     auditLog?: AuditLogOmit
+    itemCategory?: ItemCategoryOmit
+    itemType?: ItemTypeOmit
+    dynamicCategory?: DynamicCategoryOmit
   }
 
   /* Types for Logging */
@@ -1787,6 +2048,68 @@ export namespace Prisma {
    */
   export type DepartmentCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+
+  /**
+   * Count Type ItemCategoryCountOutputType
+   */
+
+  export type ItemCategoryCountOutputType = {
+    items: number
+  }
+
+  export type ItemCategoryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | ItemCategoryCountOutputTypeCountItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ItemCategoryCountOutputType without action
+   */
+  export type ItemCategoryCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategoryCountOutputType
+     */
+    select?: ItemCategoryCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ItemCategoryCountOutputType without action
+   */
+  export type ItemCategoryCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ItemTypeWhereInput
+  }
+
+
+  /**
+   * Count Type DynamicCategoryCountOutputType
+   */
+
+  export type DynamicCategoryCountOutputType = {
+    tickets: number
+  }
+
+  export type DynamicCategoryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tickets?: boolean | DynamicCategoryCountOutputTypeCountTicketsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DynamicCategoryCountOutputType without action
+   */
+  export type DynamicCategoryCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategoryCountOutputType
+     */
+    select?: DynamicCategoryCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DynamicCategoryCountOutputType without action
+   */
+  export type DynamicCategoryCountOutputTypeCountTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketWhereInput
   }
 
 
@@ -3174,7 +3497,7 @@ export namespace Prisma {
     ticketNumber: string | null
     title: string | null
     description: string | null
-    mainCategory: $Enums.MainCategory | null
+    mainCategoryId: string | null
     requestServiceType: $Enums.RequestServiceType | null
     itemType: string | null
     count: string | null
@@ -3204,7 +3527,7 @@ export namespace Prisma {
     ticketNumber: string | null
     title: string | null
     description: string | null
-    mainCategory: $Enums.MainCategory | null
+    mainCategoryId: string | null
     requestServiceType: $Enums.RequestServiceType | null
     itemType: string | null
     count: string | null
@@ -3234,7 +3557,7 @@ export namespace Prisma {
     ticketNumber: number
     title: number
     description: number
-    mainCategory: number
+    mainCategoryId: number
     requestServiceType: number
     itemType: number
     serviceDetails: number
@@ -3267,7 +3590,7 @@ export namespace Prisma {
     ticketNumber?: true
     title?: true
     description?: true
-    mainCategory?: true
+    mainCategoryId?: true
     requestServiceType?: true
     itemType?: true
     count?: true
@@ -3297,7 +3620,7 @@ export namespace Prisma {
     ticketNumber?: true
     title?: true
     description?: true
-    mainCategory?: true
+    mainCategoryId?: true
     requestServiceType?: true
     itemType?: true
     count?: true
@@ -3327,7 +3650,7 @@ export namespace Prisma {
     ticketNumber?: true
     title?: true
     description?: true
-    mainCategory?: true
+    mainCategoryId?: true
     requestServiceType?: true
     itemType?: true
     serviceDetails?: true
@@ -3431,7 +3754,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description: string | null
-    mainCategory: $Enums.MainCategory | null
+    mainCategoryId: string | null
     requestServiceType: $Enums.RequestServiceType | null
     itemType: string | null
     serviceDetails: JsonValue | null
@@ -3479,7 +3802,7 @@ export namespace Prisma {
     ticketNumber?: boolean
     title?: boolean
     description?: boolean
-    mainCategory?: boolean
+    mainCategoryId?: boolean
     requestServiceType?: boolean
     itemType?: boolean
     serviceDetails?: boolean
@@ -3503,6 +3826,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     closedAt?: boolean
+    mainCategory?: boolean | Ticket$mainCategoryArgs<ExtArgs>
     notifications?: boolean | Ticket$notificationsArgs<ExtArgs>
     reviews?: boolean | Ticket$reviewsArgs<ExtArgs>
     history?: boolean | Ticket$historyArgs<ExtArgs>
@@ -3516,7 +3840,7 @@ export namespace Prisma {
     ticketNumber?: boolean
     title?: boolean
     description?: boolean
-    mainCategory?: boolean
+    mainCategoryId?: boolean
     requestServiceType?: boolean
     itemType?: boolean
     serviceDetails?: boolean
@@ -3540,6 +3864,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     closedAt?: boolean
+    mainCategory?: boolean | Ticket$mainCategoryArgs<ExtArgs>
     assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["ticket"]>
@@ -3549,7 +3874,7 @@ export namespace Prisma {
     ticketNumber?: boolean
     title?: boolean
     description?: boolean
-    mainCategory?: boolean
+    mainCategoryId?: boolean
     requestServiceType?: boolean
     itemType?: boolean
     serviceDetails?: boolean
@@ -3573,6 +3898,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     closedAt?: boolean
+    mainCategory?: boolean | Ticket$mainCategoryArgs<ExtArgs>
     assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["ticket"]>
@@ -3582,7 +3908,7 @@ export namespace Prisma {
     ticketNumber?: boolean
     title?: boolean
     description?: boolean
-    mainCategory?: boolean
+    mainCategoryId?: boolean
     requestServiceType?: boolean
     itemType?: boolean
     serviceDetails?: boolean
@@ -3608,8 +3934,9 @@ export namespace Prisma {
     closedAt?: boolean
   }
 
-  export type TicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ticketNumber" | "title" | "description" | "mainCategory" | "requestServiceType" | "itemType" | "serviceDetails" | "count" | "category" | "priority" | "status" | "attachment" | "attachmentPublicId" | "serialNumber" | "createdById" | "assignedToId" | "mdApproval" | "mdApprovedAt" | "mdRejectedAt" | "mdRejectReason" | "mdApprovalComment" | "thirdParty" | "thirdPartyStatus" | "thirdPartyDetails" | "createdAt" | "updatedAt" | "closedAt", ExtArgs["result"]["ticket"]>
+  export type TicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ticketNumber" | "title" | "description" | "mainCategoryId" | "requestServiceType" | "itemType" | "serviceDetails" | "count" | "category" | "priority" | "status" | "attachment" | "attachmentPublicId" | "serialNumber" | "createdById" | "assignedToId" | "mdApproval" | "mdApprovedAt" | "mdRejectedAt" | "mdRejectReason" | "mdApprovalComment" | "thirdParty" | "thirdPartyStatus" | "thirdPartyDetails" | "createdAt" | "updatedAt" | "closedAt", ExtArgs["result"]["ticket"]>
   export type TicketInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mainCategory?: boolean | Ticket$mainCategoryArgs<ExtArgs>
     notifications?: boolean | Ticket$notificationsArgs<ExtArgs>
     reviews?: boolean | Ticket$reviewsArgs<ExtArgs>
     history?: boolean | Ticket$historyArgs<ExtArgs>
@@ -3618,10 +3945,12 @@ export namespace Prisma {
     _count?: boolean | TicketCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TicketIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mainCategory?: boolean | Ticket$mainCategoryArgs<ExtArgs>
     assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TicketIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mainCategory?: boolean | Ticket$mainCategoryArgs<ExtArgs>
     assignedTo?: boolean | Ticket$assignedToArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -3629,6 +3958,7 @@ export namespace Prisma {
   export type $TicketPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Ticket"
     objects: {
+      mainCategory: Prisma.$DynamicCategoryPayload<ExtArgs> | null
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
       history: Prisma.$TicketHistoryPayload<ExtArgs>[]
@@ -3640,7 +3970,7 @@ export namespace Prisma {
       ticketNumber: string
       title: string
       description: string | null
-      mainCategory: $Enums.MainCategory | null
+      mainCategoryId: string | null
       requestServiceType: $Enums.RequestServiceType | null
       itemType: string | null
       serviceDetails: Prisma.JsonValue | null
@@ -4058,6 +4388,7 @@ export namespace Prisma {
    */
   export interface Prisma__TicketClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    mainCategory<T extends Ticket$mainCategoryArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$mainCategoryArgs<ExtArgs>>): Prisma__DynamicCategoryClient<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     notifications<T extends Ticket$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviews<T extends Ticket$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     history<T extends Ticket$historyArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4096,7 +4427,7 @@ export namespace Prisma {
     readonly ticketNumber: FieldRef<"Ticket", 'String'>
     readonly title: FieldRef<"Ticket", 'String'>
     readonly description: FieldRef<"Ticket", 'String'>
-    readonly mainCategory: FieldRef<"Ticket", 'MainCategory'>
+    readonly mainCategoryId: FieldRef<"Ticket", 'String'>
     readonly requestServiceType: FieldRef<"Ticket", 'RequestServiceType'>
     readonly itemType: FieldRef<"Ticket", 'String'>
     readonly serviceDetails: FieldRef<"Ticket", 'Json'>
@@ -4513,6 +4844,25 @@ export namespace Prisma {
      * Limit how many Tickets to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Ticket.mainCategory
+   */
+  export type Ticket$mainCategoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    where?: DynamicCategoryWhereInput
   }
 
   /**
@@ -11265,6 +11615,3350 @@ export namespace Prisma {
 
 
   /**
+   * Model ItemCategory
+   */
+
+  export type AggregateItemCategory = {
+    _count: ItemCategoryCountAggregateOutputType | null
+    _min: ItemCategoryMinAggregateOutputType | null
+    _max: ItemCategoryMaxAggregateOutputType | null
+  }
+
+  export type ItemCategoryMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ItemCategoryMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ItemCategoryCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ItemCategoryMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ItemCategoryMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ItemCategoryCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ItemCategoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ItemCategory to aggregate.
+     */
+    where?: ItemCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ItemCategories to fetch.
+     */
+    orderBy?: ItemCategoryOrderByWithRelationInput | ItemCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ItemCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ItemCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ItemCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ItemCategories
+    **/
+    _count?: true | ItemCategoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ItemCategoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ItemCategoryMaxAggregateInputType
+  }
+
+  export type GetItemCategoryAggregateType<T extends ItemCategoryAggregateArgs> = {
+        [P in keyof T & keyof AggregateItemCategory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateItemCategory[P]>
+      : GetScalarType<T[P], AggregateItemCategory[P]>
+  }
+
+
+
+
+  export type ItemCategoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ItemCategoryWhereInput
+    orderBy?: ItemCategoryOrderByWithAggregationInput | ItemCategoryOrderByWithAggregationInput[]
+    by: ItemCategoryScalarFieldEnum[] | ItemCategoryScalarFieldEnum
+    having?: ItemCategoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ItemCategoryCountAggregateInputType | true
+    _min?: ItemCategoryMinAggregateInputType
+    _max?: ItemCategoryMaxAggregateInputType
+  }
+
+  export type ItemCategoryGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ItemCategoryCountAggregateOutputType | null
+    _min: ItemCategoryMinAggregateOutputType | null
+    _max: ItemCategoryMaxAggregateOutputType | null
+  }
+
+  type GetItemCategoryGroupByPayload<T extends ItemCategoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ItemCategoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ItemCategoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ItemCategoryGroupByOutputType[P]>
+            : GetScalarType<T[P], ItemCategoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ItemCategorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    items?: boolean | ItemCategory$itemsArgs<ExtArgs>
+    _count?: boolean | ItemCategoryCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["itemCategory"]>
+
+  export type ItemCategorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["itemCategory"]>
+
+  export type ItemCategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["itemCategory"]>
+
+  export type ItemCategorySelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ItemCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["itemCategory"]>
+  export type ItemCategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | ItemCategory$itemsArgs<ExtArgs>
+    _count?: boolean | ItemCategoryCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ItemCategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ItemCategoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $ItemCategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ItemCategory"
+    objects: {
+      items: Prisma.$ItemTypePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["itemCategory"]>
+    composites: {}
+  }
+
+  type ItemCategoryGetPayload<S extends boolean | null | undefined | ItemCategoryDefaultArgs> = $Result.GetResult<Prisma.$ItemCategoryPayload, S>
+
+  type ItemCategoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ItemCategoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ItemCategoryCountAggregateInputType | true
+    }
+
+  export interface ItemCategoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ItemCategory'], meta: { name: 'ItemCategory' } }
+    /**
+     * Find zero or one ItemCategory that matches the filter.
+     * @param {ItemCategoryFindUniqueArgs} args - Arguments to find a ItemCategory
+     * @example
+     * // Get one ItemCategory
+     * const itemCategory = await prisma.itemCategory.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ItemCategoryFindUniqueArgs>(args: SelectSubset<T, ItemCategoryFindUniqueArgs<ExtArgs>>): Prisma__ItemCategoryClient<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ItemCategory that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ItemCategoryFindUniqueOrThrowArgs} args - Arguments to find a ItemCategory
+     * @example
+     * // Get one ItemCategory
+     * const itemCategory = await prisma.itemCategory.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ItemCategoryFindUniqueOrThrowArgs>(args: SelectSubset<T, ItemCategoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ItemCategoryClient<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ItemCategory that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemCategoryFindFirstArgs} args - Arguments to find a ItemCategory
+     * @example
+     * // Get one ItemCategory
+     * const itemCategory = await prisma.itemCategory.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ItemCategoryFindFirstArgs>(args?: SelectSubset<T, ItemCategoryFindFirstArgs<ExtArgs>>): Prisma__ItemCategoryClient<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ItemCategory that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemCategoryFindFirstOrThrowArgs} args - Arguments to find a ItemCategory
+     * @example
+     * // Get one ItemCategory
+     * const itemCategory = await prisma.itemCategory.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ItemCategoryFindFirstOrThrowArgs>(args?: SelectSubset<T, ItemCategoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__ItemCategoryClient<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ItemCategories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemCategoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ItemCategories
+     * const itemCategories = await prisma.itemCategory.findMany()
+     * 
+     * // Get first 10 ItemCategories
+     * const itemCategories = await prisma.itemCategory.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const itemCategoryWithIdOnly = await prisma.itemCategory.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ItemCategoryFindManyArgs>(args?: SelectSubset<T, ItemCategoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ItemCategory.
+     * @param {ItemCategoryCreateArgs} args - Arguments to create a ItemCategory.
+     * @example
+     * // Create one ItemCategory
+     * const ItemCategory = await prisma.itemCategory.create({
+     *   data: {
+     *     // ... data to create a ItemCategory
+     *   }
+     * })
+     * 
+     */
+    create<T extends ItemCategoryCreateArgs>(args: SelectSubset<T, ItemCategoryCreateArgs<ExtArgs>>): Prisma__ItemCategoryClient<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ItemCategories.
+     * @param {ItemCategoryCreateManyArgs} args - Arguments to create many ItemCategories.
+     * @example
+     * // Create many ItemCategories
+     * const itemCategory = await prisma.itemCategory.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ItemCategoryCreateManyArgs>(args?: SelectSubset<T, ItemCategoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ItemCategories and returns the data saved in the database.
+     * @param {ItemCategoryCreateManyAndReturnArgs} args - Arguments to create many ItemCategories.
+     * @example
+     * // Create many ItemCategories
+     * const itemCategory = await prisma.itemCategory.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ItemCategories and only return the `id`
+     * const itemCategoryWithIdOnly = await prisma.itemCategory.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ItemCategoryCreateManyAndReturnArgs>(args?: SelectSubset<T, ItemCategoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ItemCategory.
+     * @param {ItemCategoryDeleteArgs} args - Arguments to delete one ItemCategory.
+     * @example
+     * // Delete one ItemCategory
+     * const ItemCategory = await prisma.itemCategory.delete({
+     *   where: {
+     *     // ... filter to delete one ItemCategory
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ItemCategoryDeleteArgs>(args: SelectSubset<T, ItemCategoryDeleteArgs<ExtArgs>>): Prisma__ItemCategoryClient<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ItemCategory.
+     * @param {ItemCategoryUpdateArgs} args - Arguments to update one ItemCategory.
+     * @example
+     * // Update one ItemCategory
+     * const itemCategory = await prisma.itemCategory.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ItemCategoryUpdateArgs>(args: SelectSubset<T, ItemCategoryUpdateArgs<ExtArgs>>): Prisma__ItemCategoryClient<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ItemCategories.
+     * @param {ItemCategoryDeleteManyArgs} args - Arguments to filter ItemCategories to delete.
+     * @example
+     * // Delete a few ItemCategories
+     * const { count } = await prisma.itemCategory.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ItemCategoryDeleteManyArgs>(args?: SelectSubset<T, ItemCategoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ItemCategories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemCategoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ItemCategories
+     * const itemCategory = await prisma.itemCategory.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ItemCategoryUpdateManyArgs>(args: SelectSubset<T, ItemCategoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ItemCategories and returns the data updated in the database.
+     * @param {ItemCategoryUpdateManyAndReturnArgs} args - Arguments to update many ItemCategories.
+     * @example
+     * // Update many ItemCategories
+     * const itemCategory = await prisma.itemCategory.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ItemCategories and only return the `id`
+     * const itemCategoryWithIdOnly = await prisma.itemCategory.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ItemCategoryUpdateManyAndReturnArgs>(args: SelectSubset<T, ItemCategoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ItemCategory.
+     * @param {ItemCategoryUpsertArgs} args - Arguments to update or create a ItemCategory.
+     * @example
+     * // Update or create a ItemCategory
+     * const itemCategory = await prisma.itemCategory.upsert({
+     *   create: {
+     *     // ... data to create a ItemCategory
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ItemCategory we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ItemCategoryUpsertArgs>(args: SelectSubset<T, ItemCategoryUpsertArgs<ExtArgs>>): Prisma__ItemCategoryClient<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ItemCategories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemCategoryCountArgs} args - Arguments to filter ItemCategories to count.
+     * @example
+     * // Count the number of ItemCategories
+     * const count = await prisma.itemCategory.count({
+     *   where: {
+     *     // ... the filter for the ItemCategories we want to count
+     *   }
+     * })
+    **/
+    count<T extends ItemCategoryCountArgs>(
+      args?: Subset<T, ItemCategoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ItemCategoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ItemCategory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemCategoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ItemCategoryAggregateArgs>(args: Subset<T, ItemCategoryAggregateArgs>): Prisma.PrismaPromise<GetItemCategoryAggregateType<T>>
+
+    /**
+     * Group by ItemCategory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemCategoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ItemCategoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ItemCategoryGroupByArgs['orderBy'] }
+        : { orderBy?: ItemCategoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ItemCategoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetItemCategoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ItemCategory model
+   */
+  readonly fields: ItemCategoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ItemCategory.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ItemCategoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    items<T extends ItemCategory$itemsArgs<ExtArgs> = {}>(args?: Subset<T, ItemCategory$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ItemCategory model
+   */
+  interface ItemCategoryFieldRefs {
+    readonly id: FieldRef<"ItemCategory", 'String'>
+    readonly name: FieldRef<"ItemCategory", 'String'>
+    readonly description: FieldRef<"ItemCategory", 'String'>
+    readonly isActive: FieldRef<"ItemCategory", 'Boolean'>
+    readonly createdAt: FieldRef<"ItemCategory", 'DateTime'>
+    readonly updatedAt: FieldRef<"ItemCategory", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ItemCategory findUnique
+   */
+  export type ItemCategoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemCategory to fetch.
+     */
+    where: ItemCategoryWhereUniqueInput
+  }
+
+  /**
+   * ItemCategory findUniqueOrThrow
+   */
+  export type ItemCategoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemCategory to fetch.
+     */
+    where: ItemCategoryWhereUniqueInput
+  }
+
+  /**
+   * ItemCategory findFirst
+   */
+  export type ItemCategoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemCategory to fetch.
+     */
+    where?: ItemCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ItemCategories to fetch.
+     */
+    orderBy?: ItemCategoryOrderByWithRelationInput | ItemCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ItemCategories.
+     */
+    cursor?: ItemCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ItemCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ItemCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ItemCategories.
+     */
+    distinct?: ItemCategoryScalarFieldEnum | ItemCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * ItemCategory findFirstOrThrow
+   */
+  export type ItemCategoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemCategory to fetch.
+     */
+    where?: ItemCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ItemCategories to fetch.
+     */
+    orderBy?: ItemCategoryOrderByWithRelationInput | ItemCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ItemCategories.
+     */
+    cursor?: ItemCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ItemCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ItemCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ItemCategories.
+     */
+    distinct?: ItemCategoryScalarFieldEnum | ItemCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * ItemCategory findMany
+   */
+  export type ItemCategoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemCategories to fetch.
+     */
+    where?: ItemCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ItemCategories to fetch.
+     */
+    orderBy?: ItemCategoryOrderByWithRelationInput | ItemCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ItemCategories.
+     */
+    cursor?: ItemCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ItemCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ItemCategories.
+     */
+    skip?: number
+    distinct?: ItemCategoryScalarFieldEnum | ItemCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * ItemCategory create
+   */
+  export type ItemCategoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ItemCategory.
+     */
+    data: XOR<ItemCategoryCreateInput, ItemCategoryUncheckedCreateInput>
+  }
+
+  /**
+   * ItemCategory createMany
+   */
+  export type ItemCategoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ItemCategories.
+     */
+    data: ItemCategoryCreateManyInput | ItemCategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ItemCategory createManyAndReturn
+   */
+  export type ItemCategoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * The data used to create many ItemCategories.
+     */
+    data: ItemCategoryCreateManyInput | ItemCategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ItemCategory update
+   */
+  export type ItemCategoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ItemCategory.
+     */
+    data: XOR<ItemCategoryUpdateInput, ItemCategoryUncheckedUpdateInput>
+    /**
+     * Choose, which ItemCategory to update.
+     */
+    where: ItemCategoryWhereUniqueInput
+  }
+
+  /**
+   * ItemCategory updateMany
+   */
+  export type ItemCategoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ItemCategories.
+     */
+    data: XOR<ItemCategoryUpdateManyMutationInput, ItemCategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which ItemCategories to update
+     */
+    where?: ItemCategoryWhereInput
+    /**
+     * Limit how many ItemCategories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ItemCategory updateManyAndReturn
+   */
+  export type ItemCategoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * The data used to update ItemCategories.
+     */
+    data: XOR<ItemCategoryUpdateManyMutationInput, ItemCategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which ItemCategories to update
+     */
+    where?: ItemCategoryWhereInput
+    /**
+     * Limit how many ItemCategories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ItemCategory upsert
+   */
+  export type ItemCategoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ItemCategory to update in case it exists.
+     */
+    where: ItemCategoryWhereUniqueInput
+    /**
+     * In case the ItemCategory found by the `where` argument doesn't exist, create a new ItemCategory with this data.
+     */
+    create: XOR<ItemCategoryCreateInput, ItemCategoryUncheckedCreateInput>
+    /**
+     * In case the ItemCategory was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ItemCategoryUpdateInput, ItemCategoryUncheckedUpdateInput>
+  }
+
+  /**
+   * ItemCategory delete
+   */
+  export type ItemCategoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+    /**
+     * Filter which ItemCategory to delete.
+     */
+    where: ItemCategoryWhereUniqueInput
+  }
+
+  /**
+   * ItemCategory deleteMany
+   */
+  export type ItemCategoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ItemCategories to delete
+     */
+    where?: ItemCategoryWhereInput
+    /**
+     * Limit how many ItemCategories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ItemCategory.items
+   */
+  export type ItemCategory$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    where?: ItemTypeWhereInput
+    orderBy?: ItemTypeOrderByWithRelationInput | ItemTypeOrderByWithRelationInput[]
+    cursor?: ItemTypeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ItemTypeScalarFieldEnum | ItemTypeScalarFieldEnum[]
+  }
+
+  /**
+   * ItemCategory without action
+   */
+  export type ItemCategoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemCategory
+     */
+    select?: ItemCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemCategory
+     */
+    omit?: ItemCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemCategoryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ItemType
+   */
+
+  export type AggregateItemType = {
+    _count: ItemTypeCountAggregateOutputType | null
+    _avg: ItemTypeAvgAggregateOutputType | null
+    _sum: ItemTypeSumAggregateOutputType | null
+    _min: ItemTypeMinAggregateOutputType | null
+    _max: ItemTypeMaxAggregateOutputType | null
+  }
+
+  export type ItemTypeAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type ItemTypeSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type ItemTypeMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    categoryId: string | null
+    type: $Enums.RequestServiceType | null
+    isActive: boolean | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ItemTypeMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    categoryId: string | null
+    type: $Enums.RequestServiceType | null
+    isActive: boolean | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ItemTypeCountAggregateOutputType = {
+    id: number
+    name: number
+    categoryId: number
+    type: number
+    isActive: number
+    sortOrder: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ItemTypeAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type ItemTypeSumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type ItemTypeMinAggregateInputType = {
+    id?: true
+    name?: true
+    categoryId?: true
+    type?: true
+    isActive?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ItemTypeMaxAggregateInputType = {
+    id?: true
+    name?: true
+    categoryId?: true
+    type?: true
+    isActive?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ItemTypeCountAggregateInputType = {
+    id?: true
+    name?: true
+    categoryId?: true
+    type?: true
+    isActive?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ItemTypeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ItemType to aggregate.
+     */
+    where?: ItemTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ItemTypes to fetch.
+     */
+    orderBy?: ItemTypeOrderByWithRelationInput | ItemTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ItemTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ItemTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ItemTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ItemTypes
+    **/
+    _count?: true | ItemTypeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ItemTypeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ItemTypeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ItemTypeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ItemTypeMaxAggregateInputType
+  }
+
+  export type GetItemTypeAggregateType<T extends ItemTypeAggregateArgs> = {
+        [P in keyof T & keyof AggregateItemType]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateItemType[P]>
+      : GetScalarType<T[P], AggregateItemType[P]>
+  }
+
+
+
+
+  export type ItemTypeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ItemTypeWhereInput
+    orderBy?: ItemTypeOrderByWithAggregationInput | ItemTypeOrderByWithAggregationInput[]
+    by: ItemTypeScalarFieldEnum[] | ItemTypeScalarFieldEnum
+    having?: ItemTypeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ItemTypeCountAggregateInputType | true
+    _avg?: ItemTypeAvgAggregateInputType
+    _sum?: ItemTypeSumAggregateInputType
+    _min?: ItemTypeMinAggregateInputType
+    _max?: ItemTypeMaxAggregateInputType
+  }
+
+  export type ItemTypeGroupByOutputType = {
+    id: string
+    name: string
+    categoryId: string
+    type: $Enums.RequestServiceType
+    isActive: boolean
+    sortOrder: number
+    createdAt: Date
+    updatedAt: Date
+    _count: ItemTypeCountAggregateOutputType | null
+    _avg: ItemTypeAvgAggregateOutputType | null
+    _sum: ItemTypeSumAggregateOutputType | null
+    _min: ItemTypeMinAggregateOutputType | null
+    _max: ItemTypeMaxAggregateOutputType | null
+  }
+
+  type GetItemTypeGroupByPayload<T extends ItemTypeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ItemTypeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ItemTypeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ItemTypeGroupByOutputType[P]>
+            : GetScalarType<T[P], ItemTypeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ItemTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    categoryId?: boolean
+    type?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    category?: boolean | ItemCategoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["itemType"]>
+
+  export type ItemTypeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    categoryId?: boolean
+    type?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    category?: boolean | ItemCategoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["itemType"]>
+
+  export type ItemTypeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    categoryId?: boolean
+    type?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    category?: boolean | ItemCategoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["itemType"]>
+
+  export type ItemTypeSelectScalar = {
+    id?: boolean
+    name?: boolean
+    categoryId?: boolean
+    type?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ItemTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "categoryId" | "type" | "isActive" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["itemType"]>
+  export type ItemTypeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    category?: boolean | ItemCategoryDefaultArgs<ExtArgs>
+  }
+  export type ItemTypeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    category?: boolean | ItemCategoryDefaultArgs<ExtArgs>
+  }
+  export type ItemTypeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    category?: boolean | ItemCategoryDefaultArgs<ExtArgs>
+  }
+
+  export type $ItemTypePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ItemType"
+    objects: {
+      category: Prisma.$ItemCategoryPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      categoryId: string
+      type: $Enums.RequestServiceType
+      isActive: boolean
+      sortOrder: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["itemType"]>
+    composites: {}
+  }
+
+  type ItemTypeGetPayload<S extends boolean | null | undefined | ItemTypeDefaultArgs> = $Result.GetResult<Prisma.$ItemTypePayload, S>
+
+  type ItemTypeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ItemTypeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ItemTypeCountAggregateInputType | true
+    }
+
+  export interface ItemTypeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ItemType'], meta: { name: 'ItemType' } }
+    /**
+     * Find zero or one ItemType that matches the filter.
+     * @param {ItemTypeFindUniqueArgs} args - Arguments to find a ItemType
+     * @example
+     * // Get one ItemType
+     * const itemType = await prisma.itemType.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ItemTypeFindUniqueArgs>(args: SelectSubset<T, ItemTypeFindUniqueArgs<ExtArgs>>): Prisma__ItemTypeClient<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ItemType that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ItemTypeFindUniqueOrThrowArgs} args - Arguments to find a ItemType
+     * @example
+     * // Get one ItemType
+     * const itemType = await prisma.itemType.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ItemTypeFindUniqueOrThrowArgs>(args: SelectSubset<T, ItemTypeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ItemTypeClient<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ItemType that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemTypeFindFirstArgs} args - Arguments to find a ItemType
+     * @example
+     * // Get one ItemType
+     * const itemType = await prisma.itemType.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ItemTypeFindFirstArgs>(args?: SelectSubset<T, ItemTypeFindFirstArgs<ExtArgs>>): Prisma__ItemTypeClient<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ItemType that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemTypeFindFirstOrThrowArgs} args - Arguments to find a ItemType
+     * @example
+     * // Get one ItemType
+     * const itemType = await prisma.itemType.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ItemTypeFindFirstOrThrowArgs>(args?: SelectSubset<T, ItemTypeFindFirstOrThrowArgs<ExtArgs>>): Prisma__ItemTypeClient<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ItemTypes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemTypeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ItemTypes
+     * const itemTypes = await prisma.itemType.findMany()
+     * 
+     * // Get first 10 ItemTypes
+     * const itemTypes = await prisma.itemType.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const itemTypeWithIdOnly = await prisma.itemType.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ItemTypeFindManyArgs>(args?: SelectSubset<T, ItemTypeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ItemType.
+     * @param {ItemTypeCreateArgs} args - Arguments to create a ItemType.
+     * @example
+     * // Create one ItemType
+     * const ItemType = await prisma.itemType.create({
+     *   data: {
+     *     // ... data to create a ItemType
+     *   }
+     * })
+     * 
+     */
+    create<T extends ItemTypeCreateArgs>(args: SelectSubset<T, ItemTypeCreateArgs<ExtArgs>>): Prisma__ItemTypeClient<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ItemTypes.
+     * @param {ItemTypeCreateManyArgs} args - Arguments to create many ItemTypes.
+     * @example
+     * // Create many ItemTypes
+     * const itemType = await prisma.itemType.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ItemTypeCreateManyArgs>(args?: SelectSubset<T, ItemTypeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ItemTypes and returns the data saved in the database.
+     * @param {ItemTypeCreateManyAndReturnArgs} args - Arguments to create many ItemTypes.
+     * @example
+     * // Create many ItemTypes
+     * const itemType = await prisma.itemType.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ItemTypes and only return the `id`
+     * const itemTypeWithIdOnly = await prisma.itemType.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ItemTypeCreateManyAndReturnArgs>(args?: SelectSubset<T, ItemTypeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ItemType.
+     * @param {ItemTypeDeleteArgs} args - Arguments to delete one ItemType.
+     * @example
+     * // Delete one ItemType
+     * const ItemType = await prisma.itemType.delete({
+     *   where: {
+     *     // ... filter to delete one ItemType
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ItemTypeDeleteArgs>(args: SelectSubset<T, ItemTypeDeleteArgs<ExtArgs>>): Prisma__ItemTypeClient<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ItemType.
+     * @param {ItemTypeUpdateArgs} args - Arguments to update one ItemType.
+     * @example
+     * // Update one ItemType
+     * const itemType = await prisma.itemType.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ItemTypeUpdateArgs>(args: SelectSubset<T, ItemTypeUpdateArgs<ExtArgs>>): Prisma__ItemTypeClient<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ItemTypes.
+     * @param {ItemTypeDeleteManyArgs} args - Arguments to filter ItemTypes to delete.
+     * @example
+     * // Delete a few ItemTypes
+     * const { count } = await prisma.itemType.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ItemTypeDeleteManyArgs>(args?: SelectSubset<T, ItemTypeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ItemTypes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemTypeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ItemTypes
+     * const itemType = await prisma.itemType.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ItemTypeUpdateManyArgs>(args: SelectSubset<T, ItemTypeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ItemTypes and returns the data updated in the database.
+     * @param {ItemTypeUpdateManyAndReturnArgs} args - Arguments to update many ItemTypes.
+     * @example
+     * // Update many ItemTypes
+     * const itemType = await prisma.itemType.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ItemTypes and only return the `id`
+     * const itemTypeWithIdOnly = await prisma.itemType.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ItemTypeUpdateManyAndReturnArgs>(args: SelectSubset<T, ItemTypeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ItemType.
+     * @param {ItemTypeUpsertArgs} args - Arguments to update or create a ItemType.
+     * @example
+     * // Update or create a ItemType
+     * const itemType = await prisma.itemType.upsert({
+     *   create: {
+     *     // ... data to create a ItemType
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ItemType we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ItemTypeUpsertArgs>(args: SelectSubset<T, ItemTypeUpsertArgs<ExtArgs>>): Prisma__ItemTypeClient<$Result.GetResult<Prisma.$ItemTypePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ItemTypes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemTypeCountArgs} args - Arguments to filter ItemTypes to count.
+     * @example
+     * // Count the number of ItemTypes
+     * const count = await prisma.itemType.count({
+     *   where: {
+     *     // ... the filter for the ItemTypes we want to count
+     *   }
+     * })
+    **/
+    count<T extends ItemTypeCountArgs>(
+      args?: Subset<T, ItemTypeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ItemTypeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ItemType.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemTypeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ItemTypeAggregateArgs>(args: Subset<T, ItemTypeAggregateArgs>): Prisma.PrismaPromise<GetItemTypeAggregateType<T>>
+
+    /**
+     * Group by ItemType.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemTypeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ItemTypeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ItemTypeGroupByArgs['orderBy'] }
+        : { orderBy?: ItemTypeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ItemTypeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetItemTypeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ItemType model
+   */
+  readonly fields: ItemTypeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ItemType.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ItemTypeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    category<T extends ItemCategoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ItemCategoryDefaultArgs<ExtArgs>>): Prisma__ItemCategoryClient<$Result.GetResult<Prisma.$ItemCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ItemType model
+   */
+  interface ItemTypeFieldRefs {
+    readonly id: FieldRef<"ItemType", 'String'>
+    readonly name: FieldRef<"ItemType", 'String'>
+    readonly categoryId: FieldRef<"ItemType", 'String'>
+    readonly type: FieldRef<"ItemType", 'RequestServiceType'>
+    readonly isActive: FieldRef<"ItemType", 'Boolean'>
+    readonly sortOrder: FieldRef<"ItemType", 'Int'>
+    readonly createdAt: FieldRef<"ItemType", 'DateTime'>
+    readonly updatedAt: FieldRef<"ItemType", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ItemType findUnique
+   */
+  export type ItemTypeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemType to fetch.
+     */
+    where: ItemTypeWhereUniqueInput
+  }
+
+  /**
+   * ItemType findUniqueOrThrow
+   */
+  export type ItemTypeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemType to fetch.
+     */
+    where: ItemTypeWhereUniqueInput
+  }
+
+  /**
+   * ItemType findFirst
+   */
+  export type ItemTypeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemType to fetch.
+     */
+    where?: ItemTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ItemTypes to fetch.
+     */
+    orderBy?: ItemTypeOrderByWithRelationInput | ItemTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ItemTypes.
+     */
+    cursor?: ItemTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ItemTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ItemTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ItemTypes.
+     */
+    distinct?: ItemTypeScalarFieldEnum | ItemTypeScalarFieldEnum[]
+  }
+
+  /**
+   * ItemType findFirstOrThrow
+   */
+  export type ItemTypeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemType to fetch.
+     */
+    where?: ItemTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ItemTypes to fetch.
+     */
+    orderBy?: ItemTypeOrderByWithRelationInput | ItemTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ItemTypes.
+     */
+    cursor?: ItemTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ItemTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ItemTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ItemTypes.
+     */
+    distinct?: ItemTypeScalarFieldEnum | ItemTypeScalarFieldEnum[]
+  }
+
+  /**
+   * ItemType findMany
+   */
+  export type ItemTypeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which ItemTypes to fetch.
+     */
+    where?: ItemTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ItemTypes to fetch.
+     */
+    orderBy?: ItemTypeOrderByWithRelationInput | ItemTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ItemTypes.
+     */
+    cursor?: ItemTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ItemTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ItemTypes.
+     */
+    skip?: number
+    distinct?: ItemTypeScalarFieldEnum | ItemTypeScalarFieldEnum[]
+  }
+
+  /**
+   * ItemType create
+   */
+  export type ItemTypeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ItemType.
+     */
+    data: XOR<ItemTypeCreateInput, ItemTypeUncheckedCreateInput>
+  }
+
+  /**
+   * ItemType createMany
+   */
+  export type ItemTypeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ItemTypes.
+     */
+    data: ItemTypeCreateManyInput | ItemTypeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ItemType createManyAndReturn
+   */
+  export type ItemTypeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * The data used to create many ItemTypes.
+     */
+    data: ItemTypeCreateManyInput | ItemTypeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ItemType update
+   */
+  export type ItemTypeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ItemType.
+     */
+    data: XOR<ItemTypeUpdateInput, ItemTypeUncheckedUpdateInput>
+    /**
+     * Choose, which ItemType to update.
+     */
+    where: ItemTypeWhereUniqueInput
+  }
+
+  /**
+   * ItemType updateMany
+   */
+  export type ItemTypeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ItemTypes.
+     */
+    data: XOR<ItemTypeUpdateManyMutationInput, ItemTypeUncheckedUpdateManyInput>
+    /**
+     * Filter which ItemTypes to update
+     */
+    where?: ItemTypeWhereInput
+    /**
+     * Limit how many ItemTypes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ItemType updateManyAndReturn
+   */
+  export type ItemTypeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * The data used to update ItemTypes.
+     */
+    data: XOR<ItemTypeUpdateManyMutationInput, ItemTypeUncheckedUpdateManyInput>
+    /**
+     * Filter which ItemTypes to update
+     */
+    where?: ItemTypeWhereInput
+    /**
+     * Limit how many ItemTypes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ItemType upsert
+   */
+  export type ItemTypeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ItemType to update in case it exists.
+     */
+    where: ItemTypeWhereUniqueInput
+    /**
+     * In case the ItemType found by the `where` argument doesn't exist, create a new ItemType with this data.
+     */
+    create: XOR<ItemTypeCreateInput, ItemTypeUncheckedCreateInput>
+    /**
+     * In case the ItemType was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ItemTypeUpdateInput, ItemTypeUncheckedUpdateInput>
+  }
+
+  /**
+   * ItemType delete
+   */
+  export type ItemTypeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+    /**
+     * Filter which ItemType to delete.
+     */
+    where: ItemTypeWhereUniqueInput
+  }
+
+  /**
+   * ItemType deleteMany
+   */
+  export type ItemTypeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ItemTypes to delete
+     */
+    where?: ItemTypeWhereInput
+    /**
+     * Limit how many ItemTypes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ItemType without action
+   */
+  export type ItemTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ItemType
+     */
+    select?: ItemTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ItemType
+     */
+    omit?: ItemTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemTypeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DynamicCategory
+   */
+
+  export type AggregateDynamicCategory = {
+    _count: DynamicCategoryCountAggregateOutputType | null
+    _avg: DynamicCategoryAvgAggregateOutputType | null
+    _sum: DynamicCategorySumAggregateOutputType | null
+    _min: DynamicCategoryMinAggregateOutputType | null
+    _max: DynamicCategoryMaxAggregateOutputType | null
+  }
+
+  export type DynamicCategoryAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type DynamicCategorySumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type DynamicCategoryMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    isActive: boolean | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DynamicCategoryMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    isActive: boolean | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DynamicCategoryCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    isActive: number
+    sortOrder: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type DynamicCategoryAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type DynamicCategorySumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type DynamicCategoryMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isActive?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DynamicCategoryMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isActive?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DynamicCategoryCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isActive?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type DynamicCategoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DynamicCategory to aggregate.
+     */
+    where?: DynamicCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DynamicCategories to fetch.
+     */
+    orderBy?: DynamicCategoryOrderByWithRelationInput | DynamicCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DynamicCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DynamicCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DynamicCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DynamicCategories
+    **/
+    _count?: true | DynamicCategoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DynamicCategoryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DynamicCategorySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DynamicCategoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DynamicCategoryMaxAggregateInputType
+  }
+
+  export type GetDynamicCategoryAggregateType<T extends DynamicCategoryAggregateArgs> = {
+        [P in keyof T & keyof AggregateDynamicCategory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDynamicCategory[P]>
+      : GetScalarType<T[P], AggregateDynamicCategory[P]>
+  }
+
+
+
+
+  export type DynamicCategoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DynamicCategoryWhereInput
+    orderBy?: DynamicCategoryOrderByWithAggregationInput | DynamicCategoryOrderByWithAggregationInput[]
+    by: DynamicCategoryScalarFieldEnum[] | DynamicCategoryScalarFieldEnum
+    having?: DynamicCategoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DynamicCategoryCountAggregateInputType | true
+    _avg?: DynamicCategoryAvgAggregateInputType
+    _sum?: DynamicCategorySumAggregateInputType
+    _min?: DynamicCategoryMinAggregateInputType
+    _max?: DynamicCategoryMaxAggregateInputType
+  }
+
+  export type DynamicCategoryGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    isActive: boolean
+    sortOrder: number
+    createdAt: Date
+    updatedAt: Date
+    _count: DynamicCategoryCountAggregateOutputType | null
+    _avg: DynamicCategoryAvgAggregateOutputType | null
+    _sum: DynamicCategorySumAggregateOutputType | null
+    _min: DynamicCategoryMinAggregateOutputType | null
+    _max: DynamicCategoryMaxAggregateOutputType | null
+  }
+
+  type GetDynamicCategoryGroupByPayload<T extends DynamicCategoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DynamicCategoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DynamicCategoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DynamicCategoryGroupByOutputType[P]>
+            : GetScalarType<T[P], DynamicCategoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DynamicCategorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tickets?: boolean | DynamicCategory$ticketsArgs<ExtArgs>
+    _count?: boolean | DynamicCategoryCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dynamicCategory"]>
+
+  export type DynamicCategorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["dynamicCategory"]>
+
+  export type DynamicCategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["dynamicCategory"]>
+
+  export type DynamicCategorySelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isActive?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type DynamicCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "isActive" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["dynamicCategory"]>
+  export type DynamicCategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tickets?: boolean | DynamicCategory$ticketsArgs<ExtArgs>
+    _count?: boolean | DynamicCategoryCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DynamicCategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type DynamicCategoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $DynamicCategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DynamicCategory"
+    objects: {
+      tickets: Prisma.$TicketPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      isActive: boolean
+      sortOrder: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["dynamicCategory"]>
+    composites: {}
+  }
+
+  type DynamicCategoryGetPayload<S extends boolean | null | undefined | DynamicCategoryDefaultArgs> = $Result.GetResult<Prisma.$DynamicCategoryPayload, S>
+
+  type DynamicCategoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DynamicCategoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DynamicCategoryCountAggregateInputType | true
+    }
+
+  export interface DynamicCategoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DynamicCategory'], meta: { name: 'DynamicCategory' } }
+    /**
+     * Find zero or one DynamicCategory that matches the filter.
+     * @param {DynamicCategoryFindUniqueArgs} args - Arguments to find a DynamicCategory
+     * @example
+     * // Get one DynamicCategory
+     * const dynamicCategory = await prisma.dynamicCategory.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DynamicCategoryFindUniqueArgs>(args: SelectSubset<T, DynamicCategoryFindUniqueArgs<ExtArgs>>): Prisma__DynamicCategoryClient<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DynamicCategory that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DynamicCategoryFindUniqueOrThrowArgs} args - Arguments to find a DynamicCategory
+     * @example
+     * // Get one DynamicCategory
+     * const dynamicCategory = await prisma.dynamicCategory.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DynamicCategoryFindUniqueOrThrowArgs>(args: SelectSubset<T, DynamicCategoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DynamicCategoryClient<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DynamicCategory that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DynamicCategoryFindFirstArgs} args - Arguments to find a DynamicCategory
+     * @example
+     * // Get one DynamicCategory
+     * const dynamicCategory = await prisma.dynamicCategory.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DynamicCategoryFindFirstArgs>(args?: SelectSubset<T, DynamicCategoryFindFirstArgs<ExtArgs>>): Prisma__DynamicCategoryClient<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DynamicCategory that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DynamicCategoryFindFirstOrThrowArgs} args - Arguments to find a DynamicCategory
+     * @example
+     * // Get one DynamicCategory
+     * const dynamicCategory = await prisma.dynamicCategory.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DynamicCategoryFindFirstOrThrowArgs>(args?: SelectSubset<T, DynamicCategoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__DynamicCategoryClient<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DynamicCategories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DynamicCategoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DynamicCategories
+     * const dynamicCategories = await prisma.dynamicCategory.findMany()
+     * 
+     * // Get first 10 DynamicCategories
+     * const dynamicCategories = await prisma.dynamicCategory.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const dynamicCategoryWithIdOnly = await prisma.dynamicCategory.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DynamicCategoryFindManyArgs>(args?: SelectSubset<T, DynamicCategoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DynamicCategory.
+     * @param {DynamicCategoryCreateArgs} args - Arguments to create a DynamicCategory.
+     * @example
+     * // Create one DynamicCategory
+     * const DynamicCategory = await prisma.dynamicCategory.create({
+     *   data: {
+     *     // ... data to create a DynamicCategory
+     *   }
+     * })
+     * 
+     */
+    create<T extends DynamicCategoryCreateArgs>(args: SelectSubset<T, DynamicCategoryCreateArgs<ExtArgs>>): Prisma__DynamicCategoryClient<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DynamicCategories.
+     * @param {DynamicCategoryCreateManyArgs} args - Arguments to create many DynamicCategories.
+     * @example
+     * // Create many DynamicCategories
+     * const dynamicCategory = await prisma.dynamicCategory.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DynamicCategoryCreateManyArgs>(args?: SelectSubset<T, DynamicCategoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DynamicCategories and returns the data saved in the database.
+     * @param {DynamicCategoryCreateManyAndReturnArgs} args - Arguments to create many DynamicCategories.
+     * @example
+     * // Create many DynamicCategories
+     * const dynamicCategory = await prisma.dynamicCategory.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DynamicCategories and only return the `id`
+     * const dynamicCategoryWithIdOnly = await prisma.dynamicCategory.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DynamicCategoryCreateManyAndReturnArgs>(args?: SelectSubset<T, DynamicCategoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DynamicCategory.
+     * @param {DynamicCategoryDeleteArgs} args - Arguments to delete one DynamicCategory.
+     * @example
+     * // Delete one DynamicCategory
+     * const DynamicCategory = await prisma.dynamicCategory.delete({
+     *   where: {
+     *     // ... filter to delete one DynamicCategory
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DynamicCategoryDeleteArgs>(args: SelectSubset<T, DynamicCategoryDeleteArgs<ExtArgs>>): Prisma__DynamicCategoryClient<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DynamicCategory.
+     * @param {DynamicCategoryUpdateArgs} args - Arguments to update one DynamicCategory.
+     * @example
+     * // Update one DynamicCategory
+     * const dynamicCategory = await prisma.dynamicCategory.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DynamicCategoryUpdateArgs>(args: SelectSubset<T, DynamicCategoryUpdateArgs<ExtArgs>>): Prisma__DynamicCategoryClient<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DynamicCategories.
+     * @param {DynamicCategoryDeleteManyArgs} args - Arguments to filter DynamicCategories to delete.
+     * @example
+     * // Delete a few DynamicCategories
+     * const { count } = await prisma.dynamicCategory.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DynamicCategoryDeleteManyArgs>(args?: SelectSubset<T, DynamicCategoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DynamicCategories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DynamicCategoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DynamicCategories
+     * const dynamicCategory = await prisma.dynamicCategory.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DynamicCategoryUpdateManyArgs>(args: SelectSubset<T, DynamicCategoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DynamicCategories and returns the data updated in the database.
+     * @param {DynamicCategoryUpdateManyAndReturnArgs} args - Arguments to update many DynamicCategories.
+     * @example
+     * // Update many DynamicCategories
+     * const dynamicCategory = await prisma.dynamicCategory.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DynamicCategories and only return the `id`
+     * const dynamicCategoryWithIdOnly = await prisma.dynamicCategory.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DynamicCategoryUpdateManyAndReturnArgs>(args: SelectSubset<T, DynamicCategoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DynamicCategory.
+     * @param {DynamicCategoryUpsertArgs} args - Arguments to update or create a DynamicCategory.
+     * @example
+     * // Update or create a DynamicCategory
+     * const dynamicCategory = await prisma.dynamicCategory.upsert({
+     *   create: {
+     *     // ... data to create a DynamicCategory
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DynamicCategory we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DynamicCategoryUpsertArgs>(args: SelectSubset<T, DynamicCategoryUpsertArgs<ExtArgs>>): Prisma__DynamicCategoryClient<$Result.GetResult<Prisma.$DynamicCategoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DynamicCategories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DynamicCategoryCountArgs} args - Arguments to filter DynamicCategories to count.
+     * @example
+     * // Count the number of DynamicCategories
+     * const count = await prisma.dynamicCategory.count({
+     *   where: {
+     *     // ... the filter for the DynamicCategories we want to count
+     *   }
+     * })
+    **/
+    count<T extends DynamicCategoryCountArgs>(
+      args?: Subset<T, DynamicCategoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DynamicCategoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DynamicCategory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DynamicCategoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DynamicCategoryAggregateArgs>(args: Subset<T, DynamicCategoryAggregateArgs>): Prisma.PrismaPromise<GetDynamicCategoryAggregateType<T>>
+
+    /**
+     * Group by DynamicCategory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DynamicCategoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DynamicCategoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DynamicCategoryGroupByArgs['orderBy'] }
+        : { orderBy?: DynamicCategoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DynamicCategoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDynamicCategoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DynamicCategory model
+   */
+  readonly fields: DynamicCategoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DynamicCategory.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DynamicCategoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tickets<T extends DynamicCategory$ticketsArgs<ExtArgs> = {}>(args?: Subset<T, DynamicCategory$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DynamicCategory model
+   */
+  interface DynamicCategoryFieldRefs {
+    readonly id: FieldRef<"DynamicCategory", 'String'>
+    readonly name: FieldRef<"DynamicCategory", 'String'>
+    readonly description: FieldRef<"DynamicCategory", 'String'>
+    readonly isActive: FieldRef<"DynamicCategory", 'Boolean'>
+    readonly sortOrder: FieldRef<"DynamicCategory", 'Int'>
+    readonly createdAt: FieldRef<"DynamicCategory", 'DateTime'>
+    readonly updatedAt: FieldRef<"DynamicCategory", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DynamicCategory findUnique
+   */
+  export type DynamicCategoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which DynamicCategory to fetch.
+     */
+    where: DynamicCategoryWhereUniqueInput
+  }
+
+  /**
+   * DynamicCategory findUniqueOrThrow
+   */
+  export type DynamicCategoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which DynamicCategory to fetch.
+     */
+    where: DynamicCategoryWhereUniqueInput
+  }
+
+  /**
+   * DynamicCategory findFirst
+   */
+  export type DynamicCategoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which DynamicCategory to fetch.
+     */
+    where?: DynamicCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DynamicCategories to fetch.
+     */
+    orderBy?: DynamicCategoryOrderByWithRelationInput | DynamicCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DynamicCategories.
+     */
+    cursor?: DynamicCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DynamicCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DynamicCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DynamicCategories.
+     */
+    distinct?: DynamicCategoryScalarFieldEnum | DynamicCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * DynamicCategory findFirstOrThrow
+   */
+  export type DynamicCategoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which DynamicCategory to fetch.
+     */
+    where?: DynamicCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DynamicCategories to fetch.
+     */
+    orderBy?: DynamicCategoryOrderByWithRelationInput | DynamicCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DynamicCategories.
+     */
+    cursor?: DynamicCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DynamicCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DynamicCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DynamicCategories.
+     */
+    distinct?: DynamicCategoryScalarFieldEnum | DynamicCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * DynamicCategory findMany
+   */
+  export type DynamicCategoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which DynamicCategories to fetch.
+     */
+    where?: DynamicCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DynamicCategories to fetch.
+     */
+    orderBy?: DynamicCategoryOrderByWithRelationInput | DynamicCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DynamicCategories.
+     */
+    cursor?: DynamicCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DynamicCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DynamicCategories.
+     */
+    skip?: number
+    distinct?: DynamicCategoryScalarFieldEnum | DynamicCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * DynamicCategory create
+   */
+  export type DynamicCategoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DynamicCategory.
+     */
+    data: XOR<DynamicCategoryCreateInput, DynamicCategoryUncheckedCreateInput>
+  }
+
+  /**
+   * DynamicCategory createMany
+   */
+  export type DynamicCategoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DynamicCategories.
+     */
+    data: DynamicCategoryCreateManyInput | DynamicCategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DynamicCategory createManyAndReturn
+   */
+  export type DynamicCategoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * The data used to create many DynamicCategories.
+     */
+    data: DynamicCategoryCreateManyInput | DynamicCategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DynamicCategory update
+   */
+  export type DynamicCategoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DynamicCategory.
+     */
+    data: XOR<DynamicCategoryUpdateInput, DynamicCategoryUncheckedUpdateInput>
+    /**
+     * Choose, which DynamicCategory to update.
+     */
+    where: DynamicCategoryWhereUniqueInput
+  }
+
+  /**
+   * DynamicCategory updateMany
+   */
+  export type DynamicCategoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DynamicCategories.
+     */
+    data: XOR<DynamicCategoryUpdateManyMutationInput, DynamicCategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which DynamicCategories to update
+     */
+    where?: DynamicCategoryWhereInput
+    /**
+     * Limit how many DynamicCategories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DynamicCategory updateManyAndReturn
+   */
+  export type DynamicCategoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * The data used to update DynamicCategories.
+     */
+    data: XOR<DynamicCategoryUpdateManyMutationInput, DynamicCategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which DynamicCategories to update
+     */
+    where?: DynamicCategoryWhereInput
+    /**
+     * Limit how many DynamicCategories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DynamicCategory upsert
+   */
+  export type DynamicCategoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DynamicCategory to update in case it exists.
+     */
+    where: DynamicCategoryWhereUniqueInput
+    /**
+     * In case the DynamicCategory found by the `where` argument doesn't exist, create a new DynamicCategory with this data.
+     */
+    create: XOR<DynamicCategoryCreateInput, DynamicCategoryUncheckedCreateInput>
+    /**
+     * In case the DynamicCategory was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DynamicCategoryUpdateInput, DynamicCategoryUncheckedUpdateInput>
+  }
+
+  /**
+   * DynamicCategory delete
+   */
+  export type DynamicCategoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+    /**
+     * Filter which DynamicCategory to delete.
+     */
+    where: DynamicCategoryWhereUniqueInput
+  }
+
+  /**
+   * DynamicCategory deleteMany
+   */
+  export type DynamicCategoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DynamicCategories to delete
+     */
+    where?: DynamicCategoryWhereInput
+    /**
+     * Limit how many DynamicCategories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DynamicCategory.tickets
+   */
+  export type DynamicCategory$ticketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    where?: TicketWhereInput
+    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[]
+    cursor?: TicketWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[]
+  }
+
+  /**
+   * DynamicCategory without action
+   */
+  export type DynamicCategoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DynamicCategory
+     */
+    select?: DynamicCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DynamicCategory
+     */
+    omit?: DynamicCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DynamicCategoryInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11302,7 +14996,7 @@ export namespace Prisma {
     ticketNumber: 'ticketNumber',
     title: 'title',
     description: 'description',
-    mainCategory: 'mainCategory',
+    mainCategoryId: 'mainCategoryId',
     requestServiceType: 'requestServiceType',
     itemType: 'itemType',
     serviceDetails: 'serviceDetails',
@@ -11416,6 +15110,45 @@ export namespace Prisma {
   export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
+  export const ItemCategoryScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ItemCategoryScalarFieldEnum = (typeof ItemCategoryScalarFieldEnum)[keyof typeof ItemCategoryScalarFieldEnum]
+
+
+  export const ItemTypeScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    categoryId: 'categoryId',
+    type: 'type',
+    isActive: 'isActive',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ItemTypeScalarFieldEnum = (typeof ItemTypeScalarFieldEnum)[keyof typeof ItemTypeScalarFieldEnum]
+
+
+  export const DynamicCategoryScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    isActive: 'isActive',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type DynamicCategoryScalarFieldEnum = (typeof DynamicCategoryScalarFieldEnum)[keyof typeof DynamicCategoryScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -11508,20 +15241,6 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'MainCategory'
-   */
-  export type EnumMainCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MainCategory'>
-    
-
-
-  /**
-   * Reference to a field of type 'MainCategory[]'
-   */
-  export type ListEnumMainCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MainCategory[]'>
     
 
 
@@ -11634,6 +15353,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -11764,7 +15497,7 @@ export namespace Prisma {
     ticketNumber?: StringFilter<"Ticket"> | string
     title?: StringFilter<"Ticket"> | string
     description?: StringNullableFilter<"Ticket"> | string | null
-    mainCategory?: EnumMainCategoryNullableFilter<"Ticket"> | $Enums.MainCategory | null
+    mainCategoryId?: StringNullableFilter<"Ticket"> | string | null
     requestServiceType?: EnumRequestServiceTypeNullableFilter<"Ticket"> | $Enums.RequestServiceType | null
     itemType?: StringNullableFilter<"Ticket"> | string | null
     serviceDetails?: JsonNullableFilter<"Ticket">
@@ -11788,6 +15521,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Ticket"> | Date | string
     updatedAt?: DateTimeFilter<"Ticket"> | Date | string
     closedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
+    mainCategory?: XOR<DynamicCategoryNullableScalarRelationFilter, DynamicCategoryWhereInput> | null
     notifications?: NotificationListRelationFilter
     reviews?: ReviewListRelationFilter
     history?: TicketHistoryListRelationFilter
@@ -11800,7 +15534,7 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
-    mainCategory?: SortOrderInput | SortOrder
+    mainCategoryId?: SortOrderInput | SortOrder
     requestServiceType?: SortOrderInput | SortOrder
     itemType?: SortOrderInput | SortOrder
     serviceDetails?: SortOrderInput | SortOrder
@@ -11824,6 +15558,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     closedAt?: SortOrderInput | SortOrder
+    mainCategory?: DynamicCategoryOrderByWithRelationInput
     notifications?: NotificationOrderByRelationAggregateInput
     reviews?: ReviewOrderByRelationAggregateInput
     history?: TicketHistoryOrderByRelationAggregateInput
@@ -11839,7 +15574,7 @@ export namespace Prisma {
     NOT?: TicketWhereInput | TicketWhereInput[]
     title?: StringFilter<"Ticket"> | string
     description?: StringNullableFilter<"Ticket"> | string | null
-    mainCategory?: EnumMainCategoryNullableFilter<"Ticket"> | $Enums.MainCategory | null
+    mainCategoryId?: StringNullableFilter<"Ticket"> | string | null
     requestServiceType?: EnumRequestServiceTypeNullableFilter<"Ticket"> | $Enums.RequestServiceType | null
     itemType?: StringNullableFilter<"Ticket"> | string | null
     serviceDetails?: JsonNullableFilter<"Ticket">
@@ -11863,6 +15598,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Ticket"> | Date | string
     updatedAt?: DateTimeFilter<"Ticket"> | Date | string
     closedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null
+    mainCategory?: XOR<DynamicCategoryNullableScalarRelationFilter, DynamicCategoryWhereInput> | null
     notifications?: NotificationListRelationFilter
     reviews?: ReviewListRelationFilter
     history?: TicketHistoryListRelationFilter
@@ -11875,7 +15611,7 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
-    mainCategory?: SortOrderInput | SortOrder
+    mainCategoryId?: SortOrderInput | SortOrder
     requestServiceType?: SortOrderInput | SortOrder
     itemType?: SortOrderInput | SortOrder
     serviceDetails?: SortOrderInput | SortOrder
@@ -11912,7 +15648,7 @@ export namespace Prisma {
     ticketNumber?: StringWithAggregatesFilter<"Ticket"> | string
     title?: StringWithAggregatesFilter<"Ticket"> | string
     description?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
-    mainCategory?: EnumMainCategoryNullableWithAggregatesFilter<"Ticket"> | $Enums.MainCategory | null
+    mainCategoryId?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
     requestServiceType?: EnumRequestServiceTypeNullableWithAggregatesFilter<"Ticket"> | $Enums.RequestServiceType | null
     itemType?: StringNullableWithAggregatesFilter<"Ticket"> | string | null
     serviceDetails?: JsonNullableWithAggregatesFilter<"Ticket">
@@ -12372,6 +16108,206 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
   }
 
+  export type ItemCategoryWhereInput = {
+    AND?: ItemCategoryWhereInput | ItemCategoryWhereInput[]
+    OR?: ItemCategoryWhereInput[]
+    NOT?: ItemCategoryWhereInput | ItemCategoryWhereInput[]
+    id?: StringFilter<"ItemCategory"> | string
+    name?: StringFilter<"ItemCategory"> | string
+    description?: StringNullableFilter<"ItemCategory"> | string | null
+    isActive?: BoolFilter<"ItemCategory"> | boolean
+    createdAt?: DateTimeFilter<"ItemCategory"> | Date | string
+    updatedAt?: DateTimeFilter<"ItemCategory"> | Date | string
+    items?: ItemTypeListRelationFilter
+  }
+
+  export type ItemCategoryOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    items?: ItemTypeOrderByRelationAggregateInput
+  }
+
+  export type ItemCategoryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: ItemCategoryWhereInput | ItemCategoryWhereInput[]
+    OR?: ItemCategoryWhereInput[]
+    NOT?: ItemCategoryWhereInput | ItemCategoryWhereInput[]
+    description?: StringNullableFilter<"ItemCategory"> | string | null
+    isActive?: BoolFilter<"ItemCategory"> | boolean
+    createdAt?: DateTimeFilter<"ItemCategory"> | Date | string
+    updatedAt?: DateTimeFilter<"ItemCategory"> | Date | string
+    items?: ItemTypeListRelationFilter
+  }, "id" | "name">
+
+  export type ItemCategoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ItemCategoryCountOrderByAggregateInput
+    _max?: ItemCategoryMaxOrderByAggregateInput
+    _min?: ItemCategoryMinOrderByAggregateInput
+  }
+
+  export type ItemCategoryScalarWhereWithAggregatesInput = {
+    AND?: ItemCategoryScalarWhereWithAggregatesInput | ItemCategoryScalarWhereWithAggregatesInput[]
+    OR?: ItemCategoryScalarWhereWithAggregatesInput[]
+    NOT?: ItemCategoryScalarWhereWithAggregatesInput | ItemCategoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ItemCategory"> | string
+    name?: StringWithAggregatesFilter<"ItemCategory"> | string
+    description?: StringNullableWithAggregatesFilter<"ItemCategory"> | string | null
+    isActive?: BoolWithAggregatesFilter<"ItemCategory"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ItemCategory"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ItemCategory"> | Date | string
+  }
+
+  export type ItemTypeWhereInput = {
+    AND?: ItemTypeWhereInput | ItemTypeWhereInput[]
+    OR?: ItemTypeWhereInput[]
+    NOT?: ItemTypeWhereInput | ItemTypeWhereInput[]
+    id?: StringFilter<"ItemType"> | string
+    name?: StringFilter<"ItemType"> | string
+    categoryId?: StringFilter<"ItemType"> | string
+    type?: EnumRequestServiceTypeFilter<"ItemType"> | $Enums.RequestServiceType
+    isActive?: BoolFilter<"ItemType"> | boolean
+    sortOrder?: IntFilter<"ItemType"> | number
+    createdAt?: DateTimeFilter<"ItemType"> | Date | string
+    updatedAt?: DateTimeFilter<"ItemType"> | Date | string
+    category?: XOR<ItemCategoryScalarRelationFilter, ItemCategoryWhereInput>
+  }
+
+  export type ItemTypeOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    categoryId?: SortOrder
+    type?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    category?: ItemCategoryOrderByWithRelationInput
+  }
+
+  export type ItemTypeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    categoryId_name_type?: ItemTypeCategoryIdNameTypeCompoundUniqueInput
+    AND?: ItemTypeWhereInput | ItemTypeWhereInput[]
+    OR?: ItemTypeWhereInput[]
+    NOT?: ItemTypeWhereInput | ItemTypeWhereInput[]
+    name?: StringFilter<"ItemType"> | string
+    categoryId?: StringFilter<"ItemType"> | string
+    type?: EnumRequestServiceTypeFilter<"ItemType"> | $Enums.RequestServiceType
+    isActive?: BoolFilter<"ItemType"> | boolean
+    sortOrder?: IntFilter<"ItemType"> | number
+    createdAt?: DateTimeFilter<"ItemType"> | Date | string
+    updatedAt?: DateTimeFilter<"ItemType"> | Date | string
+    category?: XOR<ItemCategoryScalarRelationFilter, ItemCategoryWhereInput>
+  }, "id" | "categoryId_name_type">
+
+  export type ItemTypeOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    categoryId?: SortOrder
+    type?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ItemTypeCountOrderByAggregateInput
+    _avg?: ItemTypeAvgOrderByAggregateInput
+    _max?: ItemTypeMaxOrderByAggregateInput
+    _min?: ItemTypeMinOrderByAggregateInput
+    _sum?: ItemTypeSumOrderByAggregateInput
+  }
+
+  export type ItemTypeScalarWhereWithAggregatesInput = {
+    AND?: ItemTypeScalarWhereWithAggregatesInput | ItemTypeScalarWhereWithAggregatesInput[]
+    OR?: ItemTypeScalarWhereWithAggregatesInput[]
+    NOT?: ItemTypeScalarWhereWithAggregatesInput | ItemTypeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ItemType"> | string
+    name?: StringWithAggregatesFilter<"ItemType"> | string
+    categoryId?: StringWithAggregatesFilter<"ItemType"> | string
+    type?: EnumRequestServiceTypeWithAggregatesFilter<"ItemType"> | $Enums.RequestServiceType
+    isActive?: BoolWithAggregatesFilter<"ItemType"> | boolean
+    sortOrder?: IntWithAggregatesFilter<"ItemType"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"ItemType"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ItemType"> | Date | string
+  }
+
+  export type DynamicCategoryWhereInput = {
+    AND?: DynamicCategoryWhereInput | DynamicCategoryWhereInput[]
+    OR?: DynamicCategoryWhereInput[]
+    NOT?: DynamicCategoryWhereInput | DynamicCategoryWhereInput[]
+    id?: StringFilter<"DynamicCategory"> | string
+    name?: StringFilter<"DynamicCategory"> | string
+    description?: StringNullableFilter<"DynamicCategory"> | string | null
+    isActive?: BoolFilter<"DynamicCategory"> | boolean
+    sortOrder?: IntFilter<"DynamicCategory"> | number
+    createdAt?: DateTimeFilter<"DynamicCategory"> | Date | string
+    updatedAt?: DateTimeFilter<"DynamicCategory"> | Date | string
+    tickets?: TicketListRelationFilter
+  }
+
+  export type DynamicCategoryOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    tickets?: TicketOrderByRelationAggregateInput
+  }
+
+  export type DynamicCategoryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: DynamicCategoryWhereInput | DynamicCategoryWhereInput[]
+    OR?: DynamicCategoryWhereInput[]
+    NOT?: DynamicCategoryWhereInput | DynamicCategoryWhereInput[]
+    description?: StringNullableFilter<"DynamicCategory"> | string | null
+    isActive?: BoolFilter<"DynamicCategory"> | boolean
+    sortOrder?: IntFilter<"DynamicCategory"> | number
+    createdAt?: DateTimeFilter<"DynamicCategory"> | Date | string
+    updatedAt?: DateTimeFilter<"DynamicCategory"> | Date | string
+    tickets?: TicketListRelationFilter
+  }, "id" | "name">
+
+  export type DynamicCategoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: DynamicCategoryCountOrderByAggregateInput
+    _avg?: DynamicCategoryAvgOrderByAggregateInput
+    _max?: DynamicCategoryMaxOrderByAggregateInput
+    _min?: DynamicCategoryMinOrderByAggregateInput
+    _sum?: DynamicCategorySumOrderByAggregateInput
+  }
+
+  export type DynamicCategoryScalarWhereWithAggregatesInput = {
+    AND?: DynamicCategoryScalarWhereWithAggregatesInput | DynamicCategoryScalarWhereWithAggregatesInput[]
+    OR?: DynamicCategoryScalarWhereWithAggregatesInput[]
+    NOT?: DynamicCategoryScalarWhereWithAggregatesInput | DynamicCategoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DynamicCategory"> | string
+    name?: StringWithAggregatesFilter<"DynamicCategory"> | string
+    description?: StringNullableWithAggregatesFilter<"DynamicCategory"> | string | null
+    isActive?: BoolWithAggregatesFilter<"DynamicCategory"> | boolean
+    sortOrder?: IntWithAggregatesFilter<"DynamicCategory"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"DynamicCategory"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"DynamicCategory"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -12521,7 +16457,6 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -12543,6 +16478,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
+    mainCategory?: DynamicCategoryCreateNestedOneWithoutTicketsInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
     reviews?: ReviewCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
@@ -12555,7 +16491,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
+    mainCategoryId?: string | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -12589,7 +16525,6 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -12611,6 +16546,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mainCategory?: DynamicCategoryUpdateOneWithoutTicketsNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
     reviews?: ReviewUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
@@ -12623,7 +16559,7 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -12657,7 +16593,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
+    mainCategoryId?: string | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -12688,7 +16624,6 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -12717,7 +16652,7 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -13208,6 +17143,223 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ItemCategoryCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: ItemTypeCreateNestedManyWithoutCategoryInput
+  }
+
+  export type ItemCategoryUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: ItemTypeUncheckedCreateNestedManyWithoutCategoryInput
+  }
+
+  export type ItemCategoryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: ItemTypeUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type ItemCategoryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: ItemTypeUncheckedUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type ItemCategoryCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemCategoryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemCategoryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemTypeCreateInput = {
+    id?: string
+    name: string
+    type: $Enums.RequestServiceType
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    category: ItemCategoryCreateNestedOneWithoutItemsInput
+  }
+
+  export type ItemTypeUncheckedCreateInput = {
+    id?: string
+    name: string
+    categoryId: string
+    type: $Enums.RequestServiceType
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemTypeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: ItemCategoryUpdateOneRequiredWithoutItemsNestedInput
+  }
+
+  export type ItemTypeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    categoryId?: StringFieldUpdateOperationsInput | string
+    type?: EnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemTypeCreateManyInput = {
+    id?: string
+    name: string
+    categoryId: string
+    type: $Enums.RequestServiceType
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemTypeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemTypeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    categoryId?: StringFieldUpdateOperationsInput | string
+    type?: EnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DynamicCategoryCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tickets?: TicketCreateNestedManyWithoutMainCategoryInput
+  }
+
+  export type DynamicCategoryUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tickets?: TicketUncheckedCreateNestedManyWithoutMainCategoryInput
+  }
+
+  export type DynamicCategoryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tickets?: TicketUpdateManyWithoutMainCategoryNestedInput
+  }
+
+  export type DynamicCategoryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tickets?: TicketUncheckedUpdateManyWithoutMainCategoryNestedInput
+  }
+
+  export type DynamicCategoryCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DynamicCategoryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DynamicCategoryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -13472,13 +17624,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type EnumMainCategoryNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.MainCategory | EnumMainCategoryFieldRefInput<$PrismaModel> | null
-    in?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumMainCategoryNullableFilter<$PrismaModel> | $Enums.MainCategory | null
-  }
-
   export type EnumRequestServiceTypeNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
     in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
@@ -13530,6 +17675,11 @@ export namespace Prisma {
     not?: NestedEnumMDFeedbackNullableFilter<$PrismaModel> | $Enums.MDFeedback | null
   }
 
+  export type DynamicCategoryNullableScalarRelationFilter = {
+    is?: DynamicCategoryWhereInput | null
+    isNot?: DynamicCategoryWhereInput | null
+  }
+
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
@@ -13545,7 +17695,7 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    mainCategory?: SortOrder
+    mainCategoryId?: SortOrder
     requestServiceType?: SortOrder
     itemType?: SortOrder
     serviceDetails?: SortOrder
@@ -13576,7 +17726,7 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    mainCategory?: SortOrder
+    mainCategoryId?: SortOrder
     requestServiceType?: SortOrder
     itemType?: SortOrder
     count?: SortOrder
@@ -13606,7 +17756,7 @@ export namespace Prisma {
     ticketNumber?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    mainCategory?: SortOrder
+    mainCategoryId?: SortOrder
     requestServiceType?: SortOrder
     itemType?: SortOrder
     count?: SortOrder
@@ -13629,16 +17779,6 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     closedAt?: SortOrder
-  }
-
-  export type EnumMainCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.MainCategory | EnumMainCategoryFieldRefInput<$PrismaModel> | null
-    in?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumMainCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.MainCategory | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumMainCategoryNullableFilter<$PrismaModel>
-    _max?: NestedEnumMainCategoryNullableFilter<$PrismaModel>
   }
 
   export type EnumRequestServiceTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -13958,6 +18098,177 @@ export namespace Prisma {
     ipAddress?: SortOrder
     userAgent?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ItemTypeListRelationFilter = {
+    every?: ItemTypeWhereInput
+    some?: ItemTypeWhereInput
+    none?: ItemTypeWhereInput
+  }
+
+  export type ItemTypeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ItemCategoryCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ItemCategoryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ItemCategoryMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumRequestServiceTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRequestServiceTypeFilter<$PrismaModel> | $Enums.RequestServiceType
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type ItemCategoryScalarRelationFilter = {
+    is?: ItemCategoryWhereInput
+    isNot?: ItemCategoryWhereInput
+  }
+
+  export type ItemTypeCategoryIdNameTypeCompoundUniqueInput = {
+    categoryId: string
+    name: string
+    type: $Enums.RequestServiceType
+  }
+
+  export type ItemTypeCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    categoryId?: SortOrder
+    type?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ItemTypeAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type ItemTypeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    categoryId?: SortOrder
+    type?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ItemTypeMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    categoryId?: SortOrder
+    type?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ItemTypeSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type EnumRequestServiceTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRequestServiceTypeWithAggregatesFilter<$PrismaModel> | $Enums.RequestServiceType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRequestServiceTypeFilter<$PrismaModel>
+    _max?: NestedEnumRequestServiceTypeFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type DynamicCategoryCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DynamicCategoryAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type DynamicCategoryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DynamicCategoryMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DynamicCategorySumOrderByAggregateInput = {
+    sortOrder?: SortOrder
   }
 
   export type AuditLogCreateNestedManyWithoutUserInput = {
@@ -14306,6 +18617,12 @@ export namespace Prisma {
     deleteMany?: DepartmentScalarWhereInput | DepartmentScalarWhereInput[]
   }
 
+  export type DynamicCategoryCreateNestedOneWithoutTicketsInput = {
+    create?: XOR<DynamicCategoryCreateWithoutTicketsInput, DynamicCategoryUncheckedCreateWithoutTicketsInput>
+    connectOrCreate?: DynamicCategoryCreateOrConnectWithoutTicketsInput
+    connect?: DynamicCategoryWhereUniqueInput
+  }
+
   export type NotificationCreateNestedManyWithoutTicketInput = {
     create?: XOR<NotificationCreateWithoutTicketInput, NotificationUncheckedCreateWithoutTicketInput> | NotificationCreateWithoutTicketInput[] | NotificationUncheckedCreateWithoutTicketInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutTicketInput | NotificationCreateOrConnectWithoutTicketInput[]
@@ -14360,10 +18677,6 @@ export namespace Prisma {
     connect?: TicketHistoryWhereUniqueInput | TicketHistoryWhereUniqueInput[]
   }
 
-  export type NullableEnumMainCategoryFieldUpdateOperationsInput = {
-    set?: $Enums.MainCategory | null
-  }
-
   export type NullableEnumRequestServiceTypeFieldUpdateOperationsInput = {
     set?: $Enums.RequestServiceType | null
   }
@@ -14378,6 +18691,16 @@ export namespace Prisma {
 
   export type NullableEnumMDFeedbackFieldUpdateOperationsInput = {
     set?: $Enums.MDFeedback | null
+  }
+
+  export type DynamicCategoryUpdateOneWithoutTicketsNestedInput = {
+    create?: XOR<DynamicCategoryCreateWithoutTicketsInput, DynamicCategoryUncheckedCreateWithoutTicketsInput>
+    connectOrCreate?: DynamicCategoryCreateOrConnectWithoutTicketsInput
+    upsert?: DynamicCategoryUpsertWithoutTicketsInput
+    disconnect?: DynamicCategoryWhereInput | boolean
+    delete?: DynamicCategoryWhereInput | boolean
+    connect?: DynamicCategoryWhereUniqueInput
+    update?: XOR<XOR<DynamicCategoryUpdateToOneWithWhereWithoutTicketsInput, DynamicCategoryUpdateWithoutTicketsInput>, DynamicCategoryUncheckedUpdateWithoutTicketsInput>
   }
 
   export type NotificationUpdateManyWithoutTicketNestedInput = {
@@ -14646,6 +18969,116 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuditLogsInput, UserUpdateWithoutAuditLogsInput>, UserUncheckedUpdateWithoutAuditLogsInput>
   }
 
+  export type ItemTypeCreateNestedManyWithoutCategoryInput = {
+    create?: XOR<ItemTypeCreateWithoutCategoryInput, ItemTypeUncheckedCreateWithoutCategoryInput> | ItemTypeCreateWithoutCategoryInput[] | ItemTypeUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: ItemTypeCreateOrConnectWithoutCategoryInput | ItemTypeCreateOrConnectWithoutCategoryInput[]
+    createMany?: ItemTypeCreateManyCategoryInputEnvelope
+    connect?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+  }
+
+  export type ItemTypeUncheckedCreateNestedManyWithoutCategoryInput = {
+    create?: XOR<ItemTypeCreateWithoutCategoryInput, ItemTypeUncheckedCreateWithoutCategoryInput> | ItemTypeCreateWithoutCategoryInput[] | ItemTypeUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: ItemTypeCreateOrConnectWithoutCategoryInput | ItemTypeCreateOrConnectWithoutCategoryInput[]
+    createMany?: ItemTypeCreateManyCategoryInputEnvelope
+    connect?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+  }
+
+  export type ItemTypeUpdateManyWithoutCategoryNestedInput = {
+    create?: XOR<ItemTypeCreateWithoutCategoryInput, ItemTypeUncheckedCreateWithoutCategoryInput> | ItemTypeCreateWithoutCategoryInput[] | ItemTypeUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: ItemTypeCreateOrConnectWithoutCategoryInput | ItemTypeCreateOrConnectWithoutCategoryInput[]
+    upsert?: ItemTypeUpsertWithWhereUniqueWithoutCategoryInput | ItemTypeUpsertWithWhereUniqueWithoutCategoryInput[]
+    createMany?: ItemTypeCreateManyCategoryInputEnvelope
+    set?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+    disconnect?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+    delete?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+    connect?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+    update?: ItemTypeUpdateWithWhereUniqueWithoutCategoryInput | ItemTypeUpdateWithWhereUniqueWithoutCategoryInput[]
+    updateMany?: ItemTypeUpdateManyWithWhereWithoutCategoryInput | ItemTypeUpdateManyWithWhereWithoutCategoryInput[]
+    deleteMany?: ItemTypeScalarWhereInput | ItemTypeScalarWhereInput[]
+  }
+
+  export type ItemTypeUncheckedUpdateManyWithoutCategoryNestedInput = {
+    create?: XOR<ItemTypeCreateWithoutCategoryInput, ItemTypeUncheckedCreateWithoutCategoryInput> | ItemTypeCreateWithoutCategoryInput[] | ItemTypeUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: ItemTypeCreateOrConnectWithoutCategoryInput | ItemTypeCreateOrConnectWithoutCategoryInput[]
+    upsert?: ItemTypeUpsertWithWhereUniqueWithoutCategoryInput | ItemTypeUpsertWithWhereUniqueWithoutCategoryInput[]
+    createMany?: ItemTypeCreateManyCategoryInputEnvelope
+    set?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+    disconnect?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+    delete?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+    connect?: ItemTypeWhereUniqueInput | ItemTypeWhereUniqueInput[]
+    update?: ItemTypeUpdateWithWhereUniqueWithoutCategoryInput | ItemTypeUpdateWithWhereUniqueWithoutCategoryInput[]
+    updateMany?: ItemTypeUpdateManyWithWhereWithoutCategoryInput | ItemTypeUpdateManyWithWhereWithoutCategoryInput[]
+    deleteMany?: ItemTypeScalarWhereInput | ItemTypeScalarWhereInput[]
+  }
+
+  export type ItemCategoryCreateNestedOneWithoutItemsInput = {
+    create?: XOR<ItemCategoryCreateWithoutItemsInput, ItemCategoryUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: ItemCategoryCreateOrConnectWithoutItemsInput
+    connect?: ItemCategoryWhereUniqueInput
+  }
+
+  export type EnumRequestServiceTypeFieldUpdateOperationsInput = {
+    set?: $Enums.RequestServiceType
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type ItemCategoryUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<ItemCategoryCreateWithoutItemsInput, ItemCategoryUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: ItemCategoryCreateOrConnectWithoutItemsInput
+    upsert?: ItemCategoryUpsertWithoutItemsInput
+    connect?: ItemCategoryWhereUniqueInput
+    update?: XOR<XOR<ItemCategoryUpdateToOneWithWhereWithoutItemsInput, ItemCategoryUpdateWithoutItemsInput>, ItemCategoryUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type TicketCreateNestedManyWithoutMainCategoryInput = {
+    create?: XOR<TicketCreateWithoutMainCategoryInput, TicketUncheckedCreateWithoutMainCategoryInput> | TicketCreateWithoutMainCategoryInput[] | TicketUncheckedCreateWithoutMainCategoryInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutMainCategoryInput | TicketCreateOrConnectWithoutMainCategoryInput[]
+    createMany?: TicketCreateManyMainCategoryInputEnvelope
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+  }
+
+  export type TicketUncheckedCreateNestedManyWithoutMainCategoryInput = {
+    create?: XOR<TicketCreateWithoutMainCategoryInput, TicketUncheckedCreateWithoutMainCategoryInput> | TicketCreateWithoutMainCategoryInput[] | TicketUncheckedCreateWithoutMainCategoryInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutMainCategoryInput | TicketCreateOrConnectWithoutMainCategoryInput[]
+    createMany?: TicketCreateManyMainCategoryInputEnvelope
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+  }
+
+  export type TicketUpdateManyWithoutMainCategoryNestedInput = {
+    create?: XOR<TicketCreateWithoutMainCategoryInput, TicketUncheckedCreateWithoutMainCategoryInput> | TicketCreateWithoutMainCategoryInput[] | TicketUncheckedCreateWithoutMainCategoryInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutMainCategoryInput | TicketCreateOrConnectWithoutMainCategoryInput[]
+    upsert?: TicketUpsertWithWhereUniqueWithoutMainCategoryInput | TicketUpsertWithWhereUniqueWithoutMainCategoryInput[]
+    createMany?: TicketCreateManyMainCategoryInputEnvelope
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    update?: TicketUpdateWithWhereUniqueWithoutMainCategoryInput | TicketUpdateWithWhereUniqueWithoutMainCategoryInput[]
+    updateMany?: TicketUpdateManyWithWhereWithoutMainCategoryInput | TicketUpdateManyWithWhereWithoutMainCategoryInput[]
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
+  }
+
+  export type TicketUncheckedUpdateManyWithoutMainCategoryNestedInput = {
+    create?: XOR<TicketCreateWithoutMainCategoryInput, TicketUncheckedCreateWithoutMainCategoryInput> | TicketCreateWithoutMainCategoryInput[] | TicketUncheckedCreateWithoutMainCategoryInput[]
+    connectOrCreate?: TicketCreateOrConnectWithoutMainCategoryInput | TicketCreateOrConnectWithoutMainCategoryInput[]
+    upsert?: TicketUpsertWithWhereUniqueWithoutMainCategoryInput | TicketUpsertWithWhereUniqueWithoutMainCategoryInput[]
+    createMany?: TicketCreateManyMainCategoryInputEnvelope
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[]
+    update?: TicketUpdateWithWhereUniqueWithoutMainCategoryInput | TicketUpdateWithWhereUniqueWithoutMainCategoryInput[]
+    updateMany?: TicketUpdateManyWithWhereWithoutMainCategoryInput | TicketUpdateManyWithWhereWithoutMainCategoryInput[]
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[]
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -14810,13 +19243,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedEnumMainCategoryNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.MainCategory | EnumMainCategoryFieldRefInput<$PrismaModel> | null
-    in?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumMainCategoryNullableFilter<$PrismaModel> | $Enums.MainCategory | null
-  }
-
   export type NestedEnumRequestServiceTypeNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
     in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel> | null
@@ -14843,16 +19269,6 @@ export namespace Prisma {
     in?: $Enums.MDFeedback[] | ListEnumMDFeedbackFieldRefInput<$PrismaModel> | null
     notIn?: $Enums.MDFeedback[] | ListEnumMDFeedbackFieldRefInput<$PrismaModel> | null
     not?: NestedEnumMDFeedbackNullableFilter<$PrismaModel> | $Enums.MDFeedback | null
-  }
-
-  export type NestedEnumMainCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.MainCategory | EnumMainCategoryFieldRefInput<$PrismaModel> | null
-    in?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.MainCategory[] | ListEnumMainCategoryFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumMainCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.MainCategory | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumMainCategoryNullableFilter<$PrismaModel>
-    _max?: NestedEnumMainCategoryNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumRequestServiceTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -14950,6 +19366,50 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNotificationTypeFilter<$PrismaModel>
     _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRequestServiceTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRequestServiceTypeFilter<$PrismaModel> | $Enums.RequestServiceType
+  }
+
+  export type NestedEnumRequestServiceTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RequestServiceType | EnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RequestServiceType[] | ListEnumRequestServiceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRequestServiceTypeWithAggregatesFilter<$PrismaModel> | $Enums.RequestServiceType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRequestServiceTypeFilter<$PrismaModel>
+    _max?: NestedEnumRequestServiceTypeFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type AuditLogCreateWithoutUserInput = {
@@ -15106,7 +19566,6 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -15128,6 +19587,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
+    mainCategory?: DynamicCategoryCreateNestedOneWithoutTicketsInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
     reviews?: ReviewCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
@@ -15139,7 +19599,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
+    mainCategoryId?: string | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -15182,7 +19642,6 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -15204,6 +19663,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
+    mainCategory?: DynamicCategoryCreateNestedOneWithoutTicketsInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
     reviews?: ReviewCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
@@ -15215,7 +19675,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
+    mainCategoryId?: string | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -15455,7 +19915,7 @@ export namespace Prisma {
     ticketNumber?: StringFilter<"Ticket"> | string
     title?: StringFilter<"Ticket"> | string
     description?: StringNullableFilter<"Ticket"> | string | null
-    mainCategory?: EnumMainCategoryNullableFilter<"Ticket"> | $Enums.MainCategory | null
+    mainCategoryId?: StringNullableFilter<"Ticket"> | string | null
     requestServiceType?: EnumRequestServiceTypeNullableFilter<"Ticket"> | $Enums.RequestServiceType | null
     itemType?: StringNullableFilter<"Ticket"> | string | null
     serviceDetails?: JsonNullableFilter<"Ticket">
@@ -15524,6 +19984,31 @@ export namespace Prisma {
     isActive?: BoolFilter<"Department"> | boolean
     createdAt?: DateTimeFilter<"Department"> | Date | string
     updatedAt?: DateTimeFilter<"Department"> | Date | string
+  }
+
+  export type DynamicCategoryCreateWithoutTicketsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DynamicCategoryUncheckedCreateWithoutTicketsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DynamicCategoryCreateOrConnectWithoutTicketsInput = {
+    where: DynamicCategoryWhereUniqueInput
+    create: XOR<DynamicCategoryCreateWithoutTicketsInput, DynamicCategoryUncheckedCreateWithoutTicketsInput>
   }
 
   export type NotificationCreateWithoutTicketInput = {
@@ -15718,6 +20203,37 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutCreatedTicketsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
+  }
+
+  export type DynamicCategoryUpsertWithoutTicketsInput = {
+    update: XOR<DynamicCategoryUpdateWithoutTicketsInput, DynamicCategoryUncheckedUpdateWithoutTicketsInput>
+    create: XOR<DynamicCategoryCreateWithoutTicketsInput, DynamicCategoryUncheckedCreateWithoutTicketsInput>
+    where?: DynamicCategoryWhereInput
+  }
+
+  export type DynamicCategoryUpdateToOneWithWhereWithoutTicketsInput = {
+    where?: DynamicCategoryWhereInput
+    data: XOR<DynamicCategoryUpdateWithoutTicketsInput, DynamicCategoryUncheckedUpdateWithoutTicketsInput>
+  }
+
+  export type DynamicCategoryUpdateWithoutTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DynamicCategoryUncheckedUpdateWithoutTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationUpsertWithWhereUniqueWithoutTicketInput = {
@@ -15938,7 +20454,6 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -15960,6 +20475,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
+    mainCategory?: DynamicCategoryCreateNestedOneWithoutTicketsInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
@@ -15971,7 +20487,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
+    mainCategoryId?: string | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16077,7 +20593,6 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16099,6 +20614,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mainCategory?: DynamicCategoryUpdateOneWithoutTicketsNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
@@ -16110,7 +20626,7 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16194,7 +20710,6 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16216,6 +20731,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
+    mainCategory?: DynamicCategoryCreateNestedOneWithoutTicketsInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
     reviews?: ReviewCreateNestedManyWithoutTicketInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
@@ -16227,7 +20743,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
+    mainCategoryId?: string | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16333,7 +20849,6 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16355,6 +20870,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mainCategory?: DynamicCategoryUpdateOneWithoutTicketsNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
     reviews?: ReviewUpdateManyWithoutTicketNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
@@ -16366,7 +20882,7 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16399,7 +20915,6 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16421,6 +20936,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
+    mainCategory?: DynamicCategoryCreateNestedOneWithoutTicketsInput
     reviews?: ReviewCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
@@ -16432,7 +20948,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
+    mainCategoryId?: string | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16532,7 +21048,6 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16554,6 +21069,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mainCategory?: DynamicCategoryUpdateOneWithoutTicketsNestedInput
     reviews?: ReviewUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
@@ -16565,7 +21081,7 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -16952,6 +21468,210 @@ export namespace Prisma {
     memberOfDepartments?: DepartmentUncheckedUpdateManyWithoutMembersNestedInput
   }
 
+  export type ItemTypeCreateWithoutCategoryInput = {
+    id?: string
+    name: string
+    type: $Enums.RequestServiceType
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemTypeUncheckedCreateWithoutCategoryInput = {
+    id?: string
+    name: string
+    type: $Enums.RequestServiceType
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemTypeCreateOrConnectWithoutCategoryInput = {
+    where: ItemTypeWhereUniqueInput
+    create: XOR<ItemTypeCreateWithoutCategoryInput, ItemTypeUncheckedCreateWithoutCategoryInput>
+  }
+
+  export type ItemTypeCreateManyCategoryInputEnvelope = {
+    data: ItemTypeCreateManyCategoryInput | ItemTypeCreateManyCategoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ItemTypeUpsertWithWhereUniqueWithoutCategoryInput = {
+    where: ItemTypeWhereUniqueInput
+    update: XOR<ItemTypeUpdateWithoutCategoryInput, ItemTypeUncheckedUpdateWithoutCategoryInput>
+    create: XOR<ItemTypeCreateWithoutCategoryInput, ItemTypeUncheckedCreateWithoutCategoryInput>
+  }
+
+  export type ItemTypeUpdateWithWhereUniqueWithoutCategoryInput = {
+    where: ItemTypeWhereUniqueInput
+    data: XOR<ItemTypeUpdateWithoutCategoryInput, ItemTypeUncheckedUpdateWithoutCategoryInput>
+  }
+
+  export type ItemTypeUpdateManyWithWhereWithoutCategoryInput = {
+    where: ItemTypeScalarWhereInput
+    data: XOR<ItemTypeUpdateManyMutationInput, ItemTypeUncheckedUpdateManyWithoutCategoryInput>
+  }
+
+  export type ItemTypeScalarWhereInput = {
+    AND?: ItemTypeScalarWhereInput | ItemTypeScalarWhereInput[]
+    OR?: ItemTypeScalarWhereInput[]
+    NOT?: ItemTypeScalarWhereInput | ItemTypeScalarWhereInput[]
+    id?: StringFilter<"ItemType"> | string
+    name?: StringFilter<"ItemType"> | string
+    categoryId?: StringFilter<"ItemType"> | string
+    type?: EnumRequestServiceTypeFilter<"ItemType"> | $Enums.RequestServiceType
+    isActive?: BoolFilter<"ItemType"> | boolean
+    sortOrder?: IntFilter<"ItemType"> | number
+    createdAt?: DateTimeFilter<"ItemType"> | Date | string
+    updatedAt?: DateTimeFilter<"ItemType"> | Date | string
+  }
+
+  export type ItemCategoryCreateWithoutItemsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemCategoryUncheckedCreateWithoutItemsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemCategoryCreateOrConnectWithoutItemsInput = {
+    where: ItemCategoryWhereUniqueInput
+    create: XOR<ItemCategoryCreateWithoutItemsInput, ItemCategoryUncheckedCreateWithoutItemsInput>
+  }
+
+  export type ItemCategoryUpsertWithoutItemsInput = {
+    update: XOR<ItemCategoryUpdateWithoutItemsInput, ItemCategoryUncheckedUpdateWithoutItemsInput>
+    create: XOR<ItemCategoryCreateWithoutItemsInput, ItemCategoryUncheckedCreateWithoutItemsInput>
+    where?: ItemCategoryWhereInput
+  }
+
+  export type ItemCategoryUpdateToOneWithWhereWithoutItemsInput = {
+    where?: ItemCategoryWhereInput
+    data: XOR<ItemCategoryUpdateWithoutItemsInput, ItemCategoryUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type ItemCategoryUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemCategoryUncheckedUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketCreateWithoutMainCategoryInput = {
+    id?: string
+    ticketNumber: string
+    title: string
+    description?: string | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
+    category: string
+    priority?: $Enums.Priority
+    status?: $Enums.Status
+    attachment?: string | null
+    attachmentPublicId?: string | null
+    serialNumber?: string | null
+    mdApproval?: $Enums.MDFeedback | null
+    mdApprovedAt?: Date | string | null
+    mdRejectedAt?: Date | string | null
+    mdRejectReason?: string | null
+    mdApprovalComment?: string | null
+    thirdParty?: boolean
+    thirdPartyStatus?: string | null
+    thirdPartyDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
+    notifications?: NotificationCreateNestedManyWithoutTicketInput
+    reviews?: ReviewCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryCreateNestedManyWithoutTicketInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
+    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
+  }
+
+  export type TicketUncheckedCreateWithoutMainCategoryInput = {
+    id?: string
+    ticketNumber: string
+    title: string
+    description?: string | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
+    category: string
+    priority?: $Enums.Priority
+    status?: $Enums.Status
+    attachment?: string | null
+    attachmentPublicId?: string | null
+    serialNumber?: string | null
+    createdById: string
+    assignedToId?: string | null
+    mdApproval?: $Enums.MDFeedback | null
+    mdApprovedAt?: Date | string | null
+    mdRejectedAt?: Date | string | null
+    mdRejectReason?: string | null
+    mdApprovalComment?: string | null
+    thirdParty?: boolean
+    thirdPartyStatus?: string | null
+    thirdPartyDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
+    notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
+  }
+
+  export type TicketCreateOrConnectWithoutMainCategoryInput = {
+    where: TicketWhereUniqueInput
+    create: XOR<TicketCreateWithoutMainCategoryInput, TicketUncheckedCreateWithoutMainCategoryInput>
+  }
+
+  export type TicketCreateManyMainCategoryInputEnvelope = {
+    data: TicketCreateManyMainCategoryInput | TicketCreateManyMainCategoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TicketUpsertWithWhereUniqueWithoutMainCategoryInput = {
+    where: TicketWhereUniqueInput
+    update: XOR<TicketUpdateWithoutMainCategoryInput, TicketUncheckedUpdateWithoutMainCategoryInput>
+    create: XOR<TicketCreateWithoutMainCategoryInput, TicketUncheckedCreateWithoutMainCategoryInput>
+  }
+
+  export type TicketUpdateWithWhereUniqueWithoutMainCategoryInput = {
+    where: TicketWhereUniqueInput
+    data: XOR<TicketUpdateWithoutMainCategoryInput, TicketUncheckedUpdateWithoutMainCategoryInput>
+  }
+
+  export type TicketUpdateManyWithWhereWithoutMainCategoryInput = {
+    where: TicketScalarWhereInput
+    data: XOR<TicketUpdateManyMutationInput, TicketUncheckedUpdateManyWithoutMainCategoryInput>
+  }
+
   export type AuditLogCreateManyUserInput = {
     id?: string
     action: string
@@ -16999,7 +21719,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
+    mainCategoryId?: string | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -17029,7 +21749,7 @@ export namespace Prisma {
     ticketNumber: string
     title: string
     description?: string | null
-    mainCategory?: $Enums.MainCategory | null
+    mainCategoryId?: string | null
     requestServiceType?: $Enums.RequestServiceType | null
     itemType?: string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -17185,7 +21905,6 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -17207,6 +21926,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mainCategory?: DynamicCategoryUpdateOneWithoutTicketsNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
     reviews?: ReviewUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
@@ -17218,7 +21938,7 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -17251,7 +21971,7 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -17281,7 +22001,6 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -17303,6 +22022,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mainCategory?: DynamicCategoryUpdateOneWithoutTicketsNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
     reviews?: ReviewUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
@@ -17314,7 +22034,7 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -17347,7 +22067,7 @@ export namespace Prisma {
     ticketNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    mainCategory?: NullableEnumMainCategoryFieldUpdateOperationsInput | $Enums.MainCategory | null
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
     itemType?: NullableStringFieldUpdateOperationsInput | string | null
     serviceDetails?: NullableJsonNullValueInput | InputJsonValue
@@ -17586,6 +22306,172 @@ export namespace Prisma {
     otpExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemTypeCreateManyCategoryInput = {
+    id?: string
+    name: string
+    type: $Enums.RequestServiceType
+    isActive?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemTypeUpdateWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemTypeUncheckedUpdateWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemTypeUncheckedUpdateManyWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketCreateManyMainCategoryInput = {
+    id?: string
+    ticketNumber: string
+    title: string
+    description?: string | null
+    requestServiceType?: $Enums.RequestServiceType | null
+    itemType?: string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: string | null
+    category: string
+    priority?: $Enums.Priority
+    status?: $Enums.Status
+    attachment?: string | null
+    attachmentPublicId?: string | null
+    serialNumber?: string | null
+    createdById: string
+    assignedToId?: string | null
+    mdApproval?: $Enums.MDFeedback | null
+    mdApprovedAt?: Date | string | null
+    mdRejectedAt?: Date | string | null
+    mdRejectReason?: string | null
+    mdApprovalComment?: string | null
+    thirdParty?: boolean
+    thirdPartyStatus?: string | null
+    thirdPartyDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
+  }
+
+  export type TicketUpdateWithoutMainCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
+    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdParty?: BoolFieldUpdateOperationsInput | boolean
+    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    reviews?: ReviewUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
+  }
+
+  export type TicketUncheckedUpdateWithoutMainCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
+    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdParty?: BoolFieldUpdateOperationsInput | boolean
+    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
+  }
+
+  export type TicketUncheckedUpdateManyWithoutMainCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requestServiceType?: NullableEnumRequestServiceTypeFieldUpdateOperationsInput | $Enums.RequestServiceType | null
+    itemType?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceDetails?: NullableJsonNullValueInput | InputJsonValue
+    count?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentPublicId?: NullableStringFieldUpdateOperationsInput | string | null
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApproval?: NullableEnumMDFeedbackFieldUpdateOperationsInput | $Enums.MDFeedback | null
+    mdApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mdRejectReason?: NullableStringFieldUpdateOperationsInput | string | null
+    mdApprovalComment?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdParty?: BoolFieldUpdateOperationsInput | boolean
+    thirdPartyStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 

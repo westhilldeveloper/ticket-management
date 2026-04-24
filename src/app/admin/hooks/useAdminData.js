@@ -28,7 +28,7 @@ export function useAdminData(timeRange, requestServiceType, socket) {
     admins: 0,
     mds: 0,
     employees: 0,
-    ticketsByCategory: { HR: 0, IT: 0, TECHNICAL: 0 },
+    ticketsByCategory: {},           // ✅ dynamic – no hardcoded keys
     ticketsByPriority: { LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0 },
     ticketsByStatus: {},
     mdApprovals: { pending: 0, approved: 0, rejected: 0 }
@@ -42,23 +42,16 @@ export function useAdminData(timeRange, requestServiceType, socket) {
   const router = useRouter()
   const toast = useToast()
 
-  // Build common query parameters
+  // Build query string (unchanged)
   const buildQueryString = useCallback(() => {
     const params = new URLSearchParams()
-    
-    // Add timeRange (used only by some endpoints, but we'll pass it anyway)
     if (timeRange) params.append('timeRange', timeRange)
-    
-    // Add department filter (only for regular admin)
     if (user?.role === 'ADMIN' && user?.department && user?.role !== 'SUPER_ADMIN') {
       params.append('department', user.department)
     }
-    
-    // Add requestServiceType filter if provided
     if (requestServiceType) {
       params.append('requestServiceType', requestServiceType)
     }
-    
     const queryString = params.toString()
     return queryString ? `?${queryString}` : ''
   }, [user, timeRange, requestServiceType])
@@ -69,8 +62,8 @@ export function useAdminData(timeRange, requestServiceType, socket) {
       setError(null)
 
       const queryString = buildQueryString()
-
-      // Stats endpoint
+      const queryPart = queryString ? `&${queryString.slice(1)}` : '';
+      // Stats endpoint (returns dynamic ticketsByCategory)
       const statsResponse = await fetch(`/api/admin/stats${queryString}`, {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -85,41 +78,42 @@ export function useAdminData(timeRange, requestServiceType, socket) {
       }
       
       const statsData = await statsResponse.json()
-      if (statsData.stats) setStats(statsData.stats)
+      if (statsData.stats) {
+        // Merge with defaults, preserving dynamic category object
+        setStats(prev => ({
+          ...prev,
+          ...statsData.stats,
+          ticketsByCategory: statsData.stats.ticketsByCategory || {}
+        }))
+      }
 
-      // Recent tickets (add limit)
-      const ticketsResponse = await fetch(`/api/admin/recent-tickets?limit=10${queryString}`, {
-        credentials: 'include'
-      })
+      // ... rest of the fetches (unchanged)
+     
+      const ticketsResponse = await fetch(`/api/admin/recent-tickets?limit=10${queryPart}`);
       if (ticketsResponse.ok) {
         const ticketsData = await ticketsResponse.json()
         setRecentTickets(ticketsData.tickets || [])
       }
-
-      // Pending approvals
+ 
       const pendingResponse = await fetch(`/api/admin/pending-approvals${queryString}`, { credentials: 'include' })
       if (pendingResponse.ok) {
         const pendingData = await pendingResponse.json()
         setPendingApprovals(pendingData.tickets || [])
       }
 
-      // Pending third party
       const thirdPartyResponse = await fetch(`/api/admin/pending-third-party${queryString}`, { credentials: 'include' })
       if (thirdPartyResponse.ok) {
         const thirdPartyData = await thirdPartyResponse.json()
         setPendingThirdParty(thirdPartyData.tickets || [])
       }
 
-      // Recent activities (add limit)
-      const activitiesResponse = await fetch(`/api/admin/recent-activities?limit=10${queryString}`, {
-        credentials: 'include'
-      })
+      const activitiesResponse = await fetch(`/api/admin/recent-activities?limit=10${queryString}`, { credentials: 'include' })
       if (activitiesResponse.ok) {
         const activitiesData = await activitiesResponse.json()
         setRecentActivities(activitiesData.activities || [])
+        
       }
 
-      // Top users (no filters needed)
       const usersResponse = await fetch('/api/admin/top-users?limit=5', { credentials: 'include' })
       if (usersResponse.ok) {
         const usersData = await usersResponse.json()
@@ -133,17 +127,13 @@ export function useAdminData(timeRange, requestServiceType, socket) {
     } finally {
       setLoading(false)
     }
-  }, [router, toast, buildQueryString]) // buildQueryString already includes user, timeRange, requestServiceType
+  }, [router, toast, buildQueryString])
 
   const exportReport = useCallback(async () => {
     try {
       const queryString = buildQueryString()
-      const response = await fetch(`/api/admin/export-report${queryString}`, {
-        credentials: 'include'
-      })
-      
+      const response = await fetch(`/api/admin/export-report${queryString}`, { credentials: 'include' })
       if (!response.ok) throw new Error('Export failed')
-
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -153,7 +143,6 @@ export function useAdminData(timeRange, requestServiceType, socket) {
       a.click()
       document.body.removeChild(a)
       window.URL.revokeObjectURL(url)
-      
       toast.success('Report exported successfully', { duration: 3000 })
     } catch (error) {
       console.error('Error exporting report:', error)

@@ -24,14 +24,14 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const departmentParam = searchParams.get('department')
     const requestServiceType = searchParams.get('requestServiceType')  // correct placement
-
+ 
     let where = {}
     if (user.role === 'ADMIN') {
       if (departmentParam && departmentParam !== user.department) {
         return NextResponse.json({ message: 'Access denied' }, { status: 403 })
       }
       if (user.department) {
-        where.mainCategory = user.department
+        where.mainCategory = { name: user.department }
       }
     } else if (user.role === 'SUPER_ADMIN' && departmentParam) {
       where.mainCategory = departmentParam
@@ -56,4 +56,4 @@ export async function GET(request) {
     console.error('Error fetching recent tickets:', error)
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
-}
+} 

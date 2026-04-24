@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "statuses" ADD VALUE 'REJECTED_BY_SERVICE';

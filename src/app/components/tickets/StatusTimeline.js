@@ -28,6 +28,8 @@ export default function StatusTimeline({ ticket }) {
         return <FiCheckCircle className="h-5 w-5 text-green-500" />
       case 'REJECTED_BY_MD':
         return <FiCheckCircle className="h-5 w-5 text-red-500" />
+      case 'REJECTED_BY_SERVICE':
+        return <FiCheckCircle className="h-5 w-5 text-red-500" />
       case 'RESOLVED':
       case 'CLOSED':
         return <FiCheckCircle className="h-5 w-5 text-green-500" />
@@ -44,6 +46,7 @@ export default function StatusTimeline({ ticket }) {
       'IN_PROGRESS': 'border-blue-500',
       'APPROVED_BY_MD': 'border-green-500',
       'REJECTED_BY_MD': 'border-red-500',
+      'REJECTED_BY_SERVICE': 'border-red-500',
       'RESOLVED': 'border-green-500',
       'CLOSED': 'border-gray-500'
     }

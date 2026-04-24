@@ -52,6 +52,7 @@ export default function UsersPage() {
   })
   const [formErrors, setFormErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
+  const [categories, setCategories] = useState([]);
 
   // Filters
   const [filters, setFilters] = useState({
@@ -71,8 +72,26 @@ export default function UsersPage() {
   const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('/api/dynamic-categories', { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        console.log("categories====>", data)
+        setCategories(data.categories || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch categories', err);
+    }
+  };
+  fetchCategories();
+}, []);
+
+  useEffect(() => {
     fetchUsers()
   }, [filters.role, filters.status, filters.department, filters.page])
+
+
 
   const fetchUsers = async () => {
     try {
@@ -468,10 +487,10 @@ export default function UsersPage() {
                   className="input-field"
                 >
                   <option value="">All Roles</option>
-                  <option value="SUPER_ADMIN">Super Admin</option>
                   <option value="ADMIN">Admin</option>
                   <option value="MD">Managing Director</option>
                   <option value="EMPLOYEE">Employee</option>
+                  <option value="SERVICE_TEAM">Service Team</option>
                 </select>
               </div>
 
@@ -721,6 +740,7 @@ export default function UsersPage() {
           formData={formData}
           formErrors={formErrors}
           onInputChange={handleInputChange}
+          dynamicCategories={categories}
           onSubmit={handleAddUser}
           onClose={() => {
             setShowAddModal(false)
@@ -751,7 +771,7 @@ export default function UsersPage() {
 }
 
 // User Modal Component
-function UserModal({ title, formData, formErrors, onInputChange, onSubmit, onClose, submitting, isEdit }) {
+function UserModal({ title, formData, formErrors, onInputChange, onSubmit, onClose, submitting, isEdit,dynamicCategories }) {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-lg bg-white">
@@ -836,7 +856,7 @@ function UserModal({ title, formData, formErrors, onInputChange, onSubmit, onClo
               <option value="EMPLOYEE">Employee</option>
               <option value="ADMIN">Admin</option>
               <option value="MD">Managing Director</option>
-              <option value="SUPER_ADMIN">Super Admin</option>
+              <option value="SERVICE_TEAM">Service Team</option>
             </select>
             {formErrors.role && (
               <p className="error-text mt-1">{formErrors.role}</p>
@@ -844,18 +864,25 @@ function UserModal({ title, formData, formErrors, onInputChange, onSubmit, onClo
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Department
-            </label>
-            <input
-              type="text"
-              name="department"
-              value={formData.department}
-              onChange={onInputChange}
-              className="input-field"
-              placeholder="e.g., IT, HR, Finance"
-            />
-          </div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      Department
+    </label>
+    {dynamicCategories && dynamicCategories.length > 0 ? (
+    <select
+      name="department"
+      value={formData.department}
+      onChange={onInputChange}
+      className="input-field"
+      required
+    >
+      <option value="">Select Department</option>
+      {dynamicCategories.map(cat => (
+        <option key={cat.id} value={cat.name}>{cat.name}</option>
+      ))}
+    </select>):  (
+  <input type="text" name="department"  />
+)}
+  </div>
 
           <div className="flex items-center">
             <input

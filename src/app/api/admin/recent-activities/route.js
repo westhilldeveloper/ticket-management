@@ -23,19 +23,37 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '10')
     const departmentParam = searchParams.get('department')
-    const requestServiceType = searchParams.get('requestServiceType')   // ✅ moved inside
+    const requestServiceType = searchParams.get('requestServiceType')
 
     let ticketFilter = {}
+
     if (user.role === 'ADMIN') {
       if (departmentParam && departmentParam !== user.department) {
         return NextResponse.json({ message: 'Access denied' }, { status: 403 })
       }
       if (user.department) {
-        ticketFilter.mainCategory = user.department
+        // Resolve department name to category ID
+        const category = await prisma.dynamicCategory.findFirst({
+          where: { name: user.department }
+        })
+        if (category) {
+          ticketFilter.mainCategoryId = category.id
+        } else {
+          // No matching category – return empty activities
+          return NextResponse.json({ activities: [] })
+        }
       }
     } else if (user.role === 'SUPER_ADMIN' && departmentParam) {
-      ticketFilter.mainCategory = departmentParam
+      const category = await prisma.dynamicCategory.findFirst({
+        where: { name: departmentParam }
+      })
+      if (category) {
+        ticketFilter.mainCategoryId = category.id
+      } else {
+        return NextResponse.json({ activities: [] })
+      }
     }
+
     if (requestServiceType) {
       ticketFilter.requestServiceType = requestServiceType
     }

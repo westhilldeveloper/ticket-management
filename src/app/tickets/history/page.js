@@ -414,6 +414,12 @@ function HistoryContent() {
               {stats.totalActions > 0 && (
                 <span className="text-[10px] text-gray-400">{stats.totalActions} items</span>
               )}
+
+              {isAdmin && filters.userId !== 'ALL' && (
+  <span className="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
+    {users.find(u => u.id === filters.userId)?.name || 'User'}
+  </span>
+)}
             </div>
             
             <div className="flex items-center space-x-1">

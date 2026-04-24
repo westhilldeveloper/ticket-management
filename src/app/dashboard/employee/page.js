@@ -44,6 +44,15 @@ function EmployeeDashboardContent() {
   const [networkStatus, setNetworkStatus] = useState('online')
   const { socket } = useSocket();
 
+
+  useEffect(() => {
+  if (socket) {
+    console.log('Socket connected in employee dashboard:', socket.id);
+    socket.on('connect', () => console.log('Socket connected'));
+    socket.on('disconnect', () => console.log('Socket disconnected'));
+  }
+}, [socket]);
+
   // Monitor network status
   useEffect(() => {
     const handleOnline = () => setNetworkStatus('online')
@@ -148,7 +157,7 @@ function EmployeeDashboardContent() {
         const status = ticket.status
         
         // Categorize statuses
-        if (['OPEN', 'PENDING_MD_APPROVAL', 'PENDING_THIRD_PARTY', 'REJECTED_BY_MD', 'PENDING_SERVICE_ACCEPTANCE'].includes(status)) {
+        if (['OPEN', 'PENDING_MD_APPROVAL', 'PENDING_THIRD_PARTY', 'REJECTED_BY_MD','REJECTED_BY_SERVICE', 'PENDING_SERVICE_ACCEPTANCE'].includes(status)) {
           acc.open++
         } else if (['IN_PROGRESS', 'SERVICE_IN_PROGRESS'].includes(status)) {
           acc.inProgress++
@@ -217,18 +226,26 @@ function EmployeeDashboardContent() {
 
   // Socket event for new tickets
   useEffect(() => {
-    if (!socket) return
+  if (!socket) return;
 
-    const handleNewTicket = (newTicket) => {
-      toast.success(`New ticket #${newTicket.ticketNumber} created`)
-      fetchDashboardData()
-    }
+  const handleNewTicket = (newTicket) => {
+    toast.success(`New ticket #${newTicket.ticketNumber} created`);
+    fetchDashboardData();
+  };
 
-    socket.on('new-ticket', handleNewTicket)
-    return () => {
-      socket.off('new-ticket', handleNewTicket)
-    }
-  }, [socket, fetchDashboardData])
+ const handleTicketUpdated = (updatedTicket) => {
+  console.log('ticket-updated received in employee dashboard:', updatedTicket);
+  fetchDashboardData();
+};
+
+  socket.on('new-ticket', handleNewTicket);
+  socket.on('ticket-updated', handleTicketUpdated);
+
+  return () => {
+    socket.off('new-ticket', handleNewTicket);
+    socket.off('ticket-updated', handleTicketUpdated);
+  };
+}, [socket, fetchDashboardData]);
 
   const handleRetry = () => {
     setRetryCount(prev => prev + 1)

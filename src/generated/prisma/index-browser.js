@@ -141,7 +141,7 @@ exports.Prisma.TicketScalarFieldEnum = {
   ticketNumber: 'ticketNumber',
   title: 'title',
   description: 'description',
-  mainCategory: 'mainCategory',
+  mainCategoryId: 'mainCategoryId',
   requestServiceType: 'requestServiceType',
   itemType: 'itemType',
   serviceDetails: 'serviceDetails',
@@ -234,6 +234,36 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ItemCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ItemTypeScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  categoryId: 'categoryId',
+  type: 'type',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DynamicCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -267,12 +297,6 @@ exports.Role = exports.$Enums.Role = {
   SUPER_ADMIN: 'SUPER_ADMIN'
 };
 
-exports.MainCategory = exports.$Enums.MainCategory = {
-  IT: 'IT',
-  ADMIN: 'ADMIN',
-  HR: 'HR'
-};
-
 exports.RequestServiceType = exports.$Enums.RequestServiceType = {
   REQUEST: 'REQUEST',
   SERVICE: 'SERVICE'
@@ -294,6 +318,7 @@ exports.Status = exports.$Enums.Status = {
   REJECTED_BY_MD: 'REJECTED_BY_MD',
   PENDING_SERVICE_ACCEPTANCE: 'PENDING_SERVICE_ACCEPTANCE',
   SERVICE_IN_PROGRESS: 'SERVICE_IN_PROGRESS',
+  REJECTED_BY_SERVICE: 'REJECTED_BY_SERVICE',
   SERVICE_RESOLVED: 'SERVICE_RESOLVED',
   RESOLVED: 'RESOLVED',
   CLOSED: 'CLOSED'
@@ -333,7 +358,10 @@ exports.Prisma.ModelName = {
   Notification: 'Notification',
   Department: 'Department',
   SystemSetting: 'SystemSetting',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  ItemCategory: 'ItemCategory',
+  ItemType: 'ItemType',
+  DynamicCategory: 'DynamicCategory'
 };
 
 /**

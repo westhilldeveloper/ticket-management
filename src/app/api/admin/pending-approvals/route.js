@@ -25,20 +25,38 @@ export async function GET(request) {
     const requestServiceType = searchParams.get('requestServiceType')
 
     let ticketWhere = { status: 'PENDING_MD_APPROVAL' }
+
     if (user.role === 'ADMIN') {
       if (departmentParam && departmentParam !== user.department) {
         return NextResponse.json({ message: 'Access denied' }, { status: 403 })
       }
       if (user.department) {
-        ticketWhere.mainCategory = user.department
+        // Find category by name
+        const category = await prisma.dynamicCategory.findFirst({
+          where: { name: user.department }
+        })
+        if (category) {
+          ticketWhere.mainCategoryId = category.id
+        } else {
+          // No matching category – return empty (or you could return all tickets without filtering)
+          return NextResponse.json({ tickets: [] })
+        }
       }
     } else if (user.role === 'SUPER_ADMIN' && departmentParam) {
-      ticketWhere.mainCategory = departmentParam
+      const category = await prisma.dynamicCategory.findFirst({
+        where: { name: departmentParam }
+      })
+      if (category) {
+        ticketWhere.mainCategoryId = category.id
+      } else {
+        return NextResponse.json({ tickets: [] })
+      }
     }
 
     if (requestServiceType) {
-    ticketWhere.requestServiceType = requestServiceType
+      ticketWhere.requestServiceType = requestServiceType
     }
+
     const tickets = await prisma.ticket.findMany({
       where: ticketWhere,
       orderBy: { createdAt: 'asc' },

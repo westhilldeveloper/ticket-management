@@ -94,7 +94,7 @@ export async function POST(request, { params }) {
     )
 
     // Emit socket update
-    emitTicketUpdate(`ticket-${ticketId}-updated`, updatedTicket)
+    emitTicketUpdate(ticketId, updatedTicket, ticket.createdBy.id)
 
     return NextResponse.json({
       message: 'Work update recorded',

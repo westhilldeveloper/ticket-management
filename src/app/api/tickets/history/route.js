@@ -74,18 +74,37 @@ export async function GET(request) {
     }
 
     // Apply user filter for admins
-    if (userId && userId !== 'ALL' && ['SUPER_ADMIN', 'ADMIN'].includes(user.role)) {
-      if (where.OR) {
-        where = {
-          AND: [
-            { OR: where.OR },
-            { createdById: userId }
-          ]
-        }
-      } else {
-        where.createdById = userId
-      }
-    }
+    // if (userId && userId !== 'ALL' && ['SUPER_ADMIN', 'ADMIN'].includes(user.role)) {
+    //   if (where.OR) {
+    //     where = {
+    //       AND: [
+    //         { OR: where.OR },
+    //         { createdById: userId }
+    //       ]
+    //     }
+    //   } else {
+    //     where.createdById = userId
+    //   }
+    // }
+
+
+    // Apply user filter (who performed the action)
+if (userId && userId !== 'ALL' && ['SUPER_ADMIN', 'ADMIN'].includes(user.role)) {
+  const userFilter = { createdById: userId }; // filter on history entry creator
+  
+  if (where.AND) {
+    where.AND.push(userFilter);
+  } else if (where.OR) {
+    where = {
+      AND: [
+        { OR: where.OR },
+        userFilter
+      ]
+    };
+  } else {
+    where = { ...where, ...userFilter };
+  }
+}
 
     // Filter by action type
     if (action && action !== 'ALL') {

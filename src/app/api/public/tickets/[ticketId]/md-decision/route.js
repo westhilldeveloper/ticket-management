@@ -6,26 +6,18 @@ import { emitTicketUpdate } from '@/app/lib/socket'
 
 export async function POST(request, { params }) {
   try {
-    // AWAIT params in Next.js 15
     const { ticketId } = await params
     const body = await request.json()
     const { approved, status, mdApprovalComment, mdRejectReason } = body
 
-    // Verify MD access
     const token = request.cookies.get('token')?.value
     if (!token) {
-      return NextResponse.json(
-        { message: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Not authenticated' }, { status: 401 })
     }
 
     const decoded = await verifyToken(token)
-    if (!decoded || !decoded.id) {
-      return NextResponse.json(
-        { message: 'Invalid token' },
-        { status: 401 }
-      )
+    if (!decoded?.id) {
+      return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
     }
 
     const user = await prisma.user.findUnique({
@@ -33,13 +25,9 @@ export async function POST(request, { params }) {
     })
 
     if (!user || user.role !== 'MD') {
-      return NextResponse.json(
-        { message: 'Access denied' },
-        { status: 403 }
-      )
+      return NextResponse.json({ message: 'Access denied' }, { status: 403 })
     }
 
-    // Get existing ticket
     const ticket = await prisma.ticket.findUnique({
       where: { id: ticketId },
       include: {
@@ -49,13 +37,9 @@ export async function POST(request, { params }) {
     })
 
     if (!ticket) {
-      return NextResponse.json(
-        { message: 'Ticket not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ message: 'Ticket not found' }, { status: 404 })
     }
 
-    // Build update data
     const updateData = {
       status,
       mdApproval: approved ? 'APPROVED' : 'REJECTED'
@@ -68,29 +52,18 @@ export async function POST(request, { params }) {
       }
     } else {
       updateData.mdRejectedAt = new Date()
-      updateData.mdRejectReason = mdRejectReason // required; frontend already validates
+      updateData.mdRejectReason = mdRejectReason
     }
 
-    // Update ticket
-    const updatedTicket = await prisma.ticket.update({
+    await prisma.ticket.update({
       where: { id: ticketId },
-      data: updateData,
-      include: {
-        createdBy: {
-          select: { id: true, name: true, email: true }
-        },
-        assignedTo: {
-          select: { id: true, name: true, email: true }
-        }
-      }
+      data: updateData
     })
 
-    // Determine review content (use comment or reason)
     const reviewContent = approved
       ? (mdApprovalComment || 'Approved by MD')
       : (mdRejectReason || 'Rejected by MD')
 
-    // Add review
     await prisma.review.create({
       data: {
         content: reviewContent,
@@ -100,7 +73,6 @@ export async function POST(request, { params }) {
       }
     })
 
-    // Add to history
     await prisma.ticketHistory.create({
       data: {
         action: approved ? 'MD_APPROVED' : 'MD_REJECTED',
@@ -110,7 +82,6 @@ export async function POST(request, { params }) {
       }
     })
 
-    // Send email to creator
     await sendStatusUpdateEmail(
       ticket.createdBy.email,
       ticket.ticketNumber,
@@ -118,7 +89,6 @@ export async function POST(request, { params }) {
       reviewContent
     )
 
-    // Send email to assigned admin if any
     if (ticket.assignedTo) {
       await sendStatusUpdateEmail(
         ticket.assignedTo.email,
@@ -128,12 +98,39 @@ export async function POST(request, { params }) {
       )
     }
 
-    // Emit socket update
-    emitTicketUpdate(`ticket-${ticketId}-updated`, updatedTicket)
+    const finalTicket = await prisma.ticket.findUnique({
+      where: { id: ticketId },
+      include: {
+        createdBy: {
+          select: { id: true, name: true, email: true }
+        },
+        assignedTo: {
+          select: { id: true, name: true, email: true }
+        },
+        reviews: {
+          include: {
+            createdBy: {
+              select: { id: true, name: true, email: true }
+            }
+          },
+          orderBy: { createdAt: 'desc' }
+        },
+        history: {
+          include: {
+            createdBy: {
+              select: { id: true, name: true, email: true }
+            }
+          },
+          orderBy: { createdAt: 'desc' }
+        }
+      }
+    })
+
+    emitTicketUpdate(ticketId, finalTicket, finalTicket.createdBy.id)
 
     return NextResponse.json({
       message: approved ? 'Ticket approved' : 'Ticket rejected',
-      ticket: updatedTicket
+      ticket: finalTicket
     })
 
   } catch (error) {

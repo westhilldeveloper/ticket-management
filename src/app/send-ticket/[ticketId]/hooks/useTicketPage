@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation' 
 
 export function useTicketPage({ ticketId, user, socket, joinTicket, leaveTicket, toast }) {
   const [ticket, setTicket] = useState(null)
@@ -86,6 +86,7 @@ export function useTicketPage({ ticketId, user, socket, joinTicket, leaveTicket,
 
   // Admin Actions
   const handleAdminAction = useCallback(async (action) => {
+    console.log("action=====>",action)
     if (action === 'ASSIGN_TO_SERVICE') {
       if (!selectedServiceUserId) {
         toast.error('Please select a service team member');
@@ -176,6 +177,14 @@ export function useTicketPage({ ticketId, user, socket, joinTicket, leaveTicket,
         setAdminReview('');
         setThirdPartyDetails('');
       }
+
+      if (socket) {
+  socket.emit('admin-action-completed', {
+    ticket: data.ticket,
+    action: action,
+    userId: user.id
+  });
+}
 
       toast.success('Action completed successfully');
     } catch (error) {

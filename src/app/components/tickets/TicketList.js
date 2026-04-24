@@ -108,6 +108,8 @@ export default function TicketList({ filters: initialFilters = {}, onTicketSelec
         return <FiThumbsUp className="h-5 w-5 text-green-500" />
       case 'REJECTED_BY_MD':
         return <FiThumbsDown className="h-5 w-5 text-red-500" />
+      case 'REJECTED_BY_SERVICE':
+        return <FiThumbsDown className="h-5 w-5 text-red-500" />
       case 'RESOLVED':
       case 'CLOSED':
         return <FiCheckCircle className="h-5 w-5 text-green-500" />
@@ -124,6 +126,7 @@ export default function TicketList({ filters: initialFilters = {}, onTicketSelec
       'IN_PROGRESS': 'bg-blue-100 text-blue-800',
       'APPROVED_BY_MD': 'bg-green-100 text-green-800',
       'REJECTED_BY_MD': 'bg-red-100 text-red-800',
+      'REJECTED_BY_SERVICE': 'bg-red-100 text-red-800',
       'RESOLVED': 'bg-green-100 text-green-800',
       'CLOSED': 'bg-gray-100 text-gray-800'
     }
@@ -202,6 +205,7 @@ export default function TicketList({ filters: initialFilters = {}, onTicketSelec
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="APPROVED_BY_MD">Approved by MD</option>
                 <option value="REJECTED_BY_MD">Rejected by MD</option>
+                <option value="REJECTED_BY_SERVICE">Rejected by SERVICE</option>
                 <option value="RESOLVED">Resolved</option>
                 <option value="CLOSED">Closed</option>
               </select>

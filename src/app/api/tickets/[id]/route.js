@@ -85,7 +85,8 @@ export async function GET(request, { params }) {
           orderBy: {
             createdAt: 'desc'
           }
-        }
+        },
+         mainCategory: { select: { id: true, name: true } },
       }
     })
 

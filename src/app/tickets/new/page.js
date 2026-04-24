@@ -40,7 +40,6 @@ function NewTicketContent() {
   // Refs for cleanup
   const intervalsRef = useRef([]);
   const redirectTimeoutRef = useRef(null);
-  
   const { 
     files, 
     uploadProgress, 
@@ -94,15 +93,15 @@ function NewTicketContent() {
   const validateFormData = useCallback(() => {
     const formValues = watch();
     const errors = [];
-    if (!formValues.title?.trim()) errors.push('Title is required');
+    // if (!formValues.title?.trim()) errors.push('Title is required');
     if (!formValues.description?.trim()) errors.push('Description is required');
     if (!formValues.category) errors.push('Category is required');
     if (!formValues.priority) errors.push('Priority is required');
     if (!formValues.mainCategory) errors.push('Main category is required');
     if (!formValues.requestServiceType) errors.push('Please select Request or Service');
     if (!formValues.itemType) errors.push('Please select an item/service type');
-    if (formValues.title?.length < 5) errors.push('Title must be at least 5 characters');
-    if (formValues.description?.length < 20) errors.push('Description must be at least 20 characters');
+    // if (formValues.title?.length < 5) errors.push('Title must be at least 5 characters');
+    if (formValues.description?.length < 10) errors.push('Description must be at least 10 characters');
     return errors;
   }, [watch]); // fixed dependency
 
@@ -129,9 +128,9 @@ const onSubmit = async (data) => {
 
   try {
     const formData = new FormData();
-    formData.append('title', data.title.trim());
+    formData.append('title', data.itemType.trim());
     formData.append('description', data.description.trim());
-    formData.append('category', data.category);
+    formData.append('category', user.branch);
     formData.append('priority', data.priority);
     formData.append('mainCategory', data.mainCategory);
     formData.append('requestServiceType', data.requestServiceType);
@@ -152,13 +151,7 @@ const onSubmit = async (data) => {
         'Content-Type': 'multipart/form-data',
       },
       onUploadProgress: (progressEvent) => {
-        // progressEvent.loaded: bytes uploaded so far
-        // progressEvent.total: total bytes (may be undefined if server doesn't send Content-Length)
         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        // Update progress for all files (or you can track per file if needed)
-        // Since the total progress is for all files combined, you can set a global progress value.
-        // For per-file progress, you'd need more complex logic (e.g., each file has its own progress based on its size).
-        // Here we'll set a global progress value for simplicity.
         setUploadProgress({ global: percentCompleted });
       },
       timeout: 60000, // 60 seconds timeout
@@ -173,9 +166,11 @@ const onSubmit = async (data) => {
     setUploadProgress({ global: 100 });
 
     toast.success('Ticket created successfully!', { duration: 5000 });
-    
+     
+  
     if (socket && connected) {
       try {
+          console.log("socket triggered");
         socket.emit('ticket-created', {
           ...result.ticket,
           createdById: user.id,
@@ -353,7 +348,7 @@ const onSubmit = async (data) => {
               {/* Right Column - Metadata */}
               <div className="space-y-4">
                 <CategorySelector user={user} />
-                <PrioritySelector />
+                {/* <PrioritySelector /> */}
                 <RequesterInfo user={user} />
               </div>
             </div>

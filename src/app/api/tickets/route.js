@@ -3,24 +3,18 @@ import { prisma } from '@/app/lib/db'
 import { getCurrentUser } from '@/app/lib/auth'
 import { uploadToCloudinary } from '@/app/lib/cloudinary'
 import { sendTicketCreatedEmail } from '@/app/lib/email'
-import { emitTicketUpdate } from '@/app/lib/socket'
 import { cookies } from 'next/headers'
 
 export async function POST(request) {
   try {
-    // Get current user
     const cookieStore = await cookies()
     const token = cookieStore.get('token')?.value
     const user = await getCurrentUser(token)
 
     if (!user) {
-      return NextResponse.json(
-        { message: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Not authenticated' }, { status: 401 })
     }
 
-    // Parse form data
     const formData = await request.formData()
     const title = formData.get('title')
     const description = formData.get('description')
@@ -28,49 +22,47 @@ export async function POST(request) {
     const priority = formData.get('priority') || 'MEDIUM'
     const review = formData.get('review')
     const attachments = formData.getAll('attachments')
-    const mainCategory = formData.get('mainCategory')
+    const mainCategoryName = formData.get('mainCategory')      // dynamic category name
     const requestServiceType = formData.get('requestServiceType')
     const itemType = formData.get('itemType')
 
-    // Validate required fields
     if (!title || !description || !category) {
-      return NextResponse.json(
-        { message: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
     }
 
-    // Generate unique ticket number
+    // Resolve dynamic category ID from name
+    let mainCategoryId = null
+    if (mainCategoryName) {
+      const dynamicCategory = await prisma.dynamicCategory.findFirst({
+        where: { name: mainCategoryName }
+      })
+      if (dynamicCategory) {
+        mainCategoryId = dynamicCategory.id
+      } else {
+        // Optionally create the category? For now, treat as invalid
+        return NextResponse.json({ message: `Invalid main category: ${mainCategoryName}` }, { status: 400 })
+      }
+    }
+
     const ticketNumber = `TKT-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`
 
-    // Handle file uploads
     let attachmentUrls = []
     let attachmentPublicIds = []
 
     if (attachments && attachments.length > 0) {
       for (const file of attachments) {
         if (file.size > 5 * 1024 * 1024) {
-          return NextResponse.json(
-            { message: `File ${file.name} exceeds 5MB limit` },
-            { status: 400 }
-          )
+          return NextResponse.json({ message: `File ${file.name} exceeds 5MB limit` }, { status: 400 })
         }
-
         const uploadResult = await uploadToCloudinary(file, 'tickets')
-        
         if (!uploadResult.success) {
-          return NextResponse.json(
-            { message: `Failed to upload file: ${file.name}` },
-            { status: 500 }
-          )
+          return NextResponse.json({ message: `Failed to upload file: ${file.name}` }, { status: 500 })
         }
-        
         attachmentUrls.push(uploadResult.url)
         attachmentPublicIds.push(uploadResult.publicId)
       }
     }
 
-    // Create ticket in database
     const ticket = await prisma.ticket.create({
       data: {
         ticketNumber,
@@ -78,8 +70,8 @@ export async function POST(request) {
         description,
         category,
         priority,
-        mainCategory,      // new
-        requestServiceType,// new
+        mainCategoryId,              // store relation ID instead of string
+        requestServiceType,
         itemType,
         attachment: attachmentUrls.join(','),
         attachmentPublicId: attachmentPublicIds.join(','),
@@ -87,18 +79,10 @@ export async function POST(request) {
         status: 'OPEN',
       },
       include: {
-        createdBy: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            department: true
-          }
-        }
+        createdBy: { select: { id: true, name: true, email: true, department: true } }
       }
     })
 
-    // Add initial review if provided
     if (review) {
       await prisma.review.create({
         data: {
@@ -110,7 +94,6 @@ export async function POST(request) {
       })
     }
 
-    // Add to history
     await prisma.ticketHistory.create({
       data: {
         action: 'TICKET_CREATED',
@@ -120,30 +103,20 @@ export async function POST(request) {
       }
     })
 
-    // Find all admins to notify
     const admins = await prisma.user.findMany({
-      where: {
-        OR: [
-          { role: 'ADMIN' },
-          { role: 'SUPER_ADMIN' }
-        ]
-      }
+      where: { OR: [{ role: 'ADMIN' }, { role: 'SUPER_ADMIN' }] }
     })
 
-    // Send emails to admins
     const ticketLink = `${process.env.NEXTAUTH_URL}/tickets/${ticket.id}`
-    
+
     for (const admin of admins) {
-      await sendTicketCreatedEmail(
-        admin.email, 
-        ticket.id, 
-        ticketNumber, 
-        category,
-        ticketLink
-      )
+      try {
+        await sendTicketCreatedEmail(admin.email, ticket.id, ticketNumber, category, ticketLink)
+      } catch (emailError) {
+        console.error('Email failed but ticket created:', emailError)
+      }
     }
 
-    // Create notifications for admins
     for (const admin of admins) {
       await prisma.notification.create({
         data: {
@@ -156,29 +129,14 @@ export async function POST(request) {
       })
     }
 
-    // Emit socket event for real-time updates
-    emitTicketUpdate('new-ticket', {
-      type: 'NEW_TICKET',
-      ticket: {
-        ...ticket,
-        link: ticketLink
-      }
-    })
-
     return NextResponse.json({
       message: 'Ticket created successfully',
-      ticket: {
-        ...ticket,
-        link: ticketLink
-      }
+      ticket: { ...ticket, link: ticketLink }
     }, { status: 201 })
 
   } catch (error) {
     console.error('Error creating ticket:', error)
-    return NextResponse.json(
-      { message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -189,60 +147,70 @@ export async function GET(request) {
     const user = await getCurrentUser(token)
 
     if (!user) {
-      return NextResponse.json(
-        { message: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Not authenticated' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
-    const category = searchParams.get('category')
+    const category = searchParams.get('category')        // branch filter (still string)
     const priority = searchParams.get('priority')
     const search = searchParams.get('search')
     const limit = parseInt(searchParams.get('limit') || '10')
     const page = parseInt(searchParams.get('page') || '1')
     const skip = (page - 1) * limit
-    const departmentParam = searchParams.get('department')
-    const allParam = searchParams.get('all') === 'true'
+    const assignedTo = searchParams.get('assignedTo')
+    const dateFrom = searchParams.get('dateFrom')
+    const dateTo = searchParams.get('dateTo')
+    const sortBy = searchParams.get('sortBy') || 'createdAt'
+    const sortOrder = searchParams.get('sortOrder') || 'desc'
+    const departmentParam = searchParams.get('department')   // optional department name filter
 
-    // Build where clause based on user role
     let where = {}
 
-    if (user.role === 'EMPLOYEE') {
-      // Employees can only see their own tickets
-      where.createdById = user.id
-    } else if (user.role === 'ADMIN') {
-      if (allParam) {
-        // Admin wants all tickets, no department restriction
-        // but still apply other filters
-      } else if (departmentParam) {
-        // Admin explicitly wants a specific department
-        where.createdBy = { department: departmentParam }
-      } else if (user.department) {
-        // Default: restrict to admin's own department
-        where.createdBy = { department: user.department }
+    // Helper to resolve department name to category ID
+    const resolveCategoryId = async (deptName) => {
+      if (!deptName) return null
+      const cat = await prisma.dynamicCategory.findFirst({ where: { name: deptName } })
+      return cat?.id || null
+    }
+
+    // Role-based access control (RBAC) with dynamic categories
+    if (user.role === 'SUPER_ADMIN') {
+      if (departmentParam) {
+        const catId = await resolveCategoryId(departmentParam)
+        if (catId) where.mainCategoryId = catId
+        else return NextResponse.json({ tickets: [], pagination: { page, limit, total: 0, pages: 0 } })
       }
-      // If no department and not all, then where remains {} (all tickets)
-    } else if (user.role === 'MD') {
-      // MD can see all tickets (especially those pending approval)
-      // where remains {}
-    } else if (user.role === 'SUPER_ADMIN') {
-      // Super admin can see all tickets
-      // where remains {}
+    } 
+    else if (user.role === 'MD') {
+      // MD sees all, no department filter
+    } 
+    else if (user.role === 'ADMIN') {
+      if (user.department) {
+        const catId = await resolveCategoryId(user.department)
+        if (catId) where.mainCategoryId = catId
+        else return NextResponse.json({ tickets: [], pagination: { page, limit, total: 0, pages: 0 } })
+      } else {
+        where.mainCategoryId = null // no department -> no tickets
+      }
+    } 
+    else if (user.role === 'SERVICE_TEAM') {
+      where.assignedToId = user.id
+    } 
+    else { // EMPLOYEE or other
+      where.createdById = user.id
     }
 
-    // Apply additional filters
-    if (status) {
-      where.status = status
-    }
+    // Additional filters (status, category, priority, assignedTo, date range)
+    if (status) where.status = status
+    if (category) where.category = category
+    if (priority) where.priority = priority
+    if (assignedTo) where.assignedToId = assignedTo
 
-    if (category) {
-      where.category = category
-    }
-
-    if (priority) {
-      where.priority = priority
+    if (dateFrom || dateTo) {
+      where.createdAt = {}
+      if (dateFrom) where.createdAt.gte = new Date(dateFrom)
+      if (dateTo) where.createdAt.lte = new Date(dateTo)
     }
 
     if (search) {
@@ -253,61 +221,36 @@ export async function GET(request) {
       ]
     }
 
-    console.log('User role:', user.role)
-    console.log('Where clause:', JSON.stringify(where, null, 2))
+    const orderBy = {}
+    orderBy[sortBy] = sortOrder
 
-    const tickets = await prisma.ticket.findMany({
-      where,
-      include: {
-        createdBy: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            department: true,
-            role: true
-          }
-        },
-        assignedTo: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            role: true
-          }
-        },
-        reviews: {
-          take: 1,
-          orderBy: { createdAt: 'desc' },
-          include: {
-            createdBy: {
-              select: { name: true, role: true }
-            }
-          }
+    const [tickets, total] = await Promise.all([
+      prisma.ticket.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy,
+        include: {
+          createdBy: { select: { id: true, name: true, email: true, department: true, role: true } },
+          assignedTo: { select: { id: true, name: true, email: true, role: true } },
+          reviews: {
+            take: 1,
+            orderBy: { createdAt: 'desc' },
+            include: { createdBy: { select: { name: true, role: true } } }
+          },
+           mainCategory: { select: { id: true, name: true } }  
         }
-      },
-      orderBy: { createdAt: 'desc' },
-      skip,
-      take: limit
-    })
-
-    const total = await prisma.ticket.count({ where })
+      }),
+      prisma.ticket.count({ where })
+    ])
 
     return NextResponse.json({
       tickets,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
+      pagination: { page, limit, total, pages: Math.ceil(total / limit) }
     })
 
   } catch (error) {
     console.error('Error fetching tickets:', error)
-    return NextResponse.json(
-      { message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }

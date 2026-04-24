@@ -34,39 +34,40 @@ model User {
 }
 
 model Ticket {
-  id                 String          @id @default(uuid())
-  ticketNumber       String          @unique
+  id                 String              @id @default(uuid())
+  ticketNumber       String              @unique
   title              String
   description        String?
-  mainCategory       MainCategory?
+  mainCategoryId     String?
+  mainCategory       DynamicCategory?    @relation(fields: [mainCategoryId], references: [id])
   requestServiceType RequestServiceType?
   itemType           String?
   serviceDetails     Json?
-  count              String?             
+  count              String?
   category           String
-  priority           Priority        @default(MEDIUM)
-  status             Status          @default(OPEN)
+  priority           Priority            @default(MEDIUM)
+  status             Status              @default(OPEN)
   attachment         String?
   attachmentPublicId String?
   serialNumber       String?
   createdById        String
   assignedToId       String?
-  mdApproval         MDFeedback?     @default(PENDING)
+  mdApproval         MDFeedback?         @default(PENDING)
   mdApprovedAt       DateTime?
   mdRejectedAt       DateTime?
   mdRejectReason     String?
   mdApprovalComment  String?
-  thirdParty         Boolean         @default(false)
+  thirdParty         Boolean             @default(false)
   thirdPartyStatus   String?
   thirdPartyDetails  String?
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
   closedAt           DateTime?
   notifications      Notification[]
   reviews            Review[]
   history            TicketHistory[]
-  assignedTo         User?           @relation("AssignedTickets", fields: [assignedToId], references: [id])
-  createdBy          User            @relation("UserTickets", fields: [createdById], references: [id])
+  assignedTo         User?               @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  createdBy          User                @relation("UserTickets", fields: [createdById], references: [id])
 
   @@index([createdById])
   @@index([assignedToId])
@@ -175,6 +176,34 @@ model AuditLog {
   @@map("audit_logs")
 }
 
+model ItemCategory {
+  id          String     @id @default(uuid())
+  name        String     @unique // "IT", "ADMIN", "HR"
+  description String?
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  items       ItemType[]
+
+  @@map("item_categories")
+}
+
+model ItemType {
+  id         String             @id @default(uuid())
+  name       String // e.g., "Laptop", "Repair", "Leave Application"
+  categoryId String // references ItemCategory
+  type       RequestServiceType // REQUEST or SERVICE
+  isActive   Boolean            @default(true)
+  sortOrder  Int                @default(0)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  category ItemCategory @relation(fields: [categoryId], references: [id])
+
+  @@unique([categoryId, name, type])
+  @@map("item_types")
+}
+
 enum Role {
   EMPLOYEE
   ADMIN
@@ -203,6 +232,7 @@ enum Status {
   REJECTED_BY_MD
   PENDING_SERVICE_ACCEPTANCE
   SERVICE_IN_PROGRESS
+  REJECTED_BY_SERVICE
   SERVICE_RESOLVED
   RESOLVED
   CLOSED
@@ -242,14 +272,21 @@ enum NotificationType {
   @@map("notification_types")
 }
 
-enum MainCategory {
-  IT
-  ADMIN
-  HR
+model DynamicCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique // e.g., "IT", "HR", "FINANCE"
+  description String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tickets Ticket[] // tickets that use this category
+
+  @@map("dynamic_categories")
 }
 
 enum RequestServiceType {
   REQUEST
   SERVICE
 }
-

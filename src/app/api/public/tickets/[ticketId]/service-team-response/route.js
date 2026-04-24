@@ -1,69 +1,66 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/db';
 import { verifyToken } from '@/app/lib/auth';
+import { getIO } from '@/app/lib/socket'; 
+import { emitTicketUpdate } from '@/app/lib/socket';
 
 export async function POST(request, { params }) {
   try {
     const { ticketId } = await params;
-    const { action, review } = await request.json(); // 'accept' or 'reject'
+    const { action, review } = await request.json();
 
-    // Verify user
     const token = request.cookies.get('token')?.value;
     if (!token) {
       return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
     }
+
     const decoded = await verifyToken(token);
     if (!decoded?.id) {
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
+
     const user = await prisma.user.findUnique({ where: { id: decoded.id } });
     if (!user || user.role !== 'SERVICE_TEAM') {
       return NextResponse.json({ message: 'Access denied' }, { status: 403 });
     }
 
-    // Get ticket
     const ticket = await prisma.ticket.findUnique({
       where: { id: ticketId }
     });
+
     if (!ticket) {
       return NextResponse.json({ message: 'Ticket not found' }, { status: 404 });
     }
 
-    // Check assignment and status
     if (ticket.assignedToId !== user.id) {
       return NextResponse.json({ message: 'This ticket is not assigned to you' }, { status: 403 });
     }
+
     if (ticket.status !== 'PENDING_SERVICE_ACCEPTANCE') {
       return NextResponse.json({ message: 'Ticket is not pending your acceptance' }, { status: 400 });
     }
 
-    // Determine new status and review content
     let newStatus;
     let reviewContent;
+
     if (action === 'accept') {
       newStatus = 'SERVICE_IN_PROGRESS';
       reviewContent = review || 'Accepted by service team';
     } else if (action === 'reject') {
-      newStatus = 'SERVICE_REJECTED';
-      reviewContent = review || 'Rejected by service team';
       if (!review) {
         return NextResponse.json({ message: 'Rejection reason required' }, { status: 400 });
       }
+      newStatus = 'REJECTED_BY_SERVICE';
+      reviewContent = review;
     } else {
       return NextResponse.json({ message: 'Invalid action' }, { status: 400 });
     }
 
-    // Update ticket
-    const updatedTicket = await prisma.ticket.update({
+    await prisma.ticket.update({
       where: { id: ticketId },
-      data: { status: newStatus },
-      include: {
-        createdBy: { select: { id: true, name: true, email: true } },
-        assignedTo: { select: { id: true, name: true, email: true } }
-      }
+      data: { status: newStatus }
     });
 
-    // Create review
     await prisma.review.create({
       data: {
         content: reviewContent,
@@ -73,7 +70,6 @@ export async function POST(request, { params }) {
       }
     });
 
-    // Create history
     await prisma.ticketHistory.create({
       data: {
         action: action === 'accept' ? 'SERVICE_ACCEPTED' : 'SERVICE_REJECTED',
@@ -83,9 +79,47 @@ export async function POST(request, { params }) {
       }
     });
 
+    const finalTicket = await prisma.ticket.findUnique({
+      where: { id: ticketId },
+      include: {
+        createdBy: { select: { id: true, name: true, email: true } },
+        assignedTo: { select: { id: true, name: true, email: true } },
+        reviews: {
+          include: {
+            createdBy: { select: { id: true, name: true, email: true } }
+          },
+          orderBy: { createdAt: 'desc' }
+        },
+        history: {
+          include: {
+            createdBy: { select: { id: true, name: true, email: true } }
+          },
+          orderBy: { createdAt: 'desc' }
+        }
+      }
+    });
+
+    // Emit socket events
+    const io = getIO();
+    if (io) {
+      // 1. Emit to the ticket creator (employee)
+      io.to(`user:${finalTicket.createdById}`).emit('ticket-updated', finalTicket);
+      // 2. Emit to the ticket room (for the detail page)
+      io.to(`ticket-${ticketId}`).emit(`ticket-${ticketId}-updated`, finalTicket);
+      // 3. Also emit to the assigned service team member (so their dashboard updates instantly)
+      if (finalTicket.assignedToId) {
+        io.to(`user:${finalTicket.assignedToId}`).emit('ticket-updated', finalTicket);
+      }
+    }
+
+
+// if (io && finalTicket.assignedToId) {
+//   io.to(`user:${finalTicket.assignedToId}`).emit('new-ticket-assigned', finalTicket);
+// }
+
     return NextResponse.json({
       message: `Ticket ${action}ed successfully`,
-      ticket: updatedTicket
+      ticket: finalTicket
     });
   } catch (error) {
     console.error('Error in service team response:', error);

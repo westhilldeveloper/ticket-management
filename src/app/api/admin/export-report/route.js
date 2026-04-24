@@ -7,27 +7,17 @@ export async function GET(request) {
   try {
     const token = request.cookies.get('token')?.value
     if (!token) {
-      return NextResponse.json(
-        { message: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Not authenticated' }, { status: 401 })
     }
 
     const decoded = await verifyToken(token)
     if (!decoded) {
-      return NextResponse.json(
-        { message: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
     }
 
-    // Try multiple possible ID fields
     const userId = decoded.id || decoded.userId || decoded.sub
     if (!userId) {
-      return NextResponse.json(
-        { message: 'Invalid token structure' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Invalid token structure' }, { status: 401 })
     }
 
     const user = await prisma.user.findUnique({
@@ -35,34 +25,43 @@ export async function GET(request) {
     })
 
     if (!user || !['ADMIN', 'SUPER_ADMIN'].includes(user.role)) {
-      return NextResponse.json(
-        { message: 'Access denied' },
-        { status: 403 }
-      )
+      return NextResponse.json({ message: 'Access denied' }, { status: 403 })
     }
 
-    // Fetch all tickets for report
+    // Build ticket filter based on role (same as other endpoints)
+    let ticketWhere = {}
+    
+    if (user.role === 'ADMIN' && user.department) {
+      // Resolve department name to DynamicCategory ID
+      const category = await prisma.dynamicCategory.findFirst({
+        where: { name: user.department }
+      })
+      if (category) {
+        ticketWhere.mainCategoryId = category.id
+      } else {
+        // No matching category -> no tickets
+        ticketWhere.id = null // force empty result
+      }
+    } else if (user.role === 'SUPER_ADMIN') {
+      // no filter
+    }
+
+    // Fetch tickets with optional filter
     const tickets = await prisma.ticket.findMany({
+      where: ticketWhere,
       include: {
         createdBy: {
-          select: {
-            name: true,
-            email: true,
-            department: true
-          }
+          select: { name: true, email: true, department: true }
         },
         assignedTo: {
-          select: {
-            name: true
-          }
+          select: { name: true }
         }
       },
-      orderBy: {
-        createdAt: 'desc'
-      }
+      orderBy: { createdAt: 'desc' }
     })
 
-    // Fetch user stats
+    // Fetch all users (no filter for super admin; for admin? Usually admin sees all users, but may restrict)
+    // For consistency, we'll show all users (admin can see all users). If needed, filter by department.
     const users = await prisma.user.findMany({
       select: {
         name: true,

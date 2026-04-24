@@ -99,3 +99,41 @@ export const getCurrentUser = async (token) => {
     return null
   }
 }
+
+export async function getServerUser(request) {
+  try {
+    const token = request.cookies.get('token')?.value;
+    if (!token) return null;
+
+    const decoded = await verifyToken(token);
+    if (!decoded || !decoded.id) return null;
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        branch: true,
+        department: true,
+        isActive: true
+      }
+    });
+
+    return user;
+  } catch (error) {
+    console.error('getServerUser error:', error);
+    return null;
+  }
+}
+
+/**
+ * Check if current user is admin (ADMIN or SUPER_ADMIN)
+ * @param {Request} request
+ * @returns {Promise<boolean>}
+ */
+export async function isAdmin(request) {
+  const user = await getServerUser(request);
+  return user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
+}

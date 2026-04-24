@@ -236,7 +236,7 @@ function TicketsPageContent() {
   const status = ticket.status
   
   // Categorize statuses
-  if (['OPEN', 'PENDING_MD_APPROVAL', 'PENDING_THIRD_PARTY', 'REJECTED_BY_MD', 'PENDING_SERVICE_ACCEPTANCE'].includes(status)) {
+  if (['OPEN', 'PENDING_MD_APPROVAL', 'PENDING_THIRD_PARTY', 'REJECTED_BY_MD','REJECTED_BY_SERVICE', 'PENDING_SERVICE_ACCEPTANCE'].includes(status)) {
     acc.open++
   } else if (['IN_PROGRESS', 'SERVICE_IN_PROGRESS'].includes(status)) {
     acc.inProgress++
@@ -389,6 +389,8 @@ setStats(stats)
         return <FiAward className="h-4 w-4 text-green-500" aria-hidden="true" />
       case 'REJECTED_BY_MD':
         return <FiXCircle className="h-4 w-4 text-red-500" aria-hidden="true" />
+      case 'REJECTED_BY_SERVICE':
+        return <FiXCircle className="h-4 w-4 text-red-500" aria-hidden="true" />
       default:
         return <FiAlertCircle className="h-4 w-4 text-gray-400" aria-hidden="true" />
     }
@@ -402,6 +404,7 @@ setStats(stats)
       'PENDING_THIRD_PARTY': 'bg-indigo-50 text-indigo-700 border-indigo-200',
       'APPROVED_BY_MD': 'bg-green-50 text-green-700 border-green-200',
       'REJECTED_BY_MD': 'bg-red-50 text-red-700 border-red-200',
+      'REJECTED_BY_SERVICE': 'bg-red-50 text-red-700 border-red-200',
       'RESOLVED': 'bg-emerald-50 text-emerald-700 border-emerald-200',
       'CLOSED': 'bg-gray-50 text-gray-700 border-gray-200'
     }
@@ -808,6 +811,7 @@ setStats(stats)
                   <option value="PENDING_THIRD_PARTY">Pending Third Party</option>
                   <option value="APPROVED_BY_MD">Approved by MD</option>
                   <option value="REJECTED_BY_MD">Rejected by MD</option>
+                  <option value="REJECTED_BY_SERVICE">Rejected by Service Team</option>
                   <option value="RESOLVED">Resolved</option>
                   <option value="CLOSED">Closed</option>
                 </select>
@@ -919,14 +923,7 @@ setStats(stats)
                 <tbody className="bg-white divide-y divide-gray-200">
                   {tickets.map((ticket) => (
                     <tr key={ticket.id} className="hover:bg-gray-50 transition-colors">
-                      {/* <td className="px-6 py-4 whitespace-nowrap">
-                        <input
-                          type="checkbox"
-                          checked={selectedTickets.includes(ticket.id)}
-                          onChange={() => handleSelectTicket(ticket.id)}
-                          className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                        />
-                      </td> */}
+                     
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-xs font-medium text-primary-600">
                           {ticket.ticketNumber || `#${ticket.id?.slice(0, 8)}`}

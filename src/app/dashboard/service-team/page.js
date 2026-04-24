@@ -47,6 +47,7 @@ function ServiceTeamDashboardContent() {
   const { user, loading: authLoading } = useAuth()
   const { socket, connected, joinTicket, leaveTicket } = useSocket()
   const toast = useToast()
+  
 
   // State for tickets
   const [pendingAcceptance, setPendingAcceptance] = useState([])
@@ -118,12 +119,12 @@ function ServiceTeamDashboardContent() {
       })
 
       // Listen for ticket updates
-      socket.on('ticket-updated', (data) => {
-        console.log('Ticket updated:', data)
-        if (data.ticket?.assignedToId === user?.id) {
-          fetchAllData()
-        }
-      })
+     socket.on('ticket-updated', (ticket) => {
+  console.log('Ticket updated:', ticket);
+  if (ticket?.assignedToId === user?.id) {
+    fetchAllData();
+  }
+});
 
       return () => {
         socket.off('new-ticket-assigned')
@@ -279,11 +280,11 @@ const handleServiceResponse = async (ticketId, action) => {
 
     // Emit socket event (optional – your backend may already emit)
     if (socket && connected) {
-      socket.emit('ticket-updated', {
-        ticketId: data.ticket.id,
-        ticketNumber: data.ticket.ticketNumber,
-        status: data.ticket.status
-      });
+     socket.emit('service-team-action-completed', {
+  ticket: data.ticket,
+  action: action, // 'accept' or 'reject'
+  userId: user.id
+});
     }
 
     // Update local state
@@ -330,12 +331,12 @@ const handleWorkUpdate = async (ticketId, workType) => {
 
     // Emit socket event
     if (socket && connected) {
-      socket.emit('ticket-updated', {
-        ticketId: data.ticket.id,
-        ticketNumber: data.ticket.ticketNumber,
-        status: data.ticket.status
-      });
-    }
+  socket.emit('service-team-action-completed', {
+    ticket: data.ticket,
+    action: workType === 'resolve' ? 'RESOLVED' : 'PROGRESS_NOTE', // 'accept' or 'reject'
+    userId: user.id
+  });
+}
 
     // Update local state
     if (workType === 'resolve') {
@@ -379,6 +380,7 @@ const handleWorkUpdate = async (ticketId, workType) => {
       'SERVICE_IN_PROGRESS': 'bg-blue-100 text-blue-800 border-blue-200',
       'RESOLVED': 'bg-green-100 text-green-800 border-green-200',
       'REJECTED_BY_MD': 'bg-red-100 text-red-800 border-red-200',
+      'REJECTED_BY_SERVICE': 'bg-red-100 text-red-800 border-red-200',
     }
     return (
       <span className={`px-2 py-1 rounded-full text-xs font-medium border ${styles[status] || 'bg-gray-100 text-gray-800'}`}>
@@ -606,7 +608,9 @@ const handleWorkUpdate = async (ticketId, workType) => {
 
                       {/* Ticket Preview */}
                       <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-sm text-gray-700 line-clamp-3">{ticket.description}</p>
+                        <p className="text-sm font-bold text-gray-700 line-clamp-3">{ticket.requestServiceType}</p>
+                        <p className="text-sm mt-6 text-gray-700 line-clamp-3">{ticket.description}</p>
+                        
 
                         {ticket.reviews?.length > 0 && (
                           <div className="mt-3 p-3 bg-white rounded-lg">
@@ -622,8 +626,8 @@ const handleWorkUpdate = async (ticketId, workType) => {
                             <p className="text-xs text-gray-500">{ticket.createdBy?.department}</p>
                           </div>
                           <div>
-                            <p className="text-xs text-gray-500">Category/Priority</p>
-                            <p className="font-medium">{ticket.category}</p>
+                            <p className="text-xs text-gray-500">Branch</p>
+                            <p className="font-medium mb-2">{user.branch || "Not Specified"}</p>
                             {getPriorityBadge(ticket.priority)}
                           </div>
                         </div>
@@ -774,9 +778,12 @@ const handleWorkUpdate = async (ticketId, workType) => {
                       </div>
 
                       <div className="bg-gray-50 p-4 rounded-lg">
+                        
                         <p className="text-sm text-gray-700 line-clamp-3">{ticket.description}</p>
+                        
+
                         <div className="mt-3 flex space-x-4 text-sm">
-                          <span className="text-xs text-gray-500">Status: {getStatusBadge(ticket.status)}</span>
+                          <span className="text-xs text-gray-500">Status: {getStatusBadge(ticket?.status)}</span>
                         </div>
                       </div>
 

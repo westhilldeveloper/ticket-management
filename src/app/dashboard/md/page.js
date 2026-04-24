@@ -103,13 +103,13 @@ function MDDashboardContent() {
         fetchPendingApprovals()
       })
 
-      socket.on('ticket-updated', (data) => {
-        console.log('Ticket updated:', data)
-        if (data.ticket?.mdApproval) {
-          toast.success(`Ticket #${data.ticketNumber} status updated`)
-          fetchAllData()
-        }
-      })
+      socket.on('ticket-updated', (ticket) => {
+  console.log('Ticket updated:', ticket);
+  if (ticket?.mdApproval) {
+    toast.success(`Ticket #${ticket.ticketNumber} status updated`);
+    fetchAllData();
+  }
+});
 
       return () => {
         socket.off('new-ticket-for-md')
@@ -264,13 +264,12 @@ function MDDashboardContent() {
 
       // Emit socket event
       if (socket && connected) {
-        socket.emit('ticket-updated', {
-          ticketId: data.ticket.id,
-          ticketNumber: data.ticket.ticketNumber,
-          status: data.ticket.status,
-          mdApproval: data.ticket.mdApproval
-        })
-      }
+  socket.emit('md-decision-completed', {
+    ticket: data.ticket,
+    action: approved ? 'APPROVED' : 'REJECTED',
+    userId: user.id
+  });
+}
 
       // Update local state
       setPendingApprovals(prev => prev.filter(t => t.id !== ticketId))

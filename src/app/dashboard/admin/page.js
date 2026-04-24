@@ -49,17 +49,22 @@ export default function AdminDashboard() {
     avgResponseTime: '0h',
     totalUsers: 0,
     activeUsers: 0
-  })
+  }) 
   const [recentTickets, setRecentTickets] = useState([])
   const [pendingApprovals, setPendingApprovals] = useState([])
   const [loading, setLoading] = useState(true)
   const [categoryData, setCategoryData] = useState({
-    labels: ['HR', 'IT', 'Technical'],
+    labels: [],
     datasets: [{
       data: [0, 0, 0],
-      backgroundColor: ['#3B82F6', '#10B981', '#F59E0B']
+      backgroundColor: []
     }]
   })
+
+  const colorPalette = [
+  '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
+  '#EC4899', '#06B6D4', '#F97316', '#6366F1', '#14B8A6'
+]
   const [weeklyData, setWeeklyData] = useState({
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [{
@@ -84,6 +89,8 @@ export default function AdminDashboard() {
     if (user?.role === 'ADMIN' && user?.department && user?.role !== 'SUPER_ADMIN') {
       departmentParam = `&department=${encodeURIComponent(user.department)}`
     }
+
+    console.log("department param===>", departmentParam)
     // For SUPER_ADMIN, MD, or others, no filter (show all)
     
     // Fetch all tickets for stats (limit to 100 for performance)
@@ -104,16 +111,23 @@ export default function AdminDashboard() {
           ticketDate.toDateString() === today.toDateString()
       }).length
 
-      // Category distribution (based on branch location, not mainCategory)
-      const hrTickets = tickets.filter(t => t.category === 'HR').length
-      const itTickets = tickets.filter(t => t.category === 'IT').length
-      const techTickets = tickets.filter(t => t.category === 'TECHNICAL').length
+       const categoryMap = new Map() // category name -> count
+      tickets.forEach(ticket => {
+        const catName = ticket.mainCategory?.name || 'Uncategorized'
+        categoryMap.set(catName, (categoryMap.get(catName) || 0) + 1)
+      })
+
+
+     const sorted = Array.from(categoryMap.entries()).sort((a, b) => b[1] - a[1])
+      const labels = sorted.map(([name]) => name)
+      const data = sorted.map(([, count]) => count)
+      const backgroundColors = labels.map((_, idx) => colorPalette[idx % colorPalette.length])
 
       setCategoryData({
-        labels: ['HR', 'IT', 'Technical'],
+        labels,
         datasets: [{
-          data: [hrTickets, itTickets, techTickets],
-          backgroundColor: ['#3B82F6', '#10B981', '#F59E0B']
+          data,
+          backgroundColor: backgroundColors
         }]
       })
 
@@ -152,7 +166,7 @@ export default function AdminDashboard() {
     }
 
     // Fetch pending approvals with same department filter
-    const pendingRes = await fetch(`/api/tickets?status=PENDING_MD_APPROVAL&limit=5${departmentParam}`)
+    const pendingRes = await fetch(`/api/tickets&status=PENDING_MD_APPROVAL&limit=5${departmentParam}`)
     const pendingData = await pendingRes.json()
     
     if (pendingRes.ok) {
@@ -254,18 +268,22 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Tickets by Category</h2>
             <div className="h-64">
-              <Pie 
-                data={categoryData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      position: 'bottom'
-                    }
-                  }
-                }}
-              />
+              {categoryData.labels.length > 0 ? (
+      <Pie 
+        data={categoryData}
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }}
+      />
+    ) : (
+      <div className="flex items-center justify-center h-full text-gray-500">
+        No category data available
+      </div>
+    )}
             </div>
           </div>
         </div>

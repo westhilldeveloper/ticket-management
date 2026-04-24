@@ -48,7 +48,7 @@ export async function POST(request) {
         branch,
         otp,
         otpExpiry,
-        role: 'SUPER_ADMIN', // Default role
+        role: 'EMPLOYEE', // Default role
       }
     })
 

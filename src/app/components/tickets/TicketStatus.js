@@ -64,6 +64,13 @@ export default function TicketStatus({ ticket, onStatusChange }) {
         label: 'Rejected by MD',
         description: 'Managing Director has rejected the request'
       },
+      'REJECTED_BY_SERVICE': {
+        icon: FiThumbsDown,
+        color: 'text-red-600',
+        bg: 'bg-red-100',
+        label: 'Rejected by MD',
+        description: 'Service Team has rejected the request'
+      },
       'RESOLVED': {
         icon: FiCheckCircle,
         color: 'text-green-600',

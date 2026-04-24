@@ -5,7 +5,7 @@ import { FiAlertCircle, FiHelpCircle } from 'react-icons/fi';
 
 export default function BasicInfo() {
   const { register, formState: { errors }, watch } = useFormContext();
-  const title = watch('title');
+  // const title = watch('title');
   const description = watch('description');
 
   return (
@@ -16,7 +16,7 @@ export default function BasicInfo() {
       </h2>
       
       {/* Title */}
-      <div className="mb-3">
+      {/* <div className="mb-3">
         <label htmlFor="title" className="block text-xs font-medium text-gray-600 mb-1">
           Title <span className="text-red-500">*</span>
         </label>
@@ -42,7 +42,7 @@ export default function BasicInfo() {
         <p className="mt-1 text-xs text-gray-400">
           {title?.length || 0}/100
         </p>
-      </div>
+      </div> */}
 
       {/* Description */}
       <div>
@@ -53,7 +53,7 @@ export default function BasicInfo() {
           id="description"
           {...register('description', { 
             required: 'Description is required',
-            minLength: { value: 20, message: 'Min 20 characters' }
+            minLength: { value: 10, message: 'Min 10 characters' }
           })}
           rows={4}
           className={`w-full px-3 py-1.5 text-sm border rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 ${
