@@ -956,4 +956,4 @@ export default function ServiceTeamDashboard() {
       <ServiceTeamDashboardContent />
     </ErrorBoundary>
   )
-}
+} 

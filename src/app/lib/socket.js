@@ -29,6 +29,10 @@ export const initSocket = (server) => {
         socket.join('admins');
         console.log(`Socket ${socket.id} joined admins room`);
       }
+       if (role === 'MD') {          
+    socket.join('md');
+    console.log(`MD ${userId} joined md room`);
+      }
     });
 
     socket.on('ticket-created', (ticketData) => {

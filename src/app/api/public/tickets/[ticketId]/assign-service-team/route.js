@@ -113,10 +113,8 @@ const io = getIO();
 if (io) {
   // Emit to the ticket room (keeps detail pages in sync)
   io.to(`ticket-${ticketId}`).emit(`ticket-${ticketId}-updated`, finalTicket);
-  // Emit globally for all dashboards and lists
-  // io.emit('ticket-updated', finalTicket);
- 
   io.to(`user:${finalTicket.createdById}`).emit('ticket-updated', finalTicket);
+   io.to(`user:${assignedToId}`).emit('ticket-updated', finalTicket);
 }
 else{
   console.log("missing io")
@@ -131,4 +129,4 @@ return NextResponse.json({
     console.error('Error assigning to service team:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
-}
+} 

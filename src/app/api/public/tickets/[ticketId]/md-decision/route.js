@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/db'
 import { verifyToken } from '@/app/lib/auth'
 import { sendStatusUpdateEmail } from '@/app/lib/email'
-import { emitTicketUpdate } from '@/app/lib/socket'
+import { emitTicketUpdate, getIO } from '@/app/lib/socket' 
 
 export async function POST(request, { params }) {
   try {
@@ -127,6 +127,10 @@ export async function POST(request, { params }) {
     })
 
     emitTicketUpdate(ticketId, finalTicket, finalTicket.createdBy.id)
+    const io = getIO();
+if (io) {
+  io.to('admins').emit('ticket-updated', finalTicket);
+}
 
     return NextResponse.json({
       message: approved ? 'Ticket approved' : 'Ticket rejected',

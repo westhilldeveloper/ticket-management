@@ -172,14 +172,19 @@ export async function POST(request, { params }) {
       }
     })
 
-    const io = getIO()
-    if (io && finalTicket) {
-      console.log(`Emitting ticket-updated to user:${finalTicket.createdById}`)
-      io.to(`user:${finalTicket.createdById}`).emit('ticket-updated', finalTicket)
-      emitTicketUpdate(ticketId, finalTicket, finalTicket.createdById)
-    } else {
-      console.warn('Socket.IO not available – skipping real-time emission')
-    }
+    const io = getIO();
+if (io && finalTicket) {
+  io.to(`user:${finalTicket.createdById}`).emit('ticket-updated', finalTicket);
+  emitTicketUpdate(ticketId, finalTicket, finalTicket.createdById);
+
+  // If this is a forward to MD, also notify the MD room and admins
+  if (action === 'FORWARD_TO_MD') {
+    io.to('md').emit('ticket-updated', finalTicket);
+    io.to('admins').emit('ticket-updated', finalTicket);
+  }
+} else {
+  console.warn('Socket.IO not available – skipping real-time emission');
+}
 
     return NextResponse.json({
       message: 'Action completed successfully',

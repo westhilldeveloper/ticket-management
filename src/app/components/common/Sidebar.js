@@ -104,12 +104,14 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
   const adminNavigation = [
     { name: 'Team Dashboard', href: '/admin', icon: FiUsers, description: 'Team overview', roles: ['ADMIN', 'SUPER_ADMIN'] },
     { name: 'All Tickets', href: '/admin/tickets', icon: FiList, description: 'Manage all tickets', roles: ['ADMIN', 'SUPER_ADMIN'] },
+    
   ]
 
   const superAdminNavigation = [
     { name: 'User Management', href: '/admin/users', icon: FiUserCheck, description: 'Manage users and roles', roles: ['SUPER_ADMIN'] },
     { name: 'System Settings', href: '/admin/settings', icon: FiSettings, description: 'System configuration', roles: ['SUPER_ADMIN'] },
     { name: 'Audit Logs', href: '/admin/audit', icon: FiShield, description: 'Security and audit logs', roles: ['SUPER_ADMIN'] },
+    { name: 'Reports', href: '/dashboard/reports/detailed', icon: FiList, description: 'Manage all tickets', roles: ['MD', 'SUPER_ADMIN'] },
   ]
 
   const filteredNavigation = [

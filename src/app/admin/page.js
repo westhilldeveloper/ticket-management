@@ -57,7 +57,7 @@ function AdminDashboardContent() {
 
 
 
-
+ 
   // Fetch categories for dynamic chart
   useEffect(() => {
     const fetchCategories = async () => {
@@ -100,6 +100,18 @@ function AdminDashboardContent() {
       };
     }
   }, [socket, isConnected, fetchDashboardData, toast]);
+
+  useEffect(() => {
+  if (socket && isConnected) {
+    const handleTicketUpdated = (updatedTicket) => {
+      console.log('Admin: ticket updated', updatedTicket);
+      fetchDashboardData();      // refresh stats, charts, lists
+      toast.info(`Ticket #${updatedTicket.ticketNumber} updated`);
+    };
+    socket.on('ticket-updated', handleTicketUpdated);
+    return () => socket.off('ticket-updated', handleTicketUpdated);
+  }
+}, [socket, isConnected, fetchDashboardData, toast]);
 
   // Authorization check
   useEffect(() => {

@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
     
     // Log for debugging
     console.log('Fetching ticket with ID:', id)
-    
+     
     // Get token from cookies
     const token = request.cookies.get('token')?.value
     

@@ -16,7 +16,7 @@ export default function AdminCreateUser() {
     department: '',
     role: 'EMPLOYEE',
     isActive: true,
-  })
+  }) 
   const [errors, setErrors] = useState({})
   const [serverError, setServerError] = useState('')
   const [submitting, setSubmitting] = useState(false)

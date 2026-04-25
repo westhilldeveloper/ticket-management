@@ -137,13 +137,17 @@ export default function UsersPage() {
       errors.name = 'Name is required'
     }
 
-    if (!formData.email.trim()) {
-      errors.email = 'Email is required'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = 'Invalid email format'
-    } else if (!formData.email.endsWith('@westhillinternational.com') && formData.email !== 'admin@westhillinternational.com') {
-      errors.email = 'Must use company email (@westhillinternational.com)'
-    }
+   if (!formData.email.trim()) {
+  errors.email = 'Email is required';
+} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+  errors.email = 'Invalid email format';
+} else if (
+  !formData.email.endsWith('@westhillinternational.com') &&
+  !formData.email.endsWith('@finovestgroup.com') &&
+  formData.email !== 'admin@westhillinternational.com'
+) {
+  errors.email = 'Must use company email (@westhillinternational.com or @finovestgroup.com)';
+}
 
     if (!selectedUser && !formData.password) {
       errors.password = 'Password is required for new users'
@@ -764,6 +768,7 @@ export default function UsersPage() {
           }}
           submitting={submitting}
           isEdit
+          dynamicCategories={categories}
         />
       )}
     </DashboardLayout>
@@ -771,7 +776,7 @@ export default function UsersPage() {
 }
 
 // User Modal Component
-function UserModal({ title, formData, formErrors, onInputChange, onSubmit, onClose, submitting, isEdit,dynamicCategories }) {
+function UserModal({ title, formData, formErrors, onInputChange, onSubmit, onClose, submitting, isEdit, dynamicCategories }) {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-lg bg-white">
