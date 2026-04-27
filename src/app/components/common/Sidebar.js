@@ -111,7 +111,9 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
     { name: 'User Management', href: '/admin/users', icon: FiUserCheck, description: 'Manage users and roles', roles: ['SUPER_ADMIN'] },
     { name: 'System Settings', href: '/admin/settings', icon: FiSettings, description: 'System configuration', roles: ['SUPER_ADMIN'] },
     { name: 'Audit Logs', href: '/admin/audit', icon: FiShield, description: 'Security and audit logs', roles: ['SUPER_ADMIN'] },
-    { name: 'Reports', href: '/dashboard/reports/detailed', icon: FiList, description: 'Manage all tickets', roles: ['MD', 'SUPER_ADMIN'] },
+    { name: 'Create Categories', href: '/admin/categories', icon: FiShield, description: 'ADMIN HR etc', roles: ['SUPER_ADMIN'] },
+    { name: 'Add Services', href: '/admin/item-types', icon: FiShield, description: 'Service/Request items', roles: ['SUPER_ADMIN'] },
+    { name: 'Reports', href: '/dashboard/reports/detailed', icon: FiList, description: 'Reports', roles: ['MD', 'SUPER_ADMIN'] },
   ]
 
   const filteredNavigation = [

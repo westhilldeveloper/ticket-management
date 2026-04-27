@@ -653,13 +653,13 @@ export default function UsersPage() {
                         >
                           <FiEdit2 className="h-5 w-5" />
                         </button>
-                        <button
+                        {user.id !== currentUser?.id && (<button
                           onClick={() => handleToggleStatus(user.id, user.isActive)}
                           className={`${user.isActive ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`}
                           title={user.isActive ? 'Deactivate User' : 'Activate User'}
                         >
                           {user.isActive ? <FiLock className="h-5 w-5" /> : <FiUnlock className="h-5 w-5" />}
-                        </button>
+                        </button>)}
                         <button
                           onClick={() => handleResetPassword(user.id)}
                           className="text-purple-600 hover:text-purple-900"
@@ -777,6 +777,7 @@ export default function UsersPage() {
 
 // User Modal Component
 function UserModal({ title, formData, formErrors, onInputChange, onSubmit, onClose, submitting, isEdit, dynamicCategories }) {
+   console.log("dynamic categories====>",dynamicCategories)
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-lg bg-white">
@@ -873,6 +874,7 @@ function UserModal({ title, formData, formErrors, onInputChange, onSubmit, onClo
       Department
     </label>
     {dynamicCategories && dynamicCategories.length > 0 ? (
+     
     <select
       name="department"
       value={formData.department}

@@ -26,7 +26,7 @@ export async function GET(request) {
       where: { id: decoded.id }
     })
 
-    if (!currentUser || !['ADMIN', 'SUPER_ADMIN'].includes(currentUser.role)) {
+    if (!currentUser || ![ 'SUPER_ADMIN'].includes(currentUser.role)) {
       return NextResponse.json(
         { message: 'Access denied' },
         { status: 403 }
