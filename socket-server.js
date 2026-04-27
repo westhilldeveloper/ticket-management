@@ -2,7 +2,7 @@
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
-const PORT = process.env.SOCKET_PORT || 3001;
+const PORT = process.env.PORT || 3001;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
 const httpServer = createServer();
