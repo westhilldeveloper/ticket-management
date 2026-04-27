@@ -4,11 +4,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
+    "dev": "next dev",
     "socket": "node socket-server.js",
-    "postinstall": "echo 'Skipping prisma generate in postinstall'",
     "build": "prisma generate && next build",
-    "start": "NODE_ENV=production node server.js",
+     "start": "next start",
     "lint": "eslint"
     
   },
