@@ -1,83 +1,85 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { useAuth } from '@/app/context/AuthContext'
-import LoadingSpinner from '@/app/components/common/LoadingSpinner'
+import { Suspense } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { useAuth } from '@/app/context/AuthContext';
+import LoadingSpinner from '@/app/components/common/LoadingSpinner';
 
-export default function ResetPasswordPage() {
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState({})
-  const [showPassword, setShowPassword] = useState(false)
-  const { resetPassword } = useAuth()
-  const router = useRouter()
-  const searchParams = useSearchParams()
+// Inner component that uses useSearchParams()
+function ResetPasswordForm() {
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const { resetPassword } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   
-  const email = searchParams.get('email')
-  const otp = searchParams.get('otp')
+  const email = searchParams.get('email');
+  const otp = searchParams.get('otp');
 
   useEffect(() => {
     if (!email || !otp) {
-      router.push('/auth/forgot-password')
+      router.push('/auth/forgot-password');
     }
-  }, [email, otp, router])
+  }, [email, otp, router]);
 
   const validateForm = () => {
-    const newErrors = {}
+    const newErrors = {};
 
     if (!password) {
-      newErrors.password = 'Password is required'
+      newErrors.password = 'Password is required';
     } else if (password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters'
+      newErrors.password = 'Password must be at least 8 characters';
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
-      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
     }
 
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match'
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     
-    if (!validateForm()) return
+    if (!validateForm()) return;
 
-    setLoading(true)
-    const result = await resetPassword(email, otp, password)
-    setLoading(false)
+    setLoading(true);
+    const result = await resetPassword(email, otp, password);
+    setLoading(false);
 
     if (result.success) {
-      router.push('/auth/login?reset=true')
+      router.push('/auth/login?reset=true');
     }
-  }
+  };
 
   const getPasswordStrength = () => {
-    let strength = 0
-    if (password.length >= 8) strength++
-    if (/[a-z]/.test(password)) strength++
-    if (/[A-Z]/.test(password)) strength++
-    if (/\d/.test(password)) strength++
-    if (/[^a-zA-Z0-9]/.test(password)) strength++
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/\d/.test(password)) strength++;
+    if (/[^a-zA-Z0-9]/.test(password)) strength++;
     
-    return strength
-  }
+    return strength;
+  };
 
-  const strength = getPasswordStrength()
-  const strengthText = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'][strength - 1] || 'Very Weak'
+  const strength = getPasswordStrength();
+  const strengthText = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'][strength - 1] || 'Very Weak';
   const strengthColor = [
     'bg-red-500',
     'bg-orange-500',
     'bg-yellow-500',
     'bg-blue-500',
     'bg-green-500'
-  ][strength - 1] || 'bg-red-500'
+  ][strength - 1] || 'bg-red-500';
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -106,8 +108,8 @@ export default function ResetPasswordPage() {
                   className="mt-1 input-field pr-10"
                   value={password}
                   onChange={(e) => {
-                    setPassword(e.target.value)
-                    setErrors(prev => ({ ...prev, password: '' }))
+                    setPassword(e.target.value);
+                    setErrors(prev => ({ ...prev, password: '' }));
                   }}
                 />
                 <button
@@ -148,8 +150,8 @@ export default function ResetPasswordPage() {
                 className="mt-1 input-field"
                 value={confirmPassword}
                 onChange={(e) => {
-                  setConfirmPassword(e.target.value)
-                  setErrors(prev => ({ ...prev, confirmPassword: '' }))
+                  setConfirmPassword(e.target.value);
+                  setErrors(prev => ({ ...prev, confirmPassword: '' }));
                 }}
               />
               {errors.confirmPassword && <p className="error-text mt-1">{errors.confirmPassword}</p>}
@@ -192,5 +194,14 @@ export default function ResetPasswordPage() {
         </form>
       </div>
     </div>
-  )
+  );
+}
+
+// Main page component with Suspense boundary
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
+  );
 }
