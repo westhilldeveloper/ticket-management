@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "node server.js",
     "socket": "node socket-server.js",
-    "build": "next build",
+    "postinstall": "echo 'Skipping prisma generate in postinstall'",
+    "build": "prisma generate && next build",
     "start": "NODE_ENV=production node server.js",
-    "lint": "eslint",
-    "postinstall": "prisma generate || true"
+    "lint": "eslint"
+    
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
