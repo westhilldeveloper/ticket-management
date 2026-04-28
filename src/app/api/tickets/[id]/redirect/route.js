@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/db'
 import { verifyToken } from '@/app/lib/auth'
 import { emitTicketUpdate } from '@/app/lib/socket'
-import { cookies } from 'next/headers'
 
 export async function POST(request, { params }) {
   try {
@@ -27,9 +26,19 @@ export async function POST(request, { params }) {
     const { targetDepartment, assignedToId, reason } = body
 
     // Validate targetDepartment
-    const validDepartments = ['IT', 'ADMIN', 'HR'] // match enum MainCategory
+    const validDepartments = ['IT', 'ADMIN', 'HR']
     if (!targetDepartment || !validDepartments.includes(targetDepartment)) {
       return NextResponse.json({ message: 'Invalid target department' }, { status: 400 })
+    }
+
+    // 🔁 Get or create the DynamicCategory by name
+    let category = await prisma.dynamicCategory.findUnique({
+      where: { name: targetDepartment }
+    })
+    if (!category) {
+      category = await prisma.dynamicCategory.create({
+        data: { name: targetDepartment }
+      })
     }
 
     // Check if assignedToId belongs to that department (if provided)
@@ -45,16 +54,16 @@ export async function POST(request, { params }) {
     // Get the existing ticket
     const existingTicket = await prisma.ticket.findUnique({
       where: { id },
-      include: { createdBy: true }
+      include: { createdBy: true, mainCategory: true }
     })
 
     if (!existingTicket) {
       return NextResponse.json({ message: 'Ticket not found' }, { status: 404 })
     }
 
-    // Prepare update data
+    // Prepare update data – use the foreign key field
     const updateData = {
-      mainCategory: targetDepartment,
+      mainCategoryId: category.id,   // ✅ set the foreign key
       updatedAt: new Date()
     }
     if (assignedToId) {
@@ -75,8 +84,8 @@ export async function POST(request, { params }) {
     await prisma.ticketHistory.create({
       data: {
         action: 'TICKET_REDIRECTED',
-        description: `Ticket redirected from ${existingTicket.mainCategory || 'unknown'} to ${targetDepartment}${reason ? `: ${reason}` : ''}`,
-        oldValue: existingTicket.mainCategory,
+        description: `Ticket redirected from ${existingTicket.mainCategory?.name || 'unknown'} to ${targetDepartment}${reason ? `: ${reason}` : ''}`,
+        oldValue: existingTicket.mainCategory?.name,
         newValue: targetDepartment,
         createdById: user.id,
         ticketId: id
@@ -115,7 +124,7 @@ export async function POST(request, { params }) {
       })
     }
 
-    // Also notify the original creator? (optional)
+    // Notify the original creator
     await prisma.notification.create({
       data: {
         type: 'TICKET_UPDATED',

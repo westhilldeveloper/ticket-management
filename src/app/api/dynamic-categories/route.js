@@ -11,7 +11,7 @@ export async function GET(request) {
     if (!decoded) return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
 
     const user = await prisma.user.findUnique({ where: { id: decoded.id } })
-    if (!user || !['ADMIN', 'SUPER_ADMIN','EMPLOYEE','MD'].includes(user.role)) {
+    if (!user || !['ADMIN', 'SUPER_ADMIN','MD'].includes(user.role)) {
       return NextResponse.json({ message: 'Access denied' }, { status: 403 })
     }
 

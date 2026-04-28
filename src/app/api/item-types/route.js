@@ -4,7 +4,7 @@ import { prisma } from '@/app/lib/db'
 /**
  * GET /api/item-types?mainCategory=IT&requestServiceType=REQUEST
  * Returns list of item types for the given category and service type.
- */
+ */ 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -19,7 +19,7 @@ export async function GET(request) {
     }
 
     // Find the category by name (IT, ADMIN, HR)
-    const category = await prisma.itemCategory.findUnique({
+    const category = await prisma.dynamicCategory.findUnique({
       where: { name: mainCategory }
     });
 

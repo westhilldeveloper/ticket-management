@@ -14,7 +14,7 @@ export default function ManageItemTypes() {
   const [isSaving, setIsSaving] = useState(false); // 👈 new state for add form
   const [formData, setFormData] = useState({
     name: '',
-    categoryName: 'IT',
+    categoryName: 'ADMIN',
     type: 'REQUEST',
     sortOrder: 0
   });
@@ -27,7 +27,7 @@ export default function ManageItemTypes() {
     const itemsRes = await fetch('/api/admin/item-types');
     if (!itemsRes.ok) throw new Error(`HTTP ${itemsRes.status}`);
     const itemsData = await itemsRes.json();
-    console.log("itemtypes====>", itemsData)
+   
     // Ensure array
     const itemsArray = Array.isArray(itemsData) ? itemsData : (itemsData.items || []);
     setItems(itemsArray);
@@ -35,7 +35,6 @@ export default function ManageItemTypes() {
     const catsRes = await fetch('/api/dynamic-categories');
     if (!catsRes.ok) throw new Error(`HTTP ${catsRes.status}`);
     const catsData = await catsRes.json();
-    console.log("itemCategories===>", catsData);
     const catsArray = Array.isArray(catsData) ? catsData : (catsData.categories || []);
     setCategories(catsArray);
   } catch (error) {
@@ -47,12 +46,14 @@ export default function ManageItemTypes() {
     setLoading(false);
   }
 }, [toast]);
-
+console.log("categories=====>",categories)
+ console.log("itemdata===>", items);
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
   // Add new item type
+  console.log("form data====>",formData)
   const handleAdd = async (e) => {
     e.preventDefault();
     if (isSaving) return; // prevent double submission
@@ -67,7 +68,7 @@ export default function ManageItemTypes() {
       if (res.ok) {
         toast.success('Item type added successfully');
         setShowAddForm(false);
-        setFormData({ name: '', categoryName: 'IT', type: 'REQUEST', sortOrder: 0 });
+        setFormData({ name: '', categoryName: 'ADMIN', type: 'REQUEST', sortOrder: 0 });
         fetchData();
       } else {
         const error = await res.json();
@@ -179,7 +180,7 @@ export default function ManageItemTypes() {
                     required
                     className="w-full px-3 py-2 border rounded"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value.toUpperCase() })}
                   />
                 </div>
                 <div className="mb-4">

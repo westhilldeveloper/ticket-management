@@ -32,6 +32,7 @@ export default function DynamicItemSelector() {
         const data = await res.json();
         const items = data.items || [];
         setOptions(items);
+        console.log("items====>", items)
 
         // Reset itemType if current value is no longer in the new options list
         const currentItemType = getValues('itemType');

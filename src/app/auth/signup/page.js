@@ -15,6 +15,8 @@ import {
   FiAlertCircle,
   FiBriefcase,
   FiMapPin,
+  FiEye,
+  FiEyeOff,
 } from 'react-icons/fi';
 
 export default function Signup() {
@@ -31,6 +33,8 @@ export default function Signup() {
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { signup } = useAuth();
 
   const departments = [
@@ -275,7 +279,7 @@ export default function Signup() {
             </div>
           </div>
 
-          {/* Password */}
+          {/* Password with visibility toggle */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -287,22 +291,30 @@ export default function Signup() {
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-3 py-2.5 border rounded-lg 
+                className={`block w-full pl-10 pr-10 py-2.5 border rounded-lg 
                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
                   sm:text-sm transition duration-150 ease-in-out
                   ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
                 placeholder="••••••••"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                tabIndex="-1"
+              >
+                {showPassword ? <FiEyeOff className="h-5 w-5" /> : <FiEye className="h-5 w-5" />}
+              </button>
             </div>
             {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
           </div>
 
-          {/* Confirm Password */}
+          {/* Confirm Password with visibility toggle */}
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
               Confirm Password
@@ -314,17 +326,25 @@ export default function Signup() {
               <input
                 id="confirmPassword"
                 name="confirmPassword"
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-3 py-2.5 border rounded-lg 
+                className={`block w-full pl-10 pr-10 py-2.5 border rounded-lg 
                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
                   sm:text-sm transition duration-150 ease-in-out
                   ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
                 placeholder="••••••••"
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                tabIndex="-1"
+              >
+                {showConfirmPassword ? <FiEyeOff className="h-5 w-5" /> : <FiEye className="h-5 w-5" />}
+              </button>
             </div>
             {errors.confirmPassword && (
               <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
