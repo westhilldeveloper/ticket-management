@@ -6,7 +6,7 @@ import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
 
 const SocketContext = createContext();
-
+ 
 export const useSocket = () => {
   const context = useContext(SocketContext);
   if (!context) {
@@ -22,7 +22,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (!user?.id) return;
-
+console.log("socket url=======>",process.env.NEXT_PUBLIC_SOCKET_URL)
     const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000', {
       withCredentials: true
       // transports: ['websocket'],

@@ -31,7 +31,7 @@ import { CHART_COLORS, STATUS_COLORS } from './utils/chartConfig';
 
 function AdminDashboardContent() {
   const { user, isLoading: authLoading } = useAuth();
-  const { socket, isConnected } = useSocket();
+  const { socket, isConnected } = useSocket(); 
   const router = useRouter();
   const toast = useToast();
 
