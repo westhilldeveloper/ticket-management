@@ -103,7 +103,7 @@ export default function DynamicItemSelector() {
         {requestServiceType === 'REQUEST' ? 'Select Item' : 'Select Service Type'}
         <span className="text-red-500 ml-1">*</span>
       </h2>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto">
         {options.map((opt) => (
           <label key={opt.id} className="flex items-center p-2 border rounded cursor-pointer hover:bg-gray-50">
             <input

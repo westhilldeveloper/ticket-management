@@ -61,7 +61,7 @@ export function useTicketPage({ ticketId, user, socket, joinTicket, leaveTicket,
 
   const handleTicketUpdate = useCallback((updatedTicket) => {
     setTicket(updatedTicket)
-    toast.info('Ticket status was updated')
+    // toast.info('Ticket status was updated')
   }, [toast])
 
   // Fetch on mount and when ticketId changes
