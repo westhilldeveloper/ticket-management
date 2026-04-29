@@ -8,7 +8,7 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin: CLIENT_URL,
+    origin: 'https://tickets.coinplus.co.in',
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -29,19 +29,11 @@ io.on('connection', (socket) => {
     console.log(`User ${userId} (${role}) registered, socket ${socket.id}`);
   });
 
-  socket.on('join-ticket', (ticketId) => {
-    socket.join(`ticket-${ticketId}`);
-    console.log(`Socket ${socket.id} joined ticket-${ticketId}`);
-  });
+  // Add all other event handlers exactly as in your current socket.js:
+  socket.on('join-ticket', (ticketId) => socket.join(`ticket-${ticketId}`));
+  socket.on('leave-ticket', (ticketId) => socket.leave(`ticket-${ticketId}`));
 
-  socket.on('leave-ticket', (ticketId) => {
-    socket.leave(`ticket-${ticketId}`);
-    console.log(`Socket ${socket.id} left ticket-${ticketId}`);
-  });
-
-  // ✅ ADDED: ticket-created
-  socket.on('ticket-created', (ticketData) => {
-    console.log('ticket-created:', ticketData.id);
+ socket.on('ticket-created', (ticketData) => {
     if (ticketData.createdById) {
       io.to(`user:${ticketData.createdById}`).emit('new-ticket', ticketData);
     }
@@ -49,28 +41,21 @@ io.on('connection', (socket) => {
   });
 
   socket.on('admin-action-completed', ({ ticket, action }) => {
-    console.log(`Admin action ${action} on ticket ${ticket.id}`);
     if (ticket.createdById) io.to(`user:${ticket.createdById}`).emit('ticket-updated', ticket);
     io.to(`ticket-${ticket.id}`).emit(`ticket-${ticket.id}-updated`, ticket);
   });
-
-  socket.on('md-decision-completed', ({ ticket, action }) => {
-    console.log(`MD decision ${action} on ticket ${ticket.id}`);
+  socket.on('md-decision-completed', ({ ticket }) => {
+    if (ticket.createdById) io.to(`user:${ticket.createdById}`).emit('ticket-updated', ticket);
+    io.to(`ticket-${ticket.id}`).emit(`ticket-${ticket.id}-updated`, ticket);
+    io.to('admins').emit('ticket-updated', ticket);
+  });
+  socket.on('service-team-action-completed', ({ ticket }) => {
     if (ticket.createdById) io.to(`user:${ticket.createdById}`).emit('ticket-updated', ticket);
     io.to(`ticket-${ticket.id}`).emit(`ticket-${ticket.id}-updated`, ticket);
     io.to('admins').emit('ticket-updated', ticket);
   });
 
-  socket.on('service-team-action-completed', ({ ticket, action }) => {
-    console.log(`Service team action ${action} on ticket ${ticket.id}`);
-    if (ticket.createdById) io.to(`user:${ticket.createdById}`).emit('ticket-updated', ticket);
-    io.to(`ticket-${ticket.id}`).emit(`ticket-${ticket.id}-updated`, ticket);
-    io.to('admins').emit('ticket-updated', ticket);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
-  });
+  socket.on('disconnect', () => console.log('Client disconnected:', socket.id));
 });
 
 httpServer.listen(PORT, () => {
