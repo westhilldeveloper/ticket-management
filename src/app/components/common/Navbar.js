@@ -24,7 +24,8 @@ export default function Navbar({ onMenuClick }) {
   const [isClient, setIsClient] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [showNotifications, setShowNotifications] = useState(false)
-  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Set client-side flag after hydration
   useEffect(() => {
@@ -32,17 +33,23 @@ export default function Navbar({ onMenuClick }) {
   }, [])
 
   // Mock notifications fetch - replace with actual API call
-  useEffect(() => {
-    if (isClient && user) {
-      // Simulate fetching notifications
-      const mockNotifications = [
-        { id: 1, message: 'New ticket assigned', read: false, time: '5m ago' },
-        { id: 2, message: 'Ticket #1234 updated', read: true, time: '1h ago' },
-        { id: 3, message: 'Meeting reminder', read: false, time: '2h ago' },
-      ]
-      setNotifications(mockNotifications)
-    }
-  }, [isClient, user])
+ const fetchNotifications = async () => {
+     try {
+       const res = await fetch('/api/notifications?limit=100', { credentials: 'include' });
+       const data = await res.json();
+       if (!res.ok) throw new Error(data.message);
+       setNotifications(data.notifications);
+       setUnreadCount(data.unreadCount);
+     } catch (err) {
+       toast.error(err.message);
+     } finally {
+       setLoading(false);
+     }
+   };
+ 
+   useEffect(() => {
+     if (user) fetchNotifications();
+   }, [user]);
 
   const handleLogout = async () => {
     try {
