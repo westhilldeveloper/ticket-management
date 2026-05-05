@@ -112,7 +112,7 @@ export default function Navbar({ onMenuClick }) {
                 <h1 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors">
                   TicketFlow
                 </h1>
-                <p className="text-xs text-gray-500 -mt-1">Enterprise Support</p>
+                <p className="text-xs text-gray-500 -mt-1">Finovest Support</p>
               </Link>
             </div>
           </div>
@@ -243,7 +243,7 @@ export default function Navbar({ onMenuClick }) {
                     <Menu.Item>
                       {({ active, close }) => (
                         <Link
-                          href="/profile"
+                          href="/dashboard/profile"
                           className={classNames(
                             active ? 'bg-gray-50 text-gray-900' : 'text-gray-700',
                             'flex items-center px-4 py-2 text-sm transition-colors'
@@ -256,7 +256,7 @@ export default function Navbar({ onMenuClick }) {
                       )}
                     </Menu.Item>
 
-                    <Menu.Item>
+                    {/* <Menu.Item>
                       {({ active, close }) => (
                         <Link
                           href="/settings"
@@ -270,7 +270,7 @@ export default function Navbar({ onMenuClick }) {
                           Settings
                         </Link>
                       )}
-                    </Menu.Item>
+                    </Menu.Item> */}
 
                     <div className="border-t border-gray-100 my-1"></div>
 
