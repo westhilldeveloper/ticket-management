@@ -2,6 +2,7 @@
 
 import { Fragment, useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image' 
 import { Menu, Transition } from '@headlessui/react'
 import { 
   FiMenu, 
@@ -15,6 +16,7 @@ import {
 } from 'react-icons/fi'
 import { useAuth } from '../../context/AuthContext'
 
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -26,6 +28,7 @@ export default function Navbar({ onMenuClick }) {
   const [showNotifications, setShowNotifications] = useState(false)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
 
   // Set client-side flag after hydration
   useEffect(() => {
@@ -107,7 +110,7 @@ export default function Navbar({ onMenuClick }) {
           <div className="flex items-center">
             <button
               onClick={onMenuClick}
-              className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+              className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 transition-colors"
               aria-label="Toggle sidebar"
               aria-expanded="false"
             >
@@ -116,10 +119,19 @@ export default function Navbar({ onMenuClick }) {
             
             <div className="ml-4 lg:ml-0">
               <Link href="/dashboard" className="block">
-                <h1 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors">
-                  TicketFlow
-                </h1>
-                <p className="text-xs text-gray-500 -mt-1">Finovest Support</p>
+             
+  <div className=" relative h-14 w-full mt-4 flex items-center justify-center ">
+   <Image
+    src="/images/finLogo.png"
+    alt="Logo"
+    fill
+    className="object-cover"   // fills entire div, may crop
+    // or use "object-contain" to fit within without cropping (may leave gaps)
+  />
+  </div>
+  
+
+                <p className="text-xs font-bold text-gray-500 w-28 mt-1"></p>
               </Link>
             </div>
           </div>
@@ -138,12 +150,12 @@ export default function Navbar({ onMenuClick }) {
             <div className="relative">
               <button
                 onClick={handleNotificationClick}
-                className="relative p-2 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+                className="relative p-2 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-prink-600 focus:ring-offset-2 transition-colors"
                 aria-label={`Notifications ${unreadCount > 0 ? `(${unreadCount} unread)` : ''}`}
               >
                 <FiBell className="h-5 w-5" aria-hidden="true" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-primary-600 ring-2 ring-white" />
+                  <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-pink-600 ring-2 ring-white" />
                 )}
               </button>
 
@@ -172,7 +184,7 @@ export default function Navbar({ onMenuClick }) {
                             onClick={() => markAsRead(notification.id)}
                             className={classNames(
                               'w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors',
-                              !notification.read ? 'bg-primary-50' : ''
+                              !notification.read ? 'bg-pink-50' : ''
                             )}
                           >
                             <p className="text-sm text-gray-800">{notification.message}</p>
@@ -186,7 +198,7 @@ export default function Navbar({ onMenuClick }) {
                       </div>
                     )}
                     
-                    <div className="px-4 py-2 border-t border-gray-100">
+                    {/* <div className="px-4 py-2 border-t border-gray-100">
                       <Link
                         href="/notifications"
                         className="text-xs text-primary-600 hover:text-primary-700 font-medium"
@@ -194,7 +206,7 @@ export default function Navbar({ onMenuClick }) {
                       >
                         View all notifications
                       </Link>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </Transition>
@@ -203,10 +215,10 @@ export default function Navbar({ onMenuClick }) {
             {/* User menu */}
             <Menu as="div" className="relative">
               <Menu.Button 
-                className="flex items-center space-x-3 p-1.5 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+                className="flex items-center space-x-3 p-1.5 rounded-lg bg-gray-200 hover:bg-gray-100 focus:outline-none    transition-colors"
                 aria-label="User menu"
               >
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-sm">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center shadow-sm">
                   {user?.avatar ? (
                     <img 
                       src={user.avatar} 
@@ -222,8 +234,9 @@ export default function Navbar({ onMenuClick }) {
                     {user?.name || 'User'}
                   </p>
                   <p className="text-xs text-gray-500">
-                    { user?.department || 'Employee'}
-                    { user?.role || ' '}
+                   
+                    {` ${user?.role} `|| ' '}
+                     {` (${ user?.department})` || 'Employee'} {" "}
                   </p>
                 </div>
                 <FiChevronDown className="hidden md:block h-4 w-4 text-gray-400" aria-hidden="true" />

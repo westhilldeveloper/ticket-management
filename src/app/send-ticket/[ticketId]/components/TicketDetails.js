@@ -19,7 +19,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useToast } from '@/app/context/ToastContext';
 import RedirectTicketModal from '@/app/components/RedirectTicketModal';
 
-// Helper for status badge styling
+// Helper for status badge styling (compact)
 const getStatusBadge = (status) => {
   const styles = {
     OPEN: 'bg-blue-100 text-blue-800',
@@ -72,156 +72,71 @@ export default function TicketDetails({ ticket }) {
     setShowRedirectModal(true);
   };
 
-  // Format date helper
   const formatDate = (date) => {
     if (!date) return '—';
     return format(new Date(date), 'dd MMM yyyy, HH:mm');
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      {/* Header with title and status */}
-      <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-        <div className="flex flex-wrap justify-between items-start gap-4">
+    <div className="bg-white rounded shadow-sm border border-gray-100 overflow-hidden">
+      {/* Header */}
+      <div className="p-2 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <div className="flex flex-wrap justify-between items-start gap-2">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
-              {ticketData.title}
-            </h2>
-            <p className="text-sm text-gray-500 mt-1">
-              Ticket #{ticketData.ticketNumber}
-            </p>
+            <h2 className="text-xs font-bold text-gray-800">{ticketData.title}</h2>
+            <p className="text-[9px] text-gray-400 mt-0.5">#{ticketData.ticketNumber}</p>
           </div>
-          <div className="flex gap-2">
-            {/* <span
-              className={`inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium ${getStatusBadge(
-                ticketData.status
-              )}`}
-            >
-              {ticketData.status?.replace(/_/g, ' ')}
-            </span> */}
-            <span
-              className={`inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium ${getPriorityBadge(
-                ticketData.priority
-              )}`}
-            >
+          <div className="flex gap-1">
+            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-medium ${getPriorityBadge(ticketData.priority)}`}>
               {ticketData.priority}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Main info grid */}
-      <div className="p-6 space-y-6">
-        {/* Two-column info grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <InfoItem
-            icon={<FiTag className="text-gray-400" />}
-            label="Category"
-            value={ticketData.mainCategory || '—'}
-          />
-          <InfoItem
-            icon={<FiTag className="text-gray-400" />}
-            label="Request / Service"
-            value={ticketData.requestServiceType || '—'}
-          />
-          <InfoItem
-            icon={<FiTag className="text-gray-400" />}
-            label="Item / Service Type"
-            value={ticketData.itemType || '—'}
-          />
-          <InfoItem
-            icon={<FiUser className="text-gray-400" />}
-            label="Created By"
-            value={ticketData.createdBy?.name || '—'}
-          />
-          <InfoItem
-            icon={<FiUser className="text-gray-400" />}
-            label="Assigned To"
-            value={ticketData.assignedTo?.name || 'Unassigned'}
-          />
-          <InfoItem
-            icon={<FiCalendar className="text-gray-400" />}
-            label="Created At"
-            value={formatDate(ticketData.createdAt)}
-          />
-          <InfoItem
-            icon={<FiClock className="text-gray-400" />}
-            label="Last Updated"
-            value={formatDistanceToNow(new Date(ticketData.updatedAt), {
-              addSuffix: true,
-            })}
-          />
-          <InfoItem
-            icon={<FiInfo className="text-gray-400" />}
-            label="Branch"
-            value={ticketData.category || '—'}
-          />
-          <InfoItem
-            icon={<FiInfo className="text-gray-400" />}
-            label="Serial Number"
-            value={ticketData.serialNumber || '—'}
-          />
+      {/* Main info */}
+      <div className="p-2 space-y-2">
+        {/* Info grid - compact */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
+          <InfoItemCompact icon={<FiTag className="w-3 h-3 text-gray-400" />} label="Category" value={ticketData.mainCategory || '—'} />
+          <InfoItemCompact icon={<FiTag className="w-3 h-3 text-gray-400" />} label="Req/Service" value={ticketData.requestServiceType || '—'} />
+          <InfoItemCompact icon={<FiTag className="w-3 h-3 text-gray-400" />} label="Item/Service" value={ticketData.itemType || '—'} />
+          <InfoItemCompact icon={<FiUser className="w-3 h-3 text-gray-400" />} label="Created By" value={ticketData.createdBy?.name || '—'} />
+          <InfoItemCompact icon={<FiUser className="w-3 h-3 text-gray-400" />} label="Assigned To" value={ticketData.assignedTo?.name || 'Unassigned'} />
+          <InfoItemCompact icon={<FiCalendar className="w-3 h-3 text-gray-400" />} label="Created At" value={formatDate(ticketData.createdAt)} />
+          <InfoItemCompact icon={<FiClock className="w-3 h-3 text-gray-400" />} label="Last Updated" value={formatDistanceToNow(new Date(ticketData.updatedAt), { addSuffix: true })} />
+          <InfoItemCompact icon={<FiInfo className="w-3 h-3 text-gray-400" />} label="Branch" value={ticketData.category || '—'} />
+          <InfoItemCompact icon={<FiInfo className="w-3 h-3 text-gray-400" />} label="Serial No" value={ticketData.serialNumber || '—'} />
         </div>
 
-        {/* Description section */}
-        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">Description</h3>
-          <p className="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed">
+        {/* Description */}
+        <div className="bg-gray-50 rounded p-1.5 border border-gray-100">
+          <h3 className="text-[9px] font-semibold text-gray-600 mb-0.5">Description</h3>
+          <p className="text-[9px] text-gray-700 whitespace-pre-wrap leading-tight">
             {ticketData.description || 'No description provided.'}
           </p>
         </div>
 
-        {/* MD Approval / Third party details (if applicable) */}
-        {(ticketData.mdApproval && ticketData.mdApproval !== 'PENDING') ||
-        ticketData.thirdParty ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* MD Approval / Third Party */}
+        {(ticketData.mdApproval && ticketData.mdApproval !== 'PENDING') || ticketData.thirdParty ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
             {ticketData.mdApproval && ticketData.mdApproval !== 'PENDING' && (
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <div className="flex items-center gap-2 mb-2">
-                  {ticketData.mdApproval === 'APPROVED' ? (
-                    <FiCheckCircle className="text-green-600" />
-                  ) : (
-                    <FiXCircle className="text-red-600" />
-                  )}
-                  <h3 className="text-sm font-semibold text-gray-700">
-                    MD Approval: {ticketData.mdApproval}
-                  </h3>
+              <div className="bg-gray-50 rounded p-1.5 border border-gray-100">
+                <div className="flex items-center gap-1 mb-0.5">
+                  {ticketData.mdApproval === 'APPROVED' ? <FiCheckCircle className="w-3 h-3 text-green-600" /> : <FiXCircle className="w-3 h-3 text-red-600" />}
+                  <h3 className="text-[9px] font-semibold text-gray-700">MD: {ticketData.mdApproval}</h3>
                 </div>
-                {ticketData.mdApprovalComment && (
-                  <p className="text-sm text-gray-600 mt-1">
-                    <strong>Comment:</strong> {ticketData.mdApprovalComment}
-                  </p>
-                )}
-                {ticketData.mdRejectReason && (
-                  <p className="text-sm text-gray-600 mt-1">
-                    <strong>Reject reason:</strong> {ticketData.mdRejectReason}
-                  </p>
-                )}
-                {ticketData.mdApprovedAt && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    Approved: {formatDate(ticketData.mdApprovedAt)}
-                  </p>
-                )}
-                {ticketData.mdRejectedAt && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    Rejected: {formatDate(ticketData.mdRejectedAt)}
-                  </p>
-                )}
+                {ticketData.mdApprovalComment && <p className="text-[8px] text-gray-600"><strong>Comment:</strong> {ticketData.mdApprovalComment}</p>}
+                {ticketData.mdRejectReason && <p className="text-[8px] text-gray-600"><strong>Reject:</strong> {ticketData.mdRejectReason}</p>}
+                {ticketData.mdApprovedAt && <p className="text-[7px] text-gray-400 mt-0.5">Approved: {formatDate(ticketData.mdApprovedAt)}</p>}
+                {ticketData.mdRejectedAt && <p className="text-[7px] text-gray-400">Rejected: {formatDate(ticketData.mdRejectedAt)}</p>}
               </div>
             )}
             {ticketData.thirdParty && (
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                  Third Party Information
-                </h3>
-                <p className="text-sm text-gray-600">
-                  <strong>Status:</strong> {ticketData.thirdPartyStatus || '—'}
-                </p>
-                {ticketData.thirdPartyDetails && (
-                  <p className="text-sm text-gray-600 mt-1">
-                    <strong>Details:</strong> {ticketData.thirdPartyDetails}
-                  </p>
-                )}
+              <div className="bg-gray-50 rounded p-1.5 border border-gray-100">
+                <h3 className="text-[9px] font-semibold text-gray-700 mb-0.5">Third Party</h3>
+                <p className="text-[8px] text-gray-600"><strong>Status:</strong> {ticketData.thirdPartyStatus || '—'}</p>
+                {ticketData.thirdPartyDetails && <p className="text-[8px] text-gray-600 mt-0.5"><strong>Details:</strong> {ticketData.thirdPartyDetails}</p>}
               </div>
             )}
           </div>
@@ -229,31 +144,18 @@ export default function TicketDetails({ ticket }) {
 
         {/* Attachments */}
         {ticketData.attachment && (
-          <div className="border-t border-gray-200 pt-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
-              <FiPaperclip className="mr-2" />
-              Attachments
+          <div className="border-t border-gray-100 pt-1.5 mt-0.5">
+            <h3 className="text-[9px] font-semibold text-gray-700 mb-1 flex items-center gap-1">
+              <FiPaperclip className="w-3 h-3" /> Attachments
             </h3>
-            <div className="space-y-2">
-              {/* Split only if comma-separated; otherwise treat as single URL */}
-              {(ticketData.attachment.includes(',')
-                ? ticketData.attachment.split(',')
-                : [ticketData.attachment]
-              ).map((url, index) => (
-                <a
-                  key={index}
-                  href={url.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors border border-gray-200"
-                >
-                  <div className="flex items-center">
-                    <FiDownload className="mr-2 text-gray-400" />
-                    <span className="text-sm text-gray-700">
-                      Attachment {index + 1}
-                    </span>
+            <div className="space-y-1">
+              {(ticketData.attachment.includes(',') ? ticketData.attachment.split(',') : [ticketData.attachment]).map((url, idx) => (
+                <a key={idx} href={url.trim()} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-1.5 bg-gray-50 rounded border border-gray-100 hover:bg-gray-100 transition-colors">
+                  <div className="flex items-center gap-1">
+                    <FiDownload className="w-2.5 h-2.5 text-gray-400" />
+                    <span className="text-[8px] text-gray-600">Attachment {idx+1}</span>
                   </div>
-                  <FiExternalLink className="text-gray-400" />
+                  <FiExternalLink className="w-2.5 h-2.5 text-gray-400" />
                 </a>
               ))}
             </div>
@@ -261,38 +163,32 @@ export default function TicketDetails({ ticket }) {
         )}
       </div>
 
-      {/* Action buttons */}
+      {/* Redirect button */}
       {canEdit && (
-        <div className="px-6 pb-6">
+        <div className="px-2  pb-2  flex justify-end">
           <button
             onClick={handleOpenModal}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm text-sm font-medium"
+            className="w-[20%] flex items-center justify-center gap-1 px-2 py-1 border border-green-300 rounded text-[9px] font-medium text-yellow-600 bg-white hover:bg-gray-50"
           >
-            <FiExternalLink className="w-4 h-4" />
+            <FiExternalLink className="w-3 h-3" />
             Redirect to Department
           </button>
         </div>
       )}
 
-      {/* Modal */}
-      <RedirectTicketModal
-        isOpen={showRedirectModal}
-        onClose={() => setShowRedirectModal(false)}
-        ticketId={ticketData.id}
-        onRedirect={handleRedirectSuccess}
-      />
+      <RedirectTicketModal isOpen={showRedirectModal} onClose={() => setShowRedirectModal(false)} ticketId={ticketData.id} onRedirect={handleRedirectSuccess} />
     </div>
   );
 }
 
-// Helper component for consistent info rows
-function InfoItem({ icon, label, value }) {
+// Compact info row component
+function InfoItemCompact({ icon, label, value }) {
   return (
-    <div className="flex items-start gap-2">
+    <div className="flex items-start gap-1">
       <div className="mt-0.5">{icon}</div>
       <div>
-        <p className="text-xs text-gray-500 uppercase tracking-wide">{label}</p>
-        <p className="text-sm font-medium text-gray-900 break-words">{value}</p>
+        <p className="text-[8px] text-gray-400 uppercase tracking-wide">{label}</p>
+        <p className="text-[9px] font-medium text-gray-800 break-words">{value}</p>
       </div>
     </div>
   );

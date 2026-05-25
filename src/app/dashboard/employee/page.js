@@ -25,6 +25,9 @@ import {
 import { formatDistanceToNow, format } from 'date-fns'
 import { useSocket } from '@/app/context/SocketContext'
 import toast from 'react-hot-toast'
+import Image from 'next/image'
+import RecentActivities from '@/app/admin/components/RecentActivities'
+import RecentTickets from './components/RecentTickets'
 
 function EmployeeDashboardContent() {
   const { user, isLoading: authLoading } = useAuth()
@@ -255,20 +258,76 @@ function EmployeeDashboardContent() {
     setError(null)
   }
 
+  // const getStatusIcon = (status) => {
+  //   switch (status) {
+  //     case 'OPEN':
+  //       return <FiAlertCircle className="h-4 w-4 text-amber-500" aria-hidden="true" />
+  //     case 'IN_PROGRESS':
+  //       return <FiClock className="h-4 w-4 text-blue-500" aria-hidden="true" />
+  //     case 'RESOLVED':
+  //       return <FiCheck className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+  //     case 'CLOSED':
+  //       return <FiCheck className="h-4 w-4 text-gray-400" aria-hidden="true" />
+  //     default:
+  //       return <FiAlertCircle className="h-4 w-4 text-gray-400" aria-hidden="true" />
+  //   }
+  // }
+
   const getStatusIcon = (status) => {
-    switch (status) {
-      case 'OPEN':
-        return <FiAlertCircle className="h-4 w-4 text-amber-500" aria-hidden="true" />
-      case 'IN_PROGRESS':
-        return <FiClock className="h-4 w-4 text-blue-500" aria-hidden="true" />
-      case 'RESOLVED':
-        return <FiCheck className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+  const iconSize = 36; // matches h-4 w-4 (16px)
+  switch (status) {
+    case 'OPEN':
+      return (
+        <Image
+          src="/images/open.gif"
+          alt="Open"
+          width={iconSize}
+          height={iconSize}
+          className="object-contain"
+        />
+      );
+    case 'IN_PROGRESS':
+      return (
+        <Image
+          src="/images/progress.gif"
+          alt="In Progress"
+          width={iconSize}
+          height={iconSize}
+          className="object-contain"
+        />
+      );
+    case 'RESOLVED':
+      return (
+        <Image
+          src="/images/resolved.gif"
+          alt="Closed/Resolved"
+          width={iconSize}
+          height={iconSize}
+          className="object-contain"
+        />
+      );
       case 'CLOSED':
-        return <FiCheck className="h-4 w-4 text-gray-400" aria-hidden="true" />
-      default:
-        return <FiAlertCircle className="h-4 w-4 text-gray-400" aria-hidden="true" />
-    }
+      return (
+        <Image
+          src="/images/resolved.gif"
+          alt="Closed/Resolved"
+          width={iconSize}
+          height={iconSize}
+          className="object-contain"
+        />
+      );
+    default:
+      return (
+        <Image
+          src="/images/open.gif"
+          alt="Status"
+          width={iconSize}
+          height={iconSize}
+          className="object-contain"
+        />
+      );
   }
+};
 
   const getStatusBadge = (status) => {
     const styles = {
@@ -317,20 +376,27 @@ function EmployeeDashboardContent() {
     const displayValue = typeof value === 'number' ? value : 0
     
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+      <div className="bg-pink-600 relative rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+       
         <div className="flex items-center justify-between">
+          
           <div>
-            <p className="text-sm font-medium text-gray-500">{title}</p>
-            <p className="text-2xl font-semibold text-gray-900 mt-2">{displayValue}</p>
+             <div className="absolute -top-[1px] -right-[1px] w-28 h-28 bg-white rounded-bl-[110px] z-[1]" />
+
+    <div className="absolute flex justify-center items-center top-0 right-0 w-22 h-23 bg-gray-200 rounded-bl-[100px] z-[2]" > 
+       <div className={`p-1 rounded-lg text-white`}>
+            <Icon className="h-5 w-5 text-pink-600" aria-hidden="true" />
+          </div>
+    </div>
+            <p className="text-sm font-medium text-white">{title}</p>
+            <p className="text-2xl font-semibold text-white mt-2">{displayValue}</p>
             {trend && (
               <p className={`text-xs mt-2 ${trend.positive ? 'text-emerald-600' : 'text-red-600'}`}>
                 {trend.positive ? '↑' : '↓'} {Math.abs(trend.value)}% from last month
               </p>
             )}
           </div>
-          <div className={`p-3 rounded-lg ${color}`}>
-            <Icon className="h-5 w-5 text-white" aria-hidden="true" />
-          </div>
+         
         </div>
       </div>
     )
@@ -511,22 +577,36 @@ function EmployeeDashboardContent() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
+      <div className="bg-gray-200 relative rounded-lg bg-gray-200 p-6">
+        {/* <div className="absolute -top-[1px] -right-[1px] w-16 h-16 bg-white rounded-bl-[110px] z-[1]" />
+        <div className="absolute flex justify-center items-center top-0 right-0 w-14 h-14 bg-pink-600 rounded-bl-[100px] z-[2]" /> */}
+        <h2 className="text-sm font-medium text-pink-600 uppercase tracking-wider mb-4">
           Quick Actions
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Link
             href="/tickets/new"
-            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            className="flex items-center  justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           >
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-primary-100 rounded-lg">
-                <FiPlus className="h-4 w-4 text-primary-600" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">New Ticket</span>
+            <div className="flex  items-center space-x-3">
+             <div className="p-0 bg-primary-100 rounded-lg">
+  <Image 
+    src="/images/coupon.gif" 
+    alt="New Ticket" 
+    width={32} 
+    height={32} 
+    className="object-contain"
+  />
+</div>
+              <span className="text-sm font-medium text-pink-700">New Ticket</span>
             </div>
-            <FiArrowRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+             <Image
+          src="/images/arrow.gif"
+          alt="Open"
+          width={24}
+          height={24}
+          className="object-contain"
+        />
           </Link>
           
           <Link
@@ -534,12 +614,24 @@ function EmployeeDashboardContent() {
             className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           >
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gray-200 rounded-lg">
-                <FiEye className="h-4 w-4 text-gray-600" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">View All</span>
+             <div className="p-0 bg-primary-100 rounded-lg">
+  <Image 
+    src="/images/image.gif" 
+    alt="New Ticket" 
+    width={32} 
+    height={32} 
+    className="object-contain"
+  />
+</div>
+              <span className="text-sm font-medium text-pink-700">View All</span>
             </div>
-            <FiArrowRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+             <Image
+          src="/images/arrow.gif"
+          alt="Open"
+          width={24}
+          height={24}
+          className="object-contain"
+        />
           </Link>
           
           <Link
@@ -547,119 +639,33 @@ function EmployeeDashboardContent() {
             className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           >
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gray-200 rounded-lg">
-                <FiCalendar className="h-4 w-4 text-gray-600" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">History</span>
+              <div className="p-0 bg-primary-100 rounded-lg">
+              <Image 
+                src="/images/history.gif" 
+                alt="New Ticket" 
+                width={32} 
+                height={32} 
+                className="object-contain"
+              />
             </div>
-            <FiArrowRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+              <span className="text-sm font-medium text-pink-700">History</span>
+            </div>
+              <Image
+          src="/images/arrow.gif"
+          alt="Open"
+          width={24}
+          height={24}
+          className="object-contain"
+        />
           </Link>
         </div>
       </div>
 
       {/* Recent Tickets */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-            Recent Tickets
-          </h2>
-        </div>
-        
-        {tickets.length > 0 ? (
-          <div className="divide-y divide-gray-100">
-            {tickets.map((ticket) => (
-              <Link
-                key={ticket.id}
-                href={`/tickets/${ticket.id}`}
-                className="block px-6 py-4 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 min-w-0 flex-1">
-                    {getStatusIcon(ticket.status)}
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {ticket.title || 'Untitled Ticket'}
-                      </p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-xs text-gray-500">
-                          #{ticket.ticketNumber || ticket.id?.slice(0, 8) || 'N/A'}
-                        </span>
-                        <span className="text-xs text-gray-300">•</span>
-                        <span className="text-xs text-gray-500">
-                          {ticket.category || 'General'}
-                        </span>
-                        {ticket.priority && (
-                          <>
-                            <span className="text-xs text-gray-300">•</span>
-                            {getPriorityBadge(ticket.priority)}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4 ml-4">
-                    {getStatusBadge(ticket.status)}
-                    <span className="text-xs text-gray-400 whitespace-nowrap">
-                      {formatDate(ticket.createdAt)}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="px-6 py-12 text-center">
-            <FiInbox className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 mb-4">No tickets yet</p>
-            <Link
-              href="/tickets/new"
-              className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-            >
-              <FiPlus className="h-4 w-4 mr-2" />
-              Create your first ticket
-            </Link>
-          </div>
-        )}
-        
-        {tickets.length > 0 && (
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-            <Link
-              href="/tickets"
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 rounded"
-            >
-              View all tickets
-              <FiArrowRight className="h-4 w-4 ml-1" />
-            </Link>
-          </div>
-        )}
-      </div>
+      <RecentTickets tickets={tickets} />
 
       {/* Recent Activity */}
-      {recentActivities.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-              Recent Activity
-            </h2>
-          </div>
-          
-          <div className="divide-y divide-gray-100">
-            {recentActivities.map((activity) => (
-              <div key={activity.id} className="px-6 py-3">
-                <div className="flex items-start space-x-3">
-                  <FiInfo className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-800">{activity.description || 'Activity'}</p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {formatDate(activity.createdAt)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <RecentActivities activities={recentActivities}/>
     </div>
   )
 }

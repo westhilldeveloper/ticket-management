@@ -14,56 +14,56 @@ export default function AdminWorkSection({
   if (!isAdmin || ticket.status !== 'APPROVED_BY_MD') return null
 
   return (
-    <div className="p-6 border-b border-gray-200 bg-green-50">
-      <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-        <FiTool className="mr-2 text-green-600" />
+    <div className="p-3 border-b border-gray-100 bg-green-50">
+      <h3 className="text-xs font-medium text-gray-800 mb-2 flex items-center">
+        <FiTool className="mr-1.5 text-green-600 w-3.5 h-3.5" />
         Work on Ticket
       </h3>
 
       {!selectedAction ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
           <button
             onClick={() => setSelectedAction('WORK')}
-            className="p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-400 text-left"
+            className="p-2 bg-white rounded border border-gray-200 hover:border-blue-400 text-left"
           >
-            <FiRefreshCw className="h-5 w-5 text-blue-600 mb-1" />
-            <p className="text-sm font-medium">Start Working</p>
+            <FiRefreshCw className="w-4 h-4 text-blue-600 mb-0.5" />
+            <p className="text-[10px] font-medium">Start Working</p>
           </button>
           <button
             onClick={() => setSelectedAction('PURCHASE')}
-            className="p-3 bg-white rounded-lg border border-gray-200 hover:border-orange-400 text-left"
+            className="p-2 bg-white rounded border border-gray-200 hover:border-orange-400 text-left"
           >
-            <FiShoppingCart className="h-5 w-5 text-orange-600 mb-1" />
-            <p className="text-sm font-medium">Purchase Required</p>
+            <FiShoppingCart className="w-4 h-4 text-orange-600 mb-0.5" />
+            <p className="text-[10px] font-medium">Purchase Required</p>
           </button>
           <button
             onClick={() => setSelectedAction('RESOLVE')}
-            className="p-3 bg-white rounded-lg border border-gray-200 hover:border-green-400 text-left"
+            className="p-2 bg-white rounded border border-gray-200 hover:border-green-400 text-left"
           >
-            <FiCheckCircle className="h-5 w-5 text-green-600 mb-1" />
-            <p className="text-sm font-medium">Mark Resolved</p>
+            <FiCheckCircle className="w-4 h-4 text-green-600 mb-0.5" />
+            <p className="text-[10px] font-medium">Mark Resolved</p>
           </button>
         </div>
       ) : (
-        <div className="bg-white rounded-lg p-4">
+        <div className="bg-white rounded p-2">
           <textarea
             value={review}
             onChange={(e) => setReview(e.target.value)}
             placeholder={`Add details about ${selectedAction.toLowerCase()}...`}
-            className="input-field w-full mb-3"
+            className="w-full px-2 py-1 text-[10px] border border-gray-200 rounded mb-2"
             rows="2"
           />
-          <div className="flex space-x-3">
+          <div className="flex gap-2">
             <button
               onClick={() => handleWorkUpdate(selectedAction)}
               disabled={submitting}
-              className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+              className="flex-1 px-2 py-1 bg-primary-600 text-white rounded text-[9px] font-medium hover:bg-primary-700"
             >
               {submitting ? <LoadingSpinner size="small" /> : 'Update'}
             </button>
             <button
               onClick={() => setSelectedAction(null)}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              className="px-2 py-1 border border-gray-300 rounded text-[9px] text-gray-600 hover:bg-gray-50"
             >
               Cancel
             </button>

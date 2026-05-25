@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import DashboardLayout from '@/app/components/layouts/DashboardLayout'
 import LoadingSpinner from '@/app/components/common/LoadingSpinner'
 import ErrorBoundary from '@/app/components/common/ErrorBoundary'
@@ -11,357 +10,125 @@ import { useToast } from '@/app/context/ToastContext'
 import { 
   FiClock, 
   FiAlertCircle, 
-  FiCheckCircle,
-  FiXCircle,
   FiFilter,
-  FiUser,
-  FiMessageCircle,
+  FiSearch,
   FiRefreshCw,
   FiChevronLeft,
   FiChevronRight,
-  FiSearch,
-  FiDownload,
-  FiActivity,
-  FiFileText,
-  FiUsers,
-  FiShield,
-  FiAward,
-  FiTag,
-  FiGrid,
-  FiList,
-  FiInfo,
-  FiWifiOff,
-  FiServer,
-  FiLock,
-  FiEye
+  FiUser,
+  FiMessageCircle,
+  FiCheckCircle,
+  FiXCircle
 } from 'react-icons/fi'
-import { formatDistanceToNow, format, isValid } from 'date-fns'
+import { format } from 'date-fns'
 
-// Custom debounce hook
-const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value)
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedValue(value), delay)
-    return () => clearTimeout(handler)
-  }, [value, delay])
-  return debouncedValue
+// Helper: format date in European style (dd/MM/yyyy HH:mm)
+const formatDate = (dateString) => {
+  if (!dateString) return '—'
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return '—'
+    return format(date, 'dd/MM/yyyy HH:mm')
+  } catch {
+    return '—'
+  }
 }
 
-// Error types
-const ErrorTypes = {
-  NETWORK: 'network', AUTH: 'authentication', PERMISSION: 'permission',
-  SERVER: 'server', VALIDATION: 'validation', UNKNOWN: 'unknown'
-}
-
-// Action icons - ultra minimal
-const ACTION_ICONS = {
-  CREATE: { icon: FiCheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', label: 'New' },
-  UPDATE: { icon: FiActivity, color: 'text-blue-600', bg: 'bg-blue-50', label: 'Edit' },
-  STATUS_CHANGE: { icon: FiRefreshCw, color: 'text-purple-600', bg: 'bg-purple-50', label: 'Status' },
-  COMMENT: { icon: FiMessageCircle, color: 'text-indigo-600', bg: 'bg-indigo-50', label: 'Comment' },
-  ASSIGN: { icon: FiUser, color: 'text-amber-600', bg: 'bg-amber-50', label: 'Assign' },
-  RESOLVE: { icon: FiCheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', label: 'Resolve' },
-  CLOSE: { icon: FiXCircle, color: 'text-gray-600', bg: 'bg-gray-50', label: 'Close' }
-}
-
-// Role badges - minimal
-const ROLE_BADGES = {
-  SUPER_ADMIN: { bg: 'bg-purple-50', text: 'text-purple-700', icon: FiShield, label: 'SA' },
-  ADMIN: { bg: 'bg-blue-50', text: 'text-blue-700', icon: FiUsers, label: 'AD' },
-  MD: { bg: 'bg-amber-50', text: 'text-amber-700', icon: FiAward, label: 'MD' },
-  EMPLOYEE: { bg: 'bg-gray-50', text: 'text-gray-700', icon: FiUser, label: 'EM' }
-}
-
-// Category badges
-const CATEGORY_BADGES = {
-  HR: { bg: 'bg-pink-50', text: 'text-pink-700', label: 'HR' },
-  IT: { bg: 'bg-blue-50', text: 'text-blue-700', label: 'IT' },
-  TECHNICAL: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'TECH' }
-}
-
-// Ultra compact skeletons
-const TimelineSkeleton = () => (
-  <div className="space-y-1">
-    {[...Array(8)].map((_, i) => (
-      <div key={i} className="bg-white p-2 border-b border-gray-100 flex space-x-2">
-        <div className="h-5 w-5 rounded-full bg-gray-200 animate-pulse" />
-        <div className="flex-1 space-y-1">
-          <div className="h-2.5 bg-gray-200 rounded w-3/4 animate-pulse" />
-          <div className="h-2 bg-gray-200 rounded w-1/2 animate-pulse" />
-        </div>
-        <div className="h-2 w-12 bg-gray-200 rounded animate-pulse" />
-      </div>
-    ))}
-  </div>
-)
-
-const GridSkeleton = () => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1.5">
-    {[...Array(15)].map((_, i) => (
-      <div key={i} className="bg-white border border-gray-100 p-2 space-y-1.5">
-        <div className="flex justify-between">
-          <div className="h-4 w-4 rounded-full bg-gray-200 animate-pulse" />
-          <div className="h-2 w-10 bg-gray-200 rounded animate-pulse" />
-        </div>
-        <div className="h-2.5 bg-gray-200 rounded w-full animate-pulse" />
-        <div className="h-2 bg-gray-200 rounded w-2/3 animate-pulse" />
-        <div className="flex gap-0.5">
-          <div className="h-3 w-8 bg-gray-200 rounded animate-pulse" />
-          <div className="h-3 w-8 bg-gray-200 rounded animate-pulse" />
-        </div>
-      </div>
-    ))}
-  </div>
-)
-
-// Date utilities
-const safeParseDate = (dateString) => {
-  if (!dateString) return null
-  try { const date = new Date(dateString); return isValid(date) ? date : null } 
-  catch { return null }
+// Action icons mapping
+const actionConfig = {
+  CREATE: { icon: FiCheckCircle, color: 'text-emerald-600', label: 'Created' },
+  UPDATE: { icon: FiRefreshCw, color: 'text-blue-600', label: 'Updated' },
+  STATUS_CHANGE: { icon: FiRefreshCw, color: 'text-purple-600', label: 'Status change' },
+  COMMENT: { icon: FiMessageCircle, color: 'text-indigo-600', label: 'Commented' },
+  ASSIGN: { icon: FiUser, color: 'text-amber-600', label: 'Assigned' },
+  RESOLVE: { icon: FiCheckCircle, color: 'text-emerald-600', label: 'Resolved' },
+  CLOSE: { icon: FiXCircle, color: 'text-gray-500', label: 'Closed' },
+  default: { icon: FiClock, color: 'text-gray-400', label: 'Activity' }
 }
 
 function HistoryContent() {
   const { user, isLoading: authLoading } = useAuth()
   const toast = useToast()
-  const router = useRouter()
-  const loadMoreRef = useRef()
-  
+
   // State
-  const [isClient, setIsClient] = useState(false)
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [search, setSearch] = useState('')
+  const [actionFilter, setActionFilter] = useState('ALL')
+  const [dateFilter, setDateFilter] = useState('ALL')
+  const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 0 })
   const [loadingMore, setLoadingMore] = useState(false)
-  const [error, setError] = useState({ type: null, message: null })
-  const [retryCount, setRetryCount] = useState(0)
-  const [hasMore, setHasMore] = useState(true)
-  
-  // Filters
-  const [filters, setFilters] = useState({
-    actionType: 'ALL', dateRange: 'ALL', search: '', userId: 'ALL', category: 'ALL'
-  })
-  const debouncedSearch = useDebounce(filters.search, 500)
-  
-  // Data
-  const [users, setUsers] = useState([])
-  const categories = ['HR', 'IT', 'TECHNICAL'] // Static categories
-  
-  // Pagination
-  const [pagination, setPagination] = useState({ page: 1, limit: 25, total: 0, totalPages: 0 })
-  
-  // UI
-  const [showFilters, setShowFilters] = useState(false)
-  const [exportLoading, setExportLoading] = useState(false)
-  const [viewMode, setViewMode] = useState('grid') // Default to grid for multi-column
-
-  // Role checks
-  const isAdmin = useMemo(() => user && ['SUPER_ADMIN', 'ADMIN'].includes(user.role), [user])
-  const canExport = useMemo(() => user && ['SUPER_ADMIN', 'ADMIN'].includes(user.role), [user])
-
-  // Stats
-  const stats = useMemo(() => {
-    if (!history.length) return { totalActions: 0, uniqueTickets: 0, actionBreakdown: {} }
-    return {
-      totalActions: history.length,
-      uniqueTickets: new Set(history.map(h => h.ticket?.id).filter(Boolean)).size,
-      actionBreakdown: history.reduce((acc, item) => {
-        if (item?.action) acc[item.action] = (acc[item.action] || 0) + 1
-        return acc
-      }, {})
-    }
-  }, [history])
-
-  // Client-side flag
-  useEffect(() => setIsClient(true), [])
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault()
-        document.querySelector('input[placeholder*="Search"]')?.focus()
-      }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-        e.preventDefault()
-        setShowFilters(prev => !prev)
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
-
-  // Fetch users
-  useEffect(() => {
-    if (!isAdmin) return
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch('/api/users?active=true&limit=100', { credentials: 'include' })
-        if (res.ok) setUsers((await res.json()).users || [])
-      } catch (err) { console.warn('Users fetch failed:', err) }
-    }
-    fetchUsers()
-  }, [isAdmin])
 
   // Fetch history
-  const fetchHistory = useCallback(async (isRetry = false, loadMore = false) => {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 15000)
-
+  const fetchHistory = useCallback(async (isLoadMore = false) => {
+    const page = isLoadMore ? pagination.page + 1 : 1
     try {
-      if (loadMore) setLoadingMore(true); else setLoading(true)
-      setError({ type: null, message: null })
-
-      if (!user) throw { type: ErrorTypes.AUTH, message: 'Auth required' }
+      if (isLoadMore) setLoadingMore(true)
+      else setLoading(true)
+      setError(null)
 
       const params = new URLSearchParams({
-        page: (loadMore ? pagination.page + 1 : pagination.page).toString(),
+        page: page.toString(),
         limit: pagination.limit.toString(),
       })
-      if (filters.actionType !== 'ALL') params.append('action', filters.actionType)
-      if (filters.dateRange !== 'ALL') params.append('dateRange', filters.dateRange)
-      if (debouncedSearch?.trim()) params.append('search', debouncedSearch.trim())
-      if (isAdmin && filters.userId !== 'ALL') params.append('userId', filters.userId)
-      if (filters.category !== 'ALL') params.append('category', filters.category)
+      if (search.trim()) params.append('search', search.trim())
+      if (actionFilter !== 'ALL') params.append('action', actionFilter)
+      if (dateFilter !== 'ALL') params.append('dateRange', dateFilter)
 
-      const res = await fetch(`/api/tickets/history?${params}`, {
-        credentials: 'include', signal: controller.signal
-      })
-      clearTimeout(timeoutId)
-
-      if (!res.ok) {
-        if (res.status === 401) throw { type: ErrorTypes.AUTH, message: 'Session expired' }
-        if (res.status === 403) throw { type: ErrorTypes.PERMISSION, message: 'Access denied' }
-        throw { type: ErrorTypes.SERVER, message: `Error ${res.status}` }
-      }
+      const res = await fetch(`/api/tickets/history?${params}`, { credentials: 'include' })
+      if (!res.ok) throw new Error(`Error ${res.status}`)
 
       const data = await res.json()
-      const newHistory = Array.isArray(data.history) ? data.history : []
-      
-      if (loadMore) {
+      const newHistory = data.history || []
+
+      if (isLoadMore) {
         setHistory(prev => [...prev, ...newHistory])
-        setHasMore(newHistory.length === pagination.limit)
       } else {
         setHistory(newHistory)
-        setHasMore(newHistory.length === pagination.limit)
-        setPagination(prev => ({ 
-          ...prev, 
-          total: data.pagination?.total || 0,
-          totalPages: data.pagination?.totalPages || 1
-        }))
       }
 
-      if (loadMore) setPagination(prev => ({ ...prev, page: prev.page + 1 }))
-      
-      if (isRetry) toast.success('Loaded', { duration: 1000 })
-
+      setPagination({
+        page: data.pagination?.page || page,
+        limit: pagination.limit,
+        total: data.pagination?.total || 0,
+        totalPages: data.pagination?.totalPages || 1
+      })
     } catch (err) {
-      if (err.name === 'AbortError') {
-        setError({ type: ErrorTypes.NETWORK, message: 'Timeout' })
-      } else if (err.type) {
-        setError({ type: err.type, message: err.message })
-        if (err.type === ErrorTypes.AUTH) {
-          toast.error('Auth required')
-          setTimeout(() => router.push('/login'), 1500)
-        }
-      } else {
-        setError({ type: ErrorTypes.UNKNOWN, message: 'Error loading' })
-      }
+      setError(err.message)
+      toast.error('Failed to load history')
     } finally {
-      if (loadMore) setLoadingMore(false); else setLoading(false)
-      clearTimeout(timeoutId)
+      setLoading(false)
+      setLoadingMore(false)
     }
-  }, [pagination.page, pagination.limit, filters, debouncedSearch, isAdmin, user, router, toast])
+  }, [search, actionFilter, dateFilter, pagination.limit, toast])
 
-  // Initial fetch
+  // Initial load & filter changes
   useEffect(() => {
-    if (isClient && user) fetchHistory()
-  }, [isClient, user, debouncedSearch, filters.actionType, filters.dateRange, 
-      filters.userId, filters.category, pagination.page])
+    if (user) fetchHistory()
+  }, [user, search, actionFilter, dateFilter])
 
-  // Infinite scroll
-  useEffect(() => {
-    if (viewMode === 'grid' && hasMore && !loadingMore && !loading) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasMore && !loadingMore) fetchHistory(false, true)
-        },
-        { threshold: 0.1, rootMargin: '50px' }
-      )
-      if (loadMoreRef.current) observer.observe(loadMoreRef.current)
-      return () => observer.disconnect()
+  // Load more handler
+  const loadMore = () => {
+    if (pagination.page < pagination.totalPages && !loadingMore) {
+      fetchHistory(true)
     }
-  }, [viewMode, hasMore, loadingMore, loading, fetchHistory])
-
-  // Filter handlers
-  const handleFilterChange = (key, value) => {
-    if (key === 'search' && value.length > 100) {
-      toast.warning('Search too long', { duration: 1000 })
-      return
-    }
-    setFilters(prev => ({ ...prev, [key]: value }))
-    setPagination(prev => ({ ...prev, page: 1 }))
-    setHasMore(true)
   }
 
-  const clearFilters = () => {
-    setFilters({ actionType: 'ALL', dateRange: 'ALL', search: '', userId: 'ALL', category: 'ALL' })
-    setPagination(prev => ({ ...prev, page: 1 }))
-    setHasMore(true)
-    toast.info('Filters cleared', { duration: 1000 })
+  // Reset filters
+  const resetFilters = () => {
+    setSearch('')
+    setActionFilter('ALL')
+    setDateFilter('ALL')
   }
 
-  const handleRetry = () => {
-    setRetryCount(prev => prev + 1)
-    const delay = Math.min(1000 * Math.pow(2, retryCount), 8000)
-    toast.info(`Retry ${retryCount + 1}`, { duration: 1000 })
-    setTimeout(() => fetchHistory(true), delay)
-  }
+  // Role check
+  const canViewAll = user && ['SUPER_ADMIN', 'MD', 'ADMIN'].includes(user.role)
 
-  // Date formatting
-  const formatDate = useCallback((dateString) => {
-    if (!dateString || !isClient) return { relative: '...', short: '...', full: '...' }
-    try {
-      const date = safeParseDate(dateString)
-      if (!date) return { relative: 'Invalid', short: 'Invalid', full: 'Invalid' }
-      return {
-        relative: formatDistanceToNow(date, { addSuffix: true }),
-        short: format(date, 'dd/MM/yy HH:mm'),
-        full: format(date, 'PPpp')
-      }
-    } catch {
-      return { relative: 'Invalid', short: 'Invalid', full: 'Invalid' }
-    }
-  }, [isClient])
-
-  // Helpers
-  const getActionInfo = useCallback((action) => 
-    ACTION_ICONS[action] || { icon: FiActivity, color: 'text-gray-600', bg: 'bg-gray-50', label: action }
-  , [])
-
-  const getRoleBadge = useCallback((role) => ROLE_BADGES[role] || ROLE_BADGES.EMPLOYEE, [])
-  const getCategoryBadge = useCallback((cat) => CATEGORY_BADGES[cat] || { bg: 'bg-gray-50', text: 'text-gray-700', label: cat }, [])
-
-  const formatAction = useCallback((item) => {
-    if (!item) return 'Unknown'
-    const { action, ticket } = item
-    const ref = ticket?.ticketNumber?.slice(-4) || ticket?.id?.slice(-4) || '?'
-    switch (action) {
-      case 'CREATE': return `Created #${ref}`
-      case 'UPDATE': return 'Updated'
-      case 'STATUS_CHANGE': return 'Status changed'
-      case 'COMMENT': return 'Commented'
-      case 'ASSIGN': return 'Assigned'
-      case 'RESOLVE': return 'Resolved'
-      case 'CLOSE': return 'Closed'
-      default: return action?.toLowerCase() || 'Action'
-    }
-  }, [])
-
-  // Loading states
-  if (!isClient || authLoading) {
+  if (authLoading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex justify-center items-center min-h-[60vh]">
           <LoadingSpinner size="small" />
         </div>
       </DashboardLayout>
@@ -371,279 +138,178 @@ function HistoryContent() {
   if (!user) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center min-h-[60vh]">
-          <FiLock className="h-6 w-6 text-gray-300 mb-2" />
-          <p className="text-xs text-gray-500 mb-3">Login required</p>
-          <Link href="/login" className="text-[10px] bg-blue-600 text-white px-3 py-1.5 rounded">
-            Login
-          </Link>
-        </div>
+        <div className="text-center py-12">Please log in to view history.</div>
       </DashboardLayout>
     )
   }
 
-  // Error display
-  const ErrorDisplay = () => (
-    <div className="bg-white border border-gray-200 p-4 text-center">
-      <div className={`inline-flex p-2 rounded-full mb-2 ${
-        error.type === ErrorTypes.NETWORK ? 'bg-red-50' : 'bg-amber-50'
-      }`}>
-        {error.type === ErrorTypes.NETWORK ? 
-          <FiWifiOff className="h-4 w-4 text-red-500" /> : 
-          <FiAlertCircle className="h-4 w-4 text-amber-500" />
-        }
-      </div>
-      <p className="text-xs text-gray-700 mb-2">{error.message}</p>
-      <button onClick={handleRetry} className="text-[9px] bg-blue-600 text-white px-3 py-1 rounded">
-        Retry
-      </button>
-    </div>
-  )
-
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto px-2 sm:px-3">
-        {/* Ultra compact header */}
-        <div className="bg-white border-b border-gray-100 sticky top-0 z-10 py-1.5 px-2 mb-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <h1 className="text-md font-medium text-gray-700">History</h1>
-              <span className={`text-[8px] px-1 py-0.5 rounded ${getRoleBadge(user.role).bg} ${getRoleBadge(user.role).text}`}>
-                {getRoleBadge(user.role).label}
-              </span>
-              {stats.totalActions > 0 && (
-                <span className="text-[10px] text-gray-400">{stats.totalActions} items</span>
-              )}
-
-              {isAdmin && filters.userId !== 'ALL' && (
-  <span className="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
-    {users.find(u => u.id === filters.userId)?.name || 'User'}
-  </span>
-)}
-            </div>
-            
-            <div className="flex items-center space-x-1">
-              {/* View toggle */}
-              <div className="flex bg-gray-100 rounded-sm p-0.5">
-                <button
-                  onClick={() => setViewMode('timeline')}
-                  className={`p-1 rounded-sm ${viewMode === 'timeline' ? 'bg-white shadow-sm' : ''}`}
-                >
-                  <FiList className="h-6 w-6 text-gray-600" />
-                </button>
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-1 rounded-sm ${viewMode === 'grid' ? 'bg-white shadow-xs' : ''}`}
-                >
-                  <FiGrid className="h-6 w-6 text-gray-600" />
-                </button>
-              </div>
-
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={`p-1 rounded-sm ${showFilters ? 'bg-blue-50' : 'bg-gray-100'}`}
-              >
-                <FiFilter className="h-6 w-6 text-gray-600" />
-              </button>
-              
-              {canExport && (
-                <button
-                  onClick={() => {}}
-                  disabled={exportLoading || !history.length}
-                  className="p-1 bg-gray-100 rounded-sm disabled:opacity-30"
-                >
-                  <FiDownload className="h-6 w-6 text-gray-600" />
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Search bar - always visible */}
-          <div className="mt-1.5 relative">
-            <FiSearch className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300" />
-            <input
-              type="text"
-              value={filters.search}
-              onChange={(e) => handleFilterChange('search', e.target.value)}
-              placeholder="Search tickets..."
-              className="w-full pl-7 pr-2 py-1 text-[10px] border border-gray-100 rounded-sm focus:outline-none focus:border-blue-200"
-            />
-          </div>
-
-          {/* Filters panel - compact */}
-          {showFilters && (
-            <div className="mt-2 pt-2 border-t border-gray-50 grid grid-cols-2 sm:grid-cols-4 gap-1">
-              <select
-                value={filters.actionType}
-                onChange={(e) => handleFilterChange('actionType', e.target.value)}
-                className="px-1 py-0.5 text-[10px] border border-gray-100 rounded-sm"
-              >
-                <option value="ALL">Action</option>
-                <option value="CREATE">Create</option>
-                <option value="UPDATE">Update</option>
-                <option value="COMMENT">Comment</option>
-              </select>
-
-              <select
-                value={filters.category}
-                onChange={(e) => handleFilterChange('category', e.target.value)}
-                className="px-1 py-0.5 text-[10px] border border-gray-100 rounded-sm"
-              >
-                <option value="ALL">Category</option>
-                {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-              </select>
-
-              <select
-                value={filters.dateRange}
-                onChange={(e) => handleFilterChange('dateRange', e.target.value)}
-                className="px-1 py-0.5 text-[8px] border border-gray-100 rounded-sm"
-              >
-                <option value="ALL">Date</option>
-                <option value="TODAY">Today</option>
-                <option value="WEEK">Week</option>
-                <option value="MONTH">Month</option>
-              </select>
-
-              {isAdmin && (
-                <select
-                  value={filters.userId}
-                  onChange={(e) => handleFilterChange('userId', e.target.value)}
-                  className="px-1 py-0.5 text-[10px] border border-gray-100 rounded-sm"
-                >
-                  <option value="ALL">User</option>
-                  {users.slice(0, 10).map(u => (
-                    <option key={u.id} value={u.id}>{u.name}</option>
-                  ))}
-                </select>
-              )}
-
-              {(filters.actionType !== 'ALL' || filters.category !== 'ALL' || 
-                filters.dateRange !== 'ALL' || filters.userId !== 'ALL' || filters.search) && (
-                <button onClick={clearFilters} className="col-span-full text-[9px] text-gray-400 text-right">
-                  Clear filters
-                </button>
-              )}
-            </div>
-          )}
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-gray-800">Activity History</h1>
+          <p className="text-sm text-gray-500 mt-1">Track all ticket activity</p>
         </div>
 
-        {/* Error */}
-        {error.type && <ErrorDisplay />}
+        {/* Filters bar – clean and simple */}
+        <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by ticket title or number..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-pink-400 focus:border-pink-400 text-sm"
+              />
+            </div>
 
-        {/* Content */}
+            {/* Action filter */}
+            <select
+              value={actionFilter}
+              onChange={(e) => setActionFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md bg-white text-sm focus:outline-none focus:ring-1 focus:ring-pink-400"
+            >
+              <option value="ALL">All actions</option>
+              <option value="CREATE">Created</option>
+              <option value="COMMENT">Comments</option>
+              <option value="STATUS_CHANGE">Status changes</option>
+              <option value="ASSIGN">Assignments</option>
+              <option value="RESOLVE">Resolved</option>
+              <option value="CLOSE">Closed</option>
+            </select>
+
+            {/* Date filter */}
+            <select
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md bg-white text-sm focus:outline-none focus:ring-1 focus:ring-pink-400"
+            >
+              <option value="ALL">All time</option>
+              <option value="TODAY">Today</option>
+              <option value="WEEK">Last 7 days</option>
+              <option value="MONTH">Last 30 days</option>
+            </select>
+
+            {/* Reset button */}
+            {(search || actionFilter !== 'ALL' || dateFilter !== 'ALL') && (
+              <button
+                onClick={resetFilters}
+                className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* History list */}
         {loading ? (
-          viewMode === 'timeline' ? <TimelineSkeleton /> : <GridSkeleton />
-        ) : !history.length ? (
-          <div className="bg-white py-8 text-center">
-            <FiClock className="h-5 w-5 text-gray-200 mx-auto mb-2" />
-            <p className="text-[9px] text-gray-300">No activity</p>
+          <div className="flex justify-center py-12">
+            <LoadingSpinner size="small" />
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+            <FiAlertCircle className="mx-auto h-6 w-6 text-red-500 mb-2" />
+            <p className="text-sm text-red-700">{error}</p>
+            <button
+              onClick={() => fetchHistory()}
+              className="mt-3 text-sm text-red-700 underline"
+            >
+              Try again
+            </button>
+          </div>
+        ) : history.length === 0 ? (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-12 text-center">
+            <FiClock className="mx-auto h-8 w-8 text-gray-300 mb-3" />
+            <p className="text-gray-500 text-sm">No activity found</p>
+            <p className="text-xs text-gray-400 mt-1">Try adjusting your filters</p>
           </div>
         ) : (
           <>
-            {viewMode === 'timeline' ? (
-              /* Timeline - single column */
-              <div className="space-y-0.5">
-                {history.map((item) => {
-                  const ActionIcon = getActionInfo(item.action).icon
-                  const colorClass = getActionInfo(item.action).color
-                  const bgClass = getActionInfo(item.action).bg
-                  const formattedDate = formatDate(item.createdAt)
-                  
-                  return (
-                    <div key={item.id} className="bg-white p-2 border-b border-gray-50 flex items-start space-x-2">
-                      <div className={`h-10 w-10 rounded-full ${bgClass} flex items-center justify-center shrink-0`}>
-                        <ActionIcon className={`h-2.5 w-2.5 ${colorClass}`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <Link href={`/tickets/${item.ticket?.id}`} className="text-[10px] font-medium text-gray-700 truncate max-w-[150px]">
-                            {item.ticket?.title || 'Ticket'}
-                          </Link>
-                          <span className="text-[9px] text-gray-300">{formattedDate.short}</span>
+            {/* List of activities */}
+            <div className="space-y-3">
+              {history.map((item) => {
+                const action = actionConfig[item.action] || actionConfig.default
+                const ActionIcon = action.icon
+                return (
+                  <div
+  key={item.id}
+  className="bg-white border border-gray-100 rounded-lg p-2 hover:shadow-sm transition-shadow relative overflow-hidden"
+  style={{
+    backgroundImage: `url('/images/papertxr.jpg')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+  }}
+>
+  {/* Optional: semi‑transparent overlay to improve text contrast */}
+  <div className="absolute inset-0 bg-white/70 pointer-events-none"></div>
+  <div className="relative z-10">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <ActionIcon className={`h-5 w-5 ${action.color}`} />
                         </div>
-                        <p className="text-[10px] text-gray-500 mt-0.5">{formatAction(item)}</p>
-                        <div className="flex items-center mt-1 text-[6px] text-gray-300">
-                          <span>#{item.ticket?.ticketNumber?.slice(-4) || '?'}</span>
-                          {item.createdBy && (
-                            <>
-                              <span className="mx-1">·</span>
-                              <span>{item.createdBy.name}</span>
-                            </>
+                        <div>
+                          <Link
+                            href={`/tickets/${item.ticket?.id}`}
+                             className="inline-block text-sm font-medium text-gray-800 border border-black shadow-sm rounded px-1.5 py-0.5 hover:bg-black/5 transition-colors"
+                          >
+                            {item.ticket?.title || 'Untitled ticket'}
+                          </Link>
+                          <p className="text-xs shadow-sm px-2 text-gray-500 mt-1">
+                            {action.label}
+                            {item.ticket?.ticketNumber && (
+                              <span className="ml-1 text-gray-400">
+                                · #{item.ticket.ticketNumber}
+                              </span>
+                            )}
+                          </p>
+                          {item.description && (
+                            <p className="text-xs shadow-sm text-gray-600 mt-2 max-w-2xl">
+                              {item.description}
+                            </p>
                           )}
                         </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1 text-xs text-gray-400">
+                        <time dateTime={item.createdAt}  style={{ textShadow: '0 0 2px rgba(0,0,0,0.3)' }}>
+                          {formatDate(item.createdAt)}
+                        </time>
+                        {item.createdBy && (
+                          <span className="flex items-center gap-1" style={{ textShadow: '0 0 2px rgba(0,0,0,0.3)' }}>
+                            <FiUser className="h-3 w-3"  />
+                            {item.createdBy.name}
+                          </span>
+                        )}
                       </div>
                     </div>
-                  )
-                })}
-              </div>
-            ) : (
-              /* Grid - multi-column (2-5 columns) */
-              <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1.5">
-                  {history.map((item) => {
-                    const ActionIcon = getActionInfo(item.action).icon
-                    const colorClass = getActionInfo(item.action).color
-                    const bgClass = getActionInfo(item.action).bg
-                    const formattedDate = formatDate(item.createdAt)
-                    
-                    return (
-                      <div key={item.id} className="bg-white border border-gray-50 p-1.5 hover:border-gray-200 transition-colors">
-                        <div className="flex items-start justify-between mb-1">
-                          <div className={`h-6 w-6 rounded-full ${bgClass} flex items-center justify-center`}>
-                            <ActionIcon className={`h-4 w-4 ${colorClass}`} />
-                          </div>
-                          <span className="text-[8px] text-gray-300">{formattedDate.short}</span>
-                        </div>
-                        
-                        <Link href={`/tickets/${item.ticket?.id}`} className="block">
-                          <h3 className="text-[9px] font-medium text-gray-700 line-clamp-2 mb-1 leading-tight">
-                            {item.ticket?.title || 'Untitled'}
-                          </h3>
-                        </Link>
-                        
-                        <p className="text-[9px] text-gray-400 mb-1.5">{formatAction(item)}</p>
-                        
-                        <div className="flex flex-wrap gap-0.5 mb-1">
-                          {item.ticket?.category && (
-                            <span className={`px-1 py-px rounded text-[7px] font-medium ${getCategoryBadge(item.ticket.category).bg} ${getCategoryBadge(item.ticket.category).text}`}>
-                              {getCategoryBadge(item.ticket.category).label}
-                            </span>
-                          )}
-                          <span className={`px-1 py-px rounded text-[8px] font-medium ${bgClass} ${colorClass}`}>
-                            {getActionInfo(item.action).label}
-                          </span>
-                        </div>
-                        
-                        <div className="flex items-center justify-between pt-1 border-t border-gray-50">
-                          <div className="flex items-center space-x-0.5">
-                            {item.createdBy ? (
-                              <span className="text-[8px] text-gray-400 truncate max-w-[60px]">
-                                {item.createdBy.name}
-                              </span>
-                            ) : (
-                              <span className="text-[8px] text-gray-300">System</span>
-                            )}
-                          </div>
-                          <span className="text-[8px] text-gray-300 font-mono">
-                            #{item.ticket?.ticketNumber?.slice(-4) || item.ticket?.id?.slice(-4)}
-                          </span>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-
-                {/* Infinite scroll sentinel */}
-                {hasMore && (
-                  <div ref={loadMoreRef} className="py-2 text-center">
-                    {loadingMore ? (
-                      <LoadingSpinner size="small" />
-                    ) : (
-                      <div className="h-6" />
-                    )}
                   </div>
-                )}
-              </>
+                  </div>
+                )
+              })}
+            </div>
+            
+
+            {/* Pagination – simple load more button */}
+            {pagination.page < pagination.totalPages && (
+              <div className="text-center mt-6">
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50"
+                >
+                  {loadingMore ? (
+                    <LoadingSpinner size="small" />
+                  ) : (
+                    <>Load more</>
+                  )}
+                </button>
+              </div>
             )}
           </>
         )}

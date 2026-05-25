@@ -19,37 +19,37 @@ const getStatusColor = (status) => {
 
 const getStatusIcon = (status) => {
   switch (status) {
-    case 'OPEN': return <FiAlertCircle className="h-5 w-5 text-yellow-500" />
-    case 'PENDING_MD_APPROVAL': return <FiClock className="h-5 w-5 text-purple-500" />
-    case 'PENDING_THIRD_PARTY': return <FiExternalLink className="h-5 w-5 text-orange-500" />
-    case 'IN_PROGRESS': return <FiRefreshCw className="h-5 w-5 text-blue-500" />
-    case 'APPROVED_BY_MD': return <FiThumbsUp className="h-5 w-5 text-green-500" />
-    case 'REJECTED_BY_MD': return <FiThumbsDown className="h-5 w-5 text-red-500" />
-    case 'REJECTED_BY_SERVICE': return <FiThumbsDown className="h-5 w-5 text-red-500" />
-    case 'RESOLVED': return <FiCheckCircle className="h-5 w-5 text-green-500" />
-    case 'CLOSED': return <FiCheckSquare className="h-5 w-5 text-gray-500" />
-    case 'PENDING_SERVICE_ACCEPTANCE': return <FiUserPlus className="h-5 w-5 text-indigo-500" />
-    case 'SERVICE_IN_PROGRESS': return <FiTool className="h-5 w-5 text-teal-500" />
-    case 'SERVICE_RESOLVED': return <FiCheckCircle className="h-5 w-5 text-green-500" />
-    default: return <FiClock className="h-5 w-5 text-gray-500" />
+    case 'OPEN': return <FiAlertCircle className="w-3.5 h-3.5 text-yellow-500" />
+    case 'PENDING_MD_APPROVAL': return <FiClock className="w-3.5 h-3.5 text-purple-500" />
+    case 'PENDING_THIRD_PARTY': return <FiExternalLink className="w-3.5 h-3.5 text-orange-500" />
+    case 'IN_PROGRESS': return <FiRefreshCw className="w-3.5 h-3.5 text-blue-500" />
+    case 'APPROVED_BY_MD': return <FiThumbsUp className="w-3.5 h-3.5 text-green-500" />
+    case 'REJECTED_BY_MD': return <FiThumbsDown className="w-3.5 h-3.5 text-red-500" />
+    case 'REJECTED_BY_SERVICE': return <FiThumbsDown className="w-3.5 h-3.5 text-red-500" />
+    case 'RESOLVED': return <FiCheckCircle className="w-3.5 h-3.5 text-green-500" />
+    case 'CLOSED': return <FiCheckSquare className="w-3.5 h-3.5 text-gray-500" />
+    case 'PENDING_SERVICE_ACCEPTANCE': return <FiUserPlus className="w-3.5 h-3.5 text-indigo-500" />
+    case 'SERVICE_IN_PROGRESS': return <FiTool className="w-3.5 h-3.5 text-teal-500" />
+    case 'SERVICE_RESOLVED': return <FiCheckCircle className="w-3.5 h-3.5 text-green-500" />
+    default: return <FiClock className="w-3.5 h-3.5 text-gray-500" />
   }
 }
 
 export default function TicketHeader({ ticket }) {
   return (
-    <div className="mb-6 flex items-center justify-between">
+    <div className="mb-2 flex items-center justify-between">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-sm font-bold text-gray-800">
           Ticket #{ticket.ticketNumber}
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-[9px] text-gray-400 mt-0.5">
           Shared via public link
         </p>
       </div>
-      <div className="flex items-center space-x-3">
-        <span className={`px-3 py-1 rounded-md border-1 border-black text-sm font-medium flex items-center ${getStatusColor(ticket.status)}`}>
+      <div className="flex items-center gap-1.5">
+        <span className={`px-1.5 py-0.5 rounded border border-black text-[9px] font-medium flex items-center gap-1 ${getStatusColor(ticket.status)}`}>
           {getStatusIcon(ticket.status)}
-          <span className="ml-1">{ticket.status.replace(/_/g, ' ')}</span>
+          <span>{ticket.status.replace(/_/g, ' ')}</span>
         </span>
       </div>
     </div>

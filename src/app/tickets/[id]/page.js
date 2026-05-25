@@ -1,6 +1,6 @@
 'use client'
 
-import  React,{ useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/context/AuthContext';
 import Link from 'next/link'
@@ -40,7 +40,6 @@ export default function TicketDetailsPage({ params }) {
   const { socket, joinTicket, leaveTicket } = useSocket()
   const toast = useToast()
   const router = useRouter()
-  console.log("user====>",user)
 
   const [ticket, setTicket] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -62,20 +61,14 @@ export default function TicketDetailsPage({ params }) {
     if (id) {
       fetchTicket()
       joinTicket(id)
-
-      return () => {
-        leaveTicket(id)
-      }
+      return () => leaveTicket(id)
     }
   }, [id])
 
   useEffect(() => {
     if (socket) {
       socket.on(`ticket-${id}-updated`, handleTicketUpdate)
-      
-      return () => {
-        socket.off(`ticket-${id}-updated`, handleTicketUpdate)
-      }
+      return () => socket.off(`ticket-${id}-updated`, handleTicketUpdate)
     }
   }, [socket, id])
 
@@ -87,15 +80,9 @@ export default function TicketDetailsPage({ params }) {
   const fetchTicket = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/tickets/${id}`, {
-        credentials: 'include'
-      })
+      const response = await fetch(`/api/tickets/${id}`, { credentials: 'include' })
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch ticket')
-      }
-
+      if (!response.ok) throw new Error(data.message || 'Failed to fetch ticket')
       setTicket(data.ticket)
     } catch (error) {
       console.error('Error fetching ticket:', error)
@@ -108,53 +95,33 @@ export default function TicketDetailsPage({ params }) {
   const fetchUsers = async (role = null) => {
     try {
       const url = role ? `/api/admin/users?role=${role}` : '/api/admin/users'
-      const response = await fetch(url, {
-        credentials: 'include'
-      })
+      const response = await fetch(url, { credentials: 'include' })
       const data = await response.json()
       setUsers(data.users || [])
-      console.log("responser===>", response)
     } catch (error) {
       console.error('Error fetching users:', error)
     }
   }
-
-  
 
   const handleAddReview = async () => {
     if (!review.trim()) {
       toast.error('Please enter a review')
       return
     }
- 
     try {
       setSubmitting(true)
       const response = await fetch(`/api/tickets/${id}/reviews`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          content: review,
-          reviewType: getReviewType()
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: review, reviewType: getReviewType() }),
         credentials: 'include'
       })
-
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to add review')
-      }
-
-      setTicket(prev => ({
-        ...prev,
-        reviews: [data.review, ...(prev.reviews || [])]
-      }))
+      if (!response.ok) throw new Error(data.message || 'Failed to add review')
+      setTicket(prev => ({ ...prev, reviews: [data.review, ...(prev.reviews || [])] }))
       setReview('')
       toast.success('Review added successfully')
     } catch (error) {
-      console.error('Error adding review:', error)
       toast.error(error.message)
     } finally {
       setSubmitting(false)
@@ -172,34 +139,22 @@ export default function TicketDetailsPage({ params }) {
       toast.error('Please select a status')
       return
     }
-
     try {
       setSubmitting(true)
       const response = await fetch(`/api/tickets/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          status: selectedStatus,
-          review: review || `Status updated to ${selectedStatus}`
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: selectedStatus, review: review || `Status updated to ${selectedStatus}` }),
         credentials: 'include'
       })
-
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update status')
-      }
-
+      if (!response.ok) throw new Error(data.message || 'Failed to update status')
       setTicket(data.ticket)
       setShowStatusForm(false)
       setSelectedStatus('')
       setReview('')
       toast.success('Status updated successfully')
     } catch (error) {
-      console.error('Error updating status:', error)
       toast.error(error.message)
     } finally {
       setSubmitting(false)
@@ -211,33 +166,24 @@ export default function TicketDetailsPage({ params }) {
       toast.error('Please select a user')
       return
     }
-
     try {
       setSubmitting(true)
       const response = await fetch(`/api/tickets/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           assignedToId: selectedUserId,
           review: `Ticket assigned to ${users.find(u => u.id === selectedUserId)?.name}`
         }),
         credentials: 'include'
       })
-
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to assign ticket')
-      }
-
+      if (!response.ok) throw new Error(data.message || 'Failed to assign ticket')
       setTicket(data.ticket)
       setShowAssignForm(false)
       setSelectedUserId('')
       toast.success('Ticket assigned successfully')
     } catch (error) {
-      console.error('Error assigning ticket:', error)
       toast.error(error.message)
     } finally {
       setSubmitting(false)
@@ -249,14 +195,11 @@ export default function TicketDetailsPage({ params }) {
       toast.error('Please provide a reason for rejection')
       return
     }
-
     try {
       setSubmitting(true)
       const response = await fetch(`/api/tickets/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           status: approved ? 'APPROVED_BY_MD' : 'REJECTED_BY_MD',
           mdApproval: approved ? 'APPROVED' : 'REJECTED',
@@ -264,19 +207,13 @@ export default function TicketDetailsPage({ params }) {
         }),
         credentials: 'include'
       })
-
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to process decision')
-      }
-
+      if (!response.ok) throw new Error(data.message || 'Failed to process decision')
       setTicket(data.ticket)
       setMdDecision(null)
       setMdReview('')
       toast.success(approved ? 'Ticket approved' : 'Ticket rejected')
     } catch (error) {
-      console.error('Error processing MD decision:', error)
       toast.error(error.message)
     } finally {
       setSubmitting(false)
@@ -288,37 +225,28 @@ export default function TicketDetailsPage({ params }) {
       toast.error('Please select a status')
       return
     }
-
     try {
       setSubmitting(true)
       const response = await fetch(`/api/tickets/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           thirdParty: true,
-          thirdPartyStatus: thirdPartyStatus,
-          thirdPartyDetails: thirdPartyDetails,
+          thirdPartyStatus,
+          thirdPartyDetails,
           status: 'PENDING_THIRD_PARTY',
           review: `Third party status updated to ${thirdPartyStatus}`
         }),
         credentials: 'include'
       })
-
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update third party status')
-      }
-
+      if (!response.ok) throw new Error(data.message || 'Failed to update third party status')
       setTicket(data.ticket)
       setShowThirdPartyForm(false)
       setThirdPartyStatus('')
       setThirdPartyDetails('')
       toast.success('Third party status updated')
     } catch (error) {
-      console.error('Error updating third party:', error)
       toast.error(error.message)
     } finally {
       setSubmitting(false)
@@ -327,32 +255,19 @@ export default function TicketDetailsPage({ params }) {
 
   const handleCloseTicket = async () => {
     if (!confirm('Are you sure you want to close this ticket?')) return
-
     try {
       setSubmitting(true)
       const response = await fetch(`/api/tickets/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          status: 'CLOSED',
-          review: 'Ticket closed',
-          closedAt: new Date()
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'CLOSED', review: 'Ticket closed', closedAt: new Date() }),
         credentials: 'include'
       })
-
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to close ticket')
-      }
-
+      if (!response.ok) throw new Error(data.message || 'Failed to close ticket')
       setTicket(data.ticket)
       toast.success('Ticket closed successfully')
     } catch (error) {
-      console.error('Error closing ticket:', error)
       toast.error(error.message)
     } finally {
       setSubmitting(false)
@@ -385,29 +300,22 @@ export default function TicketDetailsPage({ params }) {
   }
 
   const getStatusIcon = (status) => {
+    const size = "w-3.5 h-3.5"
     switch (status) {
-      case 'OPEN':
-        return <FiAlertCircle className="h-5 w-5 text-yellow-500" />
-      case 'PENDING_MD_APPROVAL':
-        return <FiClock className="h-5 w-5 text-purple-500" />
-      case 'APPROVED_BY_MD':
-        return <FiThumbsUp className="h-5 w-5 text-green-500" />
-      case 'REJECTED_BY_MD':
-        return <FiThumbsDown className="h-5 w-5 text-red-500" />
+      case 'OPEN': return <FiAlertCircle className={`${size} text-yellow-500`} />
+      case 'PENDING_MD_APPROVAL': return <FiClock className={`${size} text-purple-500`} />
+      case 'APPROVED_BY_MD': return <FiThumbsUp className={`${size} text-green-500`} />
+      case 'REJECTED_BY_MD': return <FiThumbsDown className={`${size} text-red-500`} />
       case 'RESOLVED':
-      case 'CLOSED':
-        return <FiCheckCircle className="h-5 w-5 text-green-500" />
-      default:
-        return <FiClock className="h-5 w-5 text-gray-500" />
+      case 'CLOSED': return <FiCheckCircle className={`${size} text-green-500`} />
+      default: return <FiClock className={`${size} text-gray-500`} />
     }
   }
 
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <LoadingSpinner size="large" />
-        </div>
+        <div className="flex justify-center items-center h-48"><LoadingSpinner size="small" /></div>
       </DashboardLayout>
     )
   }
@@ -415,22 +323,12 @@ export default function TicketDetailsPage({ params }) {
   if (error || !ticket) {
     return (
       <DashboardLayout>
-        <div className="max-w-4xl mx-auto py-12">
-          <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-            <FiXCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {error || 'Ticket Not Found'}
-            </h2>
-            <p className="text-gray-600 mb-6">
-              {error ? 'An error occurred while loading the ticket.' : 'The ticket you\'re looking for doesn\'t exist.'}
-            </p>
-            <Link
-              href="/tickets"
-              className="inline-flex items-center px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-            >
-              <FiArrowLeft className="mr-2" />
-              Back to Tickets
-            </Link>
+        <div className="max-w-2xl mx-auto py-6">
+          <div className="bg-white rounded shadow-sm border border-gray-100 p-4 text-center">
+            <FiXCircle className="mx-auto h-8 w-8 text-red-500 mb-2" />
+            <h2 className="text-sm font-bold text-gray-800 mb-1">{error || 'Ticket Not Found'}</h2>
+            <p className="text-[10px] text-gray-500 mb-3">{error ? 'An error occurred.' : 'Ticket does not exist.'}</p>
+            <Link href="/tickets" className="inline-flex items-center gap-1 px-2 py-1 text-[10px] bg-primary-600 text-white rounded">Back to Tickets</Link>
           </div>
         </div>
       </DashboardLayout>
@@ -444,69 +342,35 @@ export default function TicketDetailsPage({ params }) {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto py-3 px-3 sm:px-4">
         {/* Header with back button */}
-        <div className="mb-6 flex items-center justify-between">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center text-gray-600 hover:text-gray-900"
-          >
-            <FiArrowLeft className="mr-2" />
-            Back
-          </button>
-          <div className="flex items-center items-center justify-between space-x-3">
-            <span className={`px-3 flex py-1 rounded-full text-sm font-medium ${getStatusColor(ticket.status)}`}>
-              {getStatusIcon(ticket.status)}
-              <span className="ml-1">{ticket.status.replace(/_/g, ' ')}</span>
+        <div className="mb-3 flex items-center justify-between">
+          <button onClick={() => router.back()} className="flex items-center gap-1 text-[10px] text-gray-600 hover:text-gray-800"><FiArrowLeft className="w-3 h-3" /> Back</button>
+          <div className="flex items-center gap-1.5">
+            <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium ${getStatusColor(ticket.status)}`}>
+              {getStatusIcon(ticket.status)}<span>{ticket.status.replace(/_/g, ' ')}</span>
             </span>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(ticket.priority)}`}>
-              {ticket.priority}
-            </span>
+            <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-medium ${getPriorityColor(ticket.priority)}`}>{ticket.priority}</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content - Left Column */}
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-3">
             {/* Ticket Details Card */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="p-6">
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                  {ticket.title}
-                </h1>
-                <p className="text-sm text-gray-500 mb-4">
-                  Ticket #{ticket.ticketNumber}
-                </p>
-
-                <div className="prose max-w-none mb-6">
-                  <p className="text-gray-700 whitespace-pre-wrap">
-                    {ticket.description}
-                  </p>
-                </div>
-
-                {/* Attachments */}
+            <div className="bg-white rounded shadow-sm border border-gray-100 overflow-hidden">
+              <div className="p-2.5">
+                <h1 className="text-sm font-bold text-gray-800 mb-0.5">{ticket.title}</h1>
+                <p className="text-[10px] text-gray-500 mb-2">#{ticket.ticketNumber}</p>
+                <p className="text-[10px] text-gray-700 whitespace-pre-wrap mb-2">{ticket.description}</p>
                 {ticket.attachment && (
-                  <div className="border-t border-gray-200 pt-4 mt-4">
-                    <h3 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
-                      <FiPaperclip className="mr-2" />
-                      Attachments
-                    </h3>
-                    <div className="space-y-2">
-                      {ticket.attachment.split(',').map((url, index) => (
-                        <a
-                          key={index}
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                        >
-                          <div className="flex items-center">
-                            <FiDownload className="mr-2 text-gray-400" />
-                            <span className="text-sm text-gray-700">
-                              Attachment {index + 1}
-                            </span>
-                          </div>
-                          <FiExternalLink className="text-gray-400" />
+                  <div className="border-t border-gray-100 pt-1.5 mt-1">
+                    <h3 className="text-[10px] font-medium text-gray-600 mb-1 flex items-center gap-1"><FiPaperclip className="w-3 h-3" /> Attachments</h3>
+                    <div className="space-y-1">
+                      {ticket.attachment.split(',').map((url, idx) => (
+                        <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-1.5 bg-gray-50 rounded text-[10px]">
+                          <span className="truncate">Attachment {idx+1}</span>
+                          <FiExternalLink className="w-3 h-3 text-gray-400" />
                         </a>
                       ))}
                     </div>
@@ -516,400 +380,139 @@ export default function TicketDetailsPage({ params }) {
             </div>
 
             {/* Reviews Section */}
-            {/* Reviews Section - Visible to all users but posting restricted to admins */}
-<div className="bg-white rounded-xl shadow-lg overflow-hidden">
-  <div className="p-6">
-    <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-      <FiMessageSquare className="mr-2" />
-      Reviews & Comments
-    </h2>
-
-    {/* Add Review Form - Only for admins */}
-    {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (
-      <div className="mb-6">
-        <textarea
-          value={review}
-          onChange={(e) => setReview(e.target.value)}
-          placeholder="Add a review or comment..."
-          className="input-field w-full"
-          rows="3"
-        />
-        <div className="mt-2 flex justify-end">
-          <button
-            onClick={handleAddReview}
-            disabled={submitting || !review.trim()}
-            className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
-          >
-            {submitting ? <LoadingSpinner size="small" /> : (
-              <>
-                <FiSend className="mr-2" />
-                Post Review
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-    )}
-
-    {/* Reviews List - Visible to all users */}
-    <div className="space-y-4">
-      {ticket.reviews?.map((review, index) => (
-        <div key={review.id || index} className="border-l-4 border-primary-200 bg-gray-50 p-4 rounded-r-lg">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center">
-              <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
-                <FiUser className="h-4 w-4 text-primary-600" />
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-900">
-                  {review.createdBy?.name}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {review.createdBy?.role} • {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
-                </p>
+            <div className="bg-white rounded shadow-sm border border-gray-100 overflow-hidden">
+              <div className="p-2.5">
+                <h2 className="text-xs font-semibold text-gray-700 mb-2 flex items-center gap-1"><FiMessageSquare className="w-3.5 h-3.5" /> Reviews & Comments</h2>
+                {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (
+                  <div className="mb-3">
+                    <textarea value={review} onChange={(e) => setReview(e.target.value)} placeholder="Add a review..." className="w-full px-2 py-1 text-[10px] border border-gray-200 rounded" rows="2" />
+                    <div className="mt-1 flex justify-end"><button onClick={handleAddReview} disabled={submitting || !review.trim()} className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] bg-primary-600 text-white rounded">{submitting ? <LoadingSpinner size="small" /> : <><FiSend className="w-3 h-3" /> Post</>}</button></div>
+                  </div>
+                )}
+                <div className="space-y-2">
+                  {ticket.reviews?.map((r, idx) => (
+                    <div key={r.id || idx} className="border-l-2 border-primary-200 bg-gray-50 p-1.5 rounded-r">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <div className="flex items-center gap-1"><FiUser className="w-3 h-3 text-gray-500" /><span className="text-[10px] font-medium">{r.createdBy?.name}</span><span className="text-[8px] text-gray-400">{r.createdBy?.role} • {formatDistanceToNow(new Date(r.createdAt), { addSuffix: true })}</span></div>
+                        <span className="text-[7px] px-1 bg-primary-100 rounded">{r.reviewType.replace(/_/g, ' ')}</span>
+                      </div>
+                      <p className="text-[10px] text-gray-700">{r.content}</p>
+                    </div>
+                  ))}
+                  {(!ticket.reviews || ticket.reviews.length === 0) && <p className="text-center text-[10px] text-gray-400 py-2">No reviews yet.</p>}
+                </div>
               </div>
             </div>
-            <span className="text-xs px-2 py-1 bg-primary-100 text-primary-700 rounded-full">
-              {review.reviewType.replace(/_/g, ' ')}
-            </span>
-          </div>
-          <p className="text-sm text-gray-700 whitespace-pre-wrap">
-            {review.content}
-          </p>
-        </div>
-      ))}
-
-      {(!ticket.reviews || ticket.reviews.length === 0) && (
-        <p className="text-center text-gray-500 py-4">
-          No reviews yet.
-        </p>
-      )}
-    </div>
-  </div>
-</div>
           </div>
 
-          {/* Sidebar - Right Column */}
-          <div className="space-y-6">
-            {/* Quick Info Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-  <h3 className="text-sm font-medium text-gray-500 mb-4">Ticket Information</h3>
-  
-  <div className="space-y-3">
+          {/* Sidebar */}
+          <div className="space-y-3">
+            {/* Ticket Information */}
+           <div className="bg-white rounded shadow-sm border border-gray-100 p-2.5">
+  <h3 className="text-[11px] font-semibold text-gray-500 uppercase mb-2">Ticket Information</h3>
+  <div className="grid grid-cols-[100px_1fr] gap-x-2 gap-y-1.5 text-[11px]">
     {/* Created By */}
-    <div className="flex items-start">
-      <FiUser className="mr-3 text-gray-400 mt-0.5" />
-      <div>
-        <p className="text-xs text-gray-500">Created By</p>
-        <p className="text-sm font-medium text-gray-900">{ticket.createdBy?.name}</p>
-        <p className="text-xs text-gray-500">{ticket.createdBy?.department}</p>
-      </div>
+    <span className="text-gray-500">Created By:</span>
+    <div>
+      <div>{ticket.createdBy?.name}</div>
+      <div className="text-gray-400 text-[9px]">{ticket.createdBy?.department}</div>
     </div>
 
     {/* Email */}
-    <div className="flex items-start">
-      <FiMail className="mr-3 text-gray-400 mt-0.5" />
-      <div>
-        <p className="text-xs text-gray-500">Email</p>
-        <p className="text-sm text-gray-900">{ticket.createdBy?.email}</p>
-      </div>
-    </div>
+    <span className="text-gray-500">Email:</span>
+    <span className="break-words">{ticket.createdBy?.email}</span>
 
     {/* Assigned To */}
     {ticket.assignedTo && (
-      <div className="flex items-start">
-        <FiUsers className="mr-3 text-gray-400 mt-0.5" />
-        <div>
-          <p className="text-xs text-gray-500">Assigned To</p>
-          <p className="text-sm font-medium text-gray-900">{ticket.assignedTo.name}</p>
-        </div>
-      </div>
+      <>
+        <span className="text-gray-500">Assigned To:</span>
+        <span>{ticket.assignedTo.name}</span>
+      </>
     )}
 
-    {/* Created Date */}
-    <div className="flex items-start">
-      <FiCalendar className="mr-3 text-gray-400 mt-0.5" />
-      <div>
-        <p className="text-xs text-gray-500">Created</p>
-        <p className="text-sm text-gray-900">
-          {format(new Date(ticket.createdAt), 'PPP')}
-        </p>
-        <p className="text-xs text-gray-500">
-          {formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}
-        </p>
-      </div>
+    {/* Created */}
+    <span className="text-gray-500">Created:</span>
+    <div>
+      <div>{format(new Date(ticket.createdAt), 'PPP')}</div>
+      <div className="text-gray-400 text-[9px]">{formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}</div>
     </div>
 
-    {/* Branch (fix: use ticket.category) */}
-    <div className="flex items-start">
-      <FiTag className="mr-3 text-gray-400 mt-0.5" />
-      <div>
-        <p className="text-xs text-gray-500">Branch</p>
-        <p className="text-sm text-gray-900">{user.branch || 'Not specified'}</p>
-      </div>
-    </div>
+    {/* Branch */}
+    <span className="text-gray-500">Branch:</span>
+    <span>{ticket.category || 'Not specified'}</span>
 
-    {/* NEW: Main Category */}
-    <div className="flex items-start">
-      <FiTag className="mr-3 text-gray-400 mt-0.5" />
-      <div>
-        <p className="text-xs text-gray-500">{ticket.requestServiceType} FOR</p>
-        <p className="text-sm text-gray-900">{ticket.mainCategory?.name  || 'Not specified'}</p>
-      </div>
-    </div>
+    {/* Main Category */}
+    <span className="text-gray-500">{ticket.requestServiceType} FOR:</span>
+    <span>{ticket.mainCategory?.name || 'Not specified'}</span>
 
-    {/* NEW: Request / Service Type */}
-    <div className="flex items-start">
-      <FiTag className="mr-3 text-gray-400 mt-0.5" />
-      <div>
-        <p className="text-xs text-gray-500">Request / Service</p>
-        <p className="text-sm text-gray-900">{ticket.requestServiceType || 'Not specified'}</p>
-      </div>
-    </div>
+    {/* Request/Service Type */}
+    <span className="text-gray-500">Request/Service:</span>
+    <span>{ticket.requestServiceType || 'Not specified'}</span>
 
-    {/* NEW: Item / Service Type */}
-    <div className="flex items-start">
-      <FiTag className="mr-3 text-gray-400 mt-0.5" />
-      <div>
-        <p className="text-xs text-gray-500">Item / Service Type</p>
-        <p className="text-sm text-gray-900">{ticket.itemType || 'Not specified'}</p>
-      </div>
-    </div>
+    {/* Item/Service Type */}
+    <span className="text-gray-500">Item/Service Type:</span>
+    <span>{ticket.itemType || 'Not specified'}</span>
   </div>
 </div>
 
-            {/* Timeline Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-4">Timeline</h3>
-              <div className="space-y-3">
-                {ticket.history?.slice(0, 5).map((event, index) => (
-                  <div key={event.id || index} className="flex items-start">
-                    <div className="mr-3">
-                      <div className="h-2 w-2 mt-2 rounded-full bg-primary-500"></div>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-900">{event.action}</p>
-                      <p className="text-xs text-gray-500">
-                        {formatDistanceToNow(new Date(event.createdAt), { addSuffix: true })}
-                      </p>
-                    </div>
-                  </div>
+            {/* Timeline */}
+            <div className="bg-white rounded shadow-sm border border-gray-100 p-2.5">
+              <h3 className="text-[10px] font-semibold text-gray-500 uppercase mb-2">Timeline</h3>
+              <div className="space-y-1.5">
+                {ticket.history?.slice(0, 5).map((event, idx) => (
+                  <div key={event.id || idx} className="flex items-start gap-1.5"><div className="w-1.5 h-1.5 mt-1 rounded-full bg-primary-500"></div><div><p className="text-[10px] text-gray-700">{event.action}</p><p className="text-[8px] text-gray-400">{formatDistanceToNow(new Date(event.createdAt), { addSuffix: true })}</p></div></div>
                 ))}
               </div>
             </div>
 
-            {/* Action Buttons - Based on Role and Status */}
-            {(canEdit || isMD || isAssigned) && (
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-sm font-medium text-gray-500 mb-4">Actions</h3>
-                <div className="space-y-3">
-                  {/* Status Update Button */}
-                  {canEdit && (
-                    <button
-                      onClick={() => setShowStatusForm(!showStatusForm)}
-                      className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                    >
-                      <FiRefreshCw className="mr-2" />
-                      Update Status
-                    </button>
-                  )}
-
-                  {/* Assign Button */}
-                  {canEdit && !ticket.assignedTo && (
-                    <button
-                      onClick={() => {
-                        setShowAssignForm(true)
-                        fetchUsers()
-                      }}
-                      className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                    >
-                      <FiUsers className="mr-2" />
-                      Assign Ticket
-                    </button>
-                  )}
-
-                  {/* MD Approval Actions */}
+            {/* Actions */}
+            {/* {(canEdit || isMD || isAssigned)  && ticket.status !== 'CLOSED' && (
+              <div className="bg-white rounded shadow-sm border border-gray-100 p-2.5">
+                <h3 className="text-[10px] font-semibold text-gray-500 uppercase mb-2">Actions</h3>
+                <div className="space-y-1.5">
+                  {canEdit && <button onClick={() => setShowStatusForm(!showStatusForm)} className="w-full flex items-center justify-center gap-1 px-2 py-1 text-[10px] border border-gray-200 rounded">Update Status</button>}
+                  {canEdit && !ticket.assignedTo && <button onClick={() => { setShowAssignForm(true); fetchUsers() }} className="w-full flex items-center justify-center gap-1 px-2 py-1 text-[10px] border border-gray-200 rounded">Assign Ticket</button>}
                   {isMD && ticket.status === 'PENDING_MD_APPROVAL' && (
                     <>
-                      <button
-                        onClick={() => handleMDDecision(true)}
-                        className="w-full flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                      >
-                        <FiThumbsUp className="mr-2" />
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => setMdDecision('reject')}
-                        className="w-full flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                      >
-                        <FiThumbsDown className="mr-2" />
-                        Reject
-                      </button>
+                      <button onClick={() => handleMDDecision(true)} className="w-full flex items-center justify-center gap-1 px-2 py-1 text-[10px] bg-green-600 text-white rounded">Approve</button>
+                      <button onClick={() => setMdDecision('reject')} className="w-full flex items-center justify-center gap-1 px-2 py-1 text-[10px] bg-red-600 text-white rounded">Reject</button>
                     </>
                   )}
-
-                  {/* Third Party Button */}
-                  {canEdit && (
-                    <button
-                      onClick={() => setShowThirdPartyForm(!showThirdPartyForm)}
-                      className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                    >
-                      <FiExternalLink className="mr-2" />
-                      Third Party Service
-                    </button>
-                  )}
-
-                  {/* Close Ticket Button */}
-                  {(canEdit || isCreator) && ticket.status !== 'CLOSED' && (
-                    <button
-                      onClick={handleCloseTicket}
-                      className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-red-600 hover:bg-red-50"
-                    >
-                      <FiXCircle className="mr-2" />
-                      Close Ticket
-                    </button>
-                  )}
+                  {canEdit && <button onClick={() => setShowThirdPartyForm(!showThirdPartyForm)} className="w-full flex items-center justify-center gap-1 px-2 py-1 text-[10px] border border-gray-200 rounded">Third Party</button>}
+                  {(canEdit || isCreator) && ticket.status !== 'CLOSED' && <button onClick={handleCloseTicket} className="w-full flex items-center justify-center gap-1 px-2 py-1 text-[10px] border border-red-200 text-red-600 rounded">Close Ticket</button>}
                 </div>
 
-                {/* Status Update Form */}
                 {showStatusForm && (
-                  <div className="mt-4 space-y-3">
-                    <select
-                      value={selectedStatus}
-                      onChange={(e) => setSelectedStatus(e.target.value)}
-                      className="input-field w-full"
-                    >
-                      <option value="">Select Status</option>
-                      <option value="OPEN">Open</option>
-                      <option value="IN_PROGRESS">In Progress</option>
-                      <option value="PENDING_MD_APPROVAL">Pending MD Approval</option>
-                      <option value="RESOLVED">Resolved</option>
-                      <option value="CLOSED">Closed</option>
-                    </select>
-                    <textarea
-                      value={review}
-                      onChange={(e) => setReview(e.target.value)}
-                      placeholder="Add a review (optional)"
-                      className="input-field w-full"
-                      rows="2"
-                    />
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={handleStatusUpdate}
-                        disabled={submitting}
-                        className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-                      >
-                        {submitting ? <LoadingSpinner size="small" /> : 'Update'}
-                      </button>
-                      <button
-                        onClick={() => setShowStatusForm(false)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                  <div className="mt-2 space-y-1.5">
+                    <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} className="w-full px-1.5 py-1 text-[10px] border rounded"><option value="">Select Status</option><option value="OPEN">Open</option><option value="IN_PROGRESS">In Progress</option><option value="PENDING_MD_APPROVAL">Pending MD</option><option value="RESOLVED">Resolved</option><option value="CLOSED">Closed</option></select>
+                    <textarea value={review} onChange={(e) => setReview(e.target.value)} placeholder="Add a review (optional)" className="w-full px-1.5 py-1 text-[10px] border rounded" rows="2" />
+                    <div className="flex gap-1"><button onClick={handleStatusUpdate} className="flex-1 px-2 py-1 text-[10px] bg-primary-600 text-white rounded">Update</button><button onClick={() => setShowStatusForm(false)} className="px-2 py-1 text-[10px] border rounded">Cancel</button></div>
                   </div>
                 )}
 
-                {/* Assign Form */}
                 {showAssignForm && (
-                  <div className="mt-4 space-y-3">
-                    <select
-                      value={selectedUserId}
-                      onChange={(e) => setSelectedUserId(e.target.value)}
-                      className="input-field w-full"
-                    >
-                      <option value="">Select User</option>
-                      {users.map(u => (
-                        <option key={u.id} value={u.id}>{u.name} ({u.role})</option>
-                      ))}
-                    </select>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={handleAssignTicket}
-                        disabled={submitting}
-                        className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-                      >
-                        {submitting ? <LoadingSpinner size="small" /> : 'Assign'}
-                      </button>
-                      <button
-                        onClick={() => setShowAssignForm(false)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                  <div className="mt-2 space-y-1.5">
+                    <select value={selectedUserId} onChange={(e) => setSelectedUserId(e.target.value)} className="w-full px-1.5 py-1 text-[10px] border rounded"><option value="">Select User</option>{users.map(u => <option key={u.id} value={u.id}>{u.name} ({u.role})</option>)}</select>
+                    <div className="flex gap-1"><button onClick={handleAssignTicket} className="flex-1 px-2 py-1 text-[10px] bg-primary-600 text-white rounded">Assign</button><button onClick={() => setShowAssignForm(false)} className="px-2 py-1 text-[10px] border rounded">Cancel</button></div>
                   </div>
                 )}
 
-                {/* MD Reject Form */}
                 {mdDecision === 'reject' && (
-                  <div className="mt-4 space-y-3">
-                    <textarea
-                      value={mdReview}
-                      onChange={(e) => setMdReview(e.target.value)}
-                      placeholder="Reason for rejection..."
-                      className="input-field w-full"
-                      rows="3"
-                    />
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => handleMDDecision(false)}
-                        disabled={submitting}
-                        className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                      >
-                        {submitting ? <LoadingSpinner size="small" /> : 'Confirm Rejection'}
-                      </button>
-                      <button
-                        onClick={() => setMdDecision(null)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                  <div className="mt-2 space-y-1.5">
+                    <textarea value={mdReview} onChange={(e) => setMdReview(e.target.value)} placeholder="Reason for rejection..." className="w-full px-1.5 py-1 text-[10px] border rounded" rows="2" />
+                    <div className="flex gap-1"><button onClick={() => handleMDDecision(false)} className="flex-1 px-2 py-1 text-[10px] bg-red-600 text-white rounded">Confirm Rejection</button><button onClick={() => setMdDecision(null)} className="px-2 py-1 text-[10px] border rounded">Cancel</button></div>
                   </div>
                 )}
 
-                {/* Third Party Form */}
                 {showThirdPartyForm && (
-                  <div className="mt-4 space-y-3">
-                    <select
-                      value={thirdPartyStatus}
-                      onChange={(e) => setThirdPartyStatus(e.target.value)}
-                      className="input-field w-full"
-                    >
-                      <option value="">Select Status</option>
-                      <option value="PENDING">Pending</option>
-                      <option value="IN_PROGRESS">In Progress</option>
-                      <option value="COMPLETED">Completed</option>
-                      <option value="FAILED">Failed</option>
-                    </select>
-                    <textarea
-                      value={thirdPartyDetails}
-                      onChange={(e) => setThirdPartyDetails(e.target.value)}
-                      placeholder="Additional details..."
-                      className="input-field w-full"
-                      rows="3"
-                    />
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={handleThirdPartyUpdate}
-                        disabled={submitting}
-                        className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-                      >
-                        {submitting ? <LoadingSpinner size="small" /> : 'Update'}
-                      </button>
-                      <button
-                        onClick={() => setShowThirdPartyForm(false)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                  <div className="mt-2 space-y-1.5">
+                    <select value={thirdPartyStatus} onChange={(e) => setThirdPartyStatus(e.target.value)} className="w-full px-1.5 py-1 text-[10px] border rounded"><option value="">Select Status</option><option value="PENDING">Pending</option><option value="IN_PROGRESS">In Progress</option><option value="COMPLETED">Completed</option></select>
+                    <textarea value={thirdPartyDetails} onChange={(e) => setThirdPartyDetails(e.target.value)} placeholder="Details..." className="w-full px-1.5 py-1 text-[10px] border rounded" rows="2" />
+                    <div className="flex gap-1"><button onClick={handleThirdPartyUpdate} className="flex-1 px-2 py-1 text-[10px] bg-primary-600 text-white rounded">Update</button><button onClick={() => setShowThirdPartyForm(false)} className="px-2 py-1 text-[10px] border rounded">Cancel</button></div>
                   </div>
                 )}
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>

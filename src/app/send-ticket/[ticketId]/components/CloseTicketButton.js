@@ -5,7 +5,7 @@ export default function CloseTicketButton({
   isAdmin,
   isEmployee,
   ticket,
-  handleCloseTicket,   // This function should NOT have its own confirm
+  handleCloseTicket,
   submitting,
 }) {
   if ((!isAdmin && !isEmployee) || ticket.status === 'CLOSED' || ticket.status === 'RESOLVED')
@@ -18,13 +18,20 @@ export default function CloseTicketButton({
   }
 
   return (
-    <div className="p-6 border-b border-gray-200">
+    <div className="p-3 border-b flex justify-end items-center border-gray-100 ">
       <button
         onClick={onCloseClick}
         disabled={submitting}
-        className="w-full px-4 py-3 border-2 border-red-200 text-red-600 rounded-lg hover:bg-red-50 hover:border-red-400 transition-colors"
+        className="w-1/4 px-2 py-1.5 border border-red-200 text-white bg-red-600 rounded text-[10px] font-bold hover:bg-red-800 hover:border-red-400 transition-colors flex items-center justify-center gap-1"
       >
-        {submitting ? <LoadingSpinner size="small" /> : <><FiXCircle className="inline mr-2" /> Close Ticket</>}
+        {submitting ? (
+          <LoadingSpinner size="small" />
+        ) : (
+          <>
+            <FiXCircle className="w-3.5 h-3.5" />
+            <span>Close Ticket</span>
+          </>
+        )}
       </button>
     </div>
   )

@@ -17,40 +17,45 @@ const statusColors = {
 
 export default function RecentTickets({ tickets }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-        <h2 className="text-lg font-semibold text-gray-900">Recent Tickets</h2>
+    <div className="bg-white rounded shadow-sm border border-gray-100 overflow-hidden">
+      {/* Header */}
+      <div className="px-2 py-1.5 border-b border-gray-100 bg-gray-50">
+        <h2 className="text-[11px] font-semibold text-gray-700">Recent Tickets</h2>
       </div>
-      <div className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+
+      {/* Tickets list */}
+      <div className="divide-y divide-gray-100 max-h-80 overflow-y-auto">
         {tickets.length > 0 ? (
           tickets.map((ticket) => (
             <Link
               key={ticket.id}
               href={`/send-ticket/${ticket.id}`}
-              className="block p-4 hover:bg-gray-50 transition-colors"
+              className="block px-2 py-1.5 hover:bg-gray-50 transition-colors"
             >
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-sm font-medium text-gray-900 truncate">{ticket.title}</p>
-                <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[ticket.status] || 'bg-gray-100 text-gray-800'}`}>
+              <div className="flex items-center justify-between mb-0.5">
+                <p className="text-[10px] font-medium text-gray-800 truncate">{ticket.title}</p>
+                <span className={`px-1.5 py-0.5 text-[8px] font-medium rounded-full ${statusColors[ticket.status] || 'bg-gray-100 text-gray-800'}`}>
                   {ticket.status.replace(/_/g, ' ')}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs text-gray-500">
+              <div className="flex items-center justify-between text-[10px] text-gray-400">
                 <span>#{ticket.ticketNumber} • {ticket.category} • {ticket.priority}</span>
                 <span>{formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}</span>
               </div>
             </Link>
           ))
         ) : (
-          <div className="p-8 text-center text-gray-500">
+          <div className="px-2 py-3 text-center text-[10px] text-gray-400">
             No recent tickets
           </div>
         )}
       </div>
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+
+      {/* Footer */}
+      <div className="px-2 py-1.5 bg-gray-50 border-t border-gray-100">
         <Link
           href="/tickets/ticketlist"
-          className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+          className="text-[9px] text-primary-600 hover:text-primary-700"
         >
           View All Tickets →
         </Link>

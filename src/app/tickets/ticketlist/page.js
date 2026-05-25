@@ -58,14 +58,14 @@ export default function TicketListPage() {
     dateTo: '',
     assignedTo: '',
     page: 1,
-    limit: 10,
+    limit: 15, // increased default per page
   });
 
   const [pagination, setPagination] = useState({
     total: 0,
     pages: 0,
     page: 1,
-    limit: 10,
+    limit: 15,
   });
 
   const [showFilters, setShowFilters] = useState(false);
@@ -75,16 +75,16 @@ export default function TicketListPage() {
   const [sortOrder, setSortOrder] = useState('desc');
 
   const branchOptions = [
-  'ENATHU', 'POOVATTOOR', 'KODUMON', 'HARIPAD', 'THRIPPUNITHURA', 
-  'CHETTIKULANGARA', 'MUTHUKULAM', 'KARUNAGAPALLY', 'CHETTIKULANGARA MAIN', 
-  'KULATHUPUZHA', 'MULAKKUZHA', 'KATTANAM', 'KUMBANAD', 'RANNI', 'VAIKOM', 
-  'ALAPPUZHA', 'PALLIKATHODU', 'PUTHOOR', 'PATHANAMTHITTA', 'MANNAR', 
-  'PRAVINKODU', 'KOTTARAKKARA', 'ANCHAL', 'THRIPPUNITHURA TOWN', 
-  'MUVATTUPUZHA', 'KOTHAMANGALAM', 'THOPPUMPODY', 'PATHANAPURAM', 
-  'MATTANCHERRY', 'ATHANI', 'KECHERY', 'VADANAPALLI', 'KALMANDAPAM'
-];
+    'ENATHU', 'POOVATTOOR', 'KODUMON', 'HARIPAD', 'THRIPPUNITHURA',
+    'CHETTIKULANGARA', 'MUTHUKULAM', 'KARUNAGAPALLY', 'CHETTIKULANGARA MAIN',
+    'KULATHUPUZHA', 'MULAKKUZHA', 'KATTANAM', 'KUMBANAD', 'RANNI', 'VAIKOM',
+    'ALAPPUZHA', 'PALLIKATHODU', 'PUTHOOR', 'PATHANAMTHITTA', 'MANNAR',
+    'PRAVINKODU', 'KOTTARAKKARA', 'ANCHAL', 'THRIPPUNITHURA TOWN',
+    'MUVATTUPUZHA', 'KOTHAMANGALAM', 'THOPPUMPODY', 'PATHANAPURAM',
+    'MATTANCHERRY', 'ATHANI', 'KECHERY', 'VADANAPALLI', 'KALMANDAPAM'
+  ];
 
-  // Fetch tickets with current filters and sorting
+  // Fetch tickets (same logic, unchanged)
   const fetchTickets = useCallback(async () => {
     try {
       setLoading(true);
@@ -109,14 +109,12 @@ export default function TicketListPage() {
       if (!response.ok) throw new Error(data.message || 'Failed to fetch tickets');
 
       setTickets(data.tickets || []);
-      setPagination(
-        data.pagination || {
-          total: 0,
-          pages: 0,
-          page: filters.page,
-          limit: filters.limit,
-        }
-      );
+      setPagination(data.pagination || {
+        total: 0,
+        pages: 0,
+        page: filters.page,
+        limit: filters.limit,
+      });
     } catch (err) {
       console.error('Error fetching tickets:', err);
       setError(err.message);
@@ -126,38 +124,36 @@ export default function TicketListPage() {
     }
   }, [filters, sortBy, sortOrder, toast]);
 
-  // Fetch stats (reuse admin stats endpoint with all data)
+  // Fetch stats
   const fetchStats = useCallback(async () => {
-  try {
-    const response = await fetch('/api/tickets/stats', { credentials: 'include' });
-    if (response.ok) {
-      const data = await response.json();
-      console.log("data stats====>",data)
-      setStats(data.stats || {
-        total: 0,
-        open: 0,
-        pending: 0,
-        resolved: 0,
-        closed: 0,
-      });
+    try {
+      const response = await fetch('/api/tickets/stats', { credentials: 'include' });
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data.stats || {
+          total: 0,
+          open: 0,
+          pending: 0,
+          resolved: 0,
+          closed: 0,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
     }
-  } catch (error) {
-    console.error('Error fetching stats:', error);
-  }
-}, []);
+  }, []);
 
-  // Initial load and when filters/sort change
+  // Initial load
   useEffect(() => {
     fetchTickets();
     fetchStats();
   }, [fetchTickets, fetchStats]);
 
-  // Socket event handlers
+  // Socket events (unchanged)
   useEffect(() => {
     if (!socket) return;
 
     const handleNewTicket = (newTicket) => {
-      // Check if the new ticket matches current filters (basic check)
       const matchesFilters =
         (!filters.status || newTicket.status === filters.status) &&
         (!filters.category || newTicket.category === filters.category) &&
@@ -169,7 +165,7 @@ export default function TicketListPage() {
       if (matchesFilters && filters.page === 1) {
         setTickets((prev) => [newTicket, ...prev].slice(0, filters.limit));
       }
-      fetchStats(); // update stats in background
+      fetchStats();
       toast.info(`New ticket #${newTicket.ticketNumber} created`);
     };
 
@@ -189,7 +185,7 @@ export default function TicketListPage() {
     };
   }, [socket, filters, fetchStats, toast]);
 
-  // Helper functions
+  // Helper functions (unchanged)
   const handleSearch = (e) => {
     e.preventDefault();
     setFilters((prev) => ({ ...prev, page: 1 }));
@@ -249,17 +245,17 @@ export default function TicketListPage() {
 
   const getStatusIcon = (status) => {
     const icons = {
-      OPEN: <FiAlertCircle className="h-5 w-5 text-yellow-500" />,
-      PENDING_MD_APPROVAL: <FiClock className="h-5 w-5 text-purple-500" />,
-      PENDING_THIRD_PARTY: <FiExternalLink className="h-5 w-5 text-orange-500" />,
-      IN_PROGRESS: <FiRefreshCw className="h-5 w-5 text-blue-500" />,
-      APPROVED_BY_MD: <FiThumbsUp className="h-5 w-5 text-green-500" />,
-      REJECTED_BY_MD: <FiThumbsDown className="h-5 w-5 text-red-500" />,
-      REJECTED_BY_SERVICE: <FiThumbsDown className="h-5 w-5 text-red-500" />,
-      RESOLVED: <FiCheckCircle className="h-5 w-5 text-green-500" />,
-      CLOSED: <FiCheckCircle className="h-5 w-5 text-gray-500" />,
+      OPEN: <FiAlertCircle className="h-4 w-4 text-yellow-500" />,
+      PENDING_MD_APPROVAL: <FiClock className="h-4 w-4 text-purple-500" />,
+      PENDING_THIRD_PARTY: <FiExternalLink className="h-4 w-4 text-orange-500" />,
+      IN_PROGRESS: <FiRefreshCw className="h-4 w-4 text-blue-500" />,
+      APPROVED_BY_MD: <FiThumbsUp className="h-4 w-4 text-green-500" />,
+      REJECTED_BY_MD: <FiThumbsDown className="h-4 w-4 text-red-500" />,
+      REJECTED_BY_SERVICE: <FiThumbsDown className="h-4 w-4 text-red-500" />,
+      RESOLVED: <FiCheckCircle className="h-4 w-4 text-green-500" />,
+      CLOSED: <FiCheckCircle className="h-4 w-4 text-gray-500" />,
     };
-    return icons[status] || <FiClock className="h-5 w-5 text-gray-500" />;
+    return icons[status] || <FiClock className="h-4 w-4 text-gray-500" />;
   };
 
   const getStatusColor = (status) => {
@@ -290,8 +286,8 @@ export default function TicketListPage() {
   if (loading && tickets.length === 0) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <LoadingSpinner size="large" />
+        <div className="flex items-center justify-center h-48">
+          <LoadingSpinner size="small" />
         </div>
       </DashboardLayout>
     );
@@ -301,129 +297,121 @@ export default function TicketListPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 p-4 md:p-6">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="space-y-3 p-3 md:p-4">
+        {/* Header - compact */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Tickets</h1>
-            <p className="text-gray-500 text-sm mt-1">Manage and track all support tickets</p>
+            <h1 className="text-lg md:text-xl font-bold text-gray-900">Tickets</h1>
+            <p className="text-[10px] text-gray-500">Manage and track all support tickets</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={exportTickets}
-              className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all shadow-sm text-sm font-medium"
+              className="inline-flex items-center gap-1 px-2 py-1 border border-gray-300 rounded text-[10px] font-medium text-gray-700 bg-white hover:bg-gray-50"
             >
-              <FiDownload className="w-4 h-4" />
+              <FiDownload className="w-3 h-3" />
               Export
             </button>
             <Link
               href="/tickets/new"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all shadow-sm text-sm font-medium"
+              className="inline-flex items-center gap-1 px-2 py-1 bg-primary-600 text-white rounded text-[10px] font-medium hover:bg-primary-700"
             >
-              <FiPlusCircle className="w-4 h-4" />
+              <FiPlusCircle className="w-3 h-3" />
               New Ticket
             </Link>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <StatCard label="Total" value={stats.total} icon={FiBarChart2} color="bg-gray-100 text-gray-600" />
-          <StatCard label="Open" value={stats.open} icon={FiAlertCircle} color="bg-yellow-100 text-yellow-600" />
-          <StatCard label="Pending" value={stats.pending} icon={FiClock} color="bg-purple-100 text-purple-600" />
-          <StatCard label="Resolved" value={stats.resolved} icon={FiCheckCircle} color="bg-green-100 text-green-600" />
-          <StatCard label="Closed" value={stats.closed} icon={FiCheckCircle} color="bg-gray-100 text-gray-600" />
+        {/* Stats Cards - compact */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          <StatCardCompact label="Total" value={stats.total} icon={FiBarChart2} color="bg-gray-100 text-gray-600" />
+          <StatCardCompact label="Open" value={stats.open} icon={FiAlertCircle} color="bg-yellow-100 text-yellow-600" />
+          <StatCardCompact label="Pending" value={stats.pending} icon={FiClock} color="bg-purple-100 text-purple-600" />
+          <StatCardCompact label="Resolved" value={stats.resolved} icon={FiCheckCircle} color="bg-green-100 text-green-600" />
+          <StatCardCompact label="Closed" value={stats.closed} icon={FiCheckCircle} color="bg-gray-100 text-gray-600" />
         </div>
 
-        {/* Search & Filter Bar */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
+        {/* Search & Filter Bar - compact */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${
-                  viewMode === 'list' ? 'bg-primary-100 text-primary-600' : 'text-gray-400 hover:text-gray-600'
-                }`}
+                className={`p-1 rounded ${viewMode === 'list' ? 'bg-primary-100 text-primary-600' : 'text-gray-400'}`}
               >
-                <FiList className="w-5 h-5" />
+                <FiList className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${
-                  viewMode === 'grid' ? 'bg-primary-100 text-primary-600' : 'text-gray-400 hover:text-gray-600'
-                }`}
+                className={`p-1 rounded ${viewMode === 'grid' ? 'bg-primary-100 text-primary-600' : 'text-gray-400'}`}
               >
-                <FiGrid className="w-5 h-5" />
+                <FiGrid className="w-4 h-4" />
               </button>
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center gap-1 text-[10px] text-gray-600 hover:text-gray-900"
             >
-              <FiFilter className="w-5 h-5" />
-              <span className="text-sm font-medium">Filters</span>
+              <FiFilter className="w-3 h-3" />
+              <span>Filters</span>
               {(filters.status || filters.category || filters.priority) && (
-                <span className="bg-primary-100 text-primary-600 text-xs px-2 py-0.5 rounded-full">Active</span>
+                <span className="bg-primary-100 text-primary-600 text-[9px] px-1 rounded-full">●</span>
               )}
             </button>
           </div>
 
-          <form onSubmit={handleSearch} className="flex gap-2">
+          <form onSubmit={handleSearch} className="flex gap-1">
             <div className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <FiSearch className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-3 h-3" />
               <input
                 type="text"
                 value={filters.search}
                 onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
-                placeholder="Search by title, description, or ticket number..."
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Search tickets..."
+                className="w-full pl-6 pr-2 py-1 border border-gray-200 rounded text-[10px] focus:outline-none focus:border-primary-300"
               />
             </div>
-            <button type="submit" className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700">
-              Search
+            <button type="submit" className="px-2 py-1 bg-primary-600 text-white rounded text-[10px] font-medium hover:bg-primary-700">
+              Go
             </button>
           </form>
 
           {showFilters && (
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div className="mt-2 grid grid-cols-2 sm:grid-cols-5 gap-1">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
+                <label className="block text-[9px] font-medium text-gray-600 mb-0.5">Status</label>
                 <select
                   value={filters.status}
                   onChange={(e) => handleFilterChange('status', e.target.value)}
-                  className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                  className="w-full px-2 py-0.5 border border-gray-200 rounded text-[10px]"
                 >
-                  <option value="">All Status</option>
+                  <option value="">All</option>
                   <option value="OPEN">Open</option>
-                  <option value="PENDING_MD_APPROVAL">Pending MD Approval</option>
-                  <option value="PENDING_THIRD_PARTY">Pending Third Party</option>
+                  <option value="PENDING_MD_APPROVAL">MD Approval</option>
                   <option value="IN_PROGRESS">In Progress</option>
-                  <option value="APPROVED_BY_MD">Approved by MD</option>
-                  <option value="REJECTED_BY_MD">Rejected by MD</option>
-                  <option value="REJECTED_BY_SERVICE">Rejected by Service</option>
                   <option value="RESOLVED">Resolved</option>
                   <option value="CLOSED">Closed</option>
                 </select>
               </div>
               <div>
-  <label className="block text-xs font-medium text-gray-700 mb-1">Branch</label>
-  <select
-    value={filters.category}
-    onChange={(e) => handleFilterChange('category', e.target.value)}
-    className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
-  >
-    <option value="">All Branches</option>
-    {branchOptions.map(branch => (
-      <option key={branch} value={branch}>{branch}</option>
-    ))}
-  </select>
-</div>
+                <label className="block text-[9px] font-medium text-gray-600 mb-0.5">Branch</label>
+                <select
+                  value={filters.category}
+                  onChange={(e) => handleFilterChange('category', e.target.value)}
+                  className="w-full px-2 py-0.5 border border-gray-200 rounded text-[10px]"
+                >
+                  <option value="">All</option>
+                  {branchOptions.slice(0, 10).map(branch => (
+                    <option key={branch} value={branch}>{branch}</option>
+                  ))}
+                </select>
+              </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Priority</label>
+                <label className="block text-[9px] font-medium text-gray-600 mb-0.5">Priority</label>
                 <select
                   value={filters.priority}
                   onChange={(e) => handleFilterChange('priority', e.target.value)}
-                  className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                  className="w-full px-2 py-0.5 border border-gray-200 rounded text-[10px]"
                 >
                   <option value="">All</option>
                   <option value="LOW">Low</option>
@@ -433,24 +421,24 @@ export default function TicketListPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">From Date</label>
+                <label className="block text-[9px] font-medium text-gray-600 mb-0.5">From</label>
                 <input
                   type="date"
                   value={filters.dateFrom}
                   onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                  className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                  className="w-full px-2 py-0.5 border border-gray-200 rounded text-[10px]"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">To Date</label>
+                <label className="block text-[9px] font-medium text-gray-600 mb-0.5">To</label>
                 <input
                   type="date"
                   value={filters.dateTo}
                   onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-                  className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                  className="w-full px-2 py-0.5 border border-gray-200 rounded text-[10px]"
                 />
               </div>
-              <div className="flex justify-end items-end lg:col-span-5">
+              <div className="col-span-full flex justify-end">
                 <button
                   onClick={() =>
                     setFilters({
@@ -462,12 +450,12 @@ export default function TicketListPage() {
                       dateTo: '',
                       assignedTo: '',
                       page: 1,
-                      limit: 10,
+                      limit: 15,
                     })
                   }
-                  className="text-sm text-primary-600 hover:text-primary-700"
+                  className="text-[9px] text-primary-600 hover:underline"
                 >
-                  Clear All Filters
+                  Clear all
                 </button>
               </div>
             </div>
@@ -476,112 +464,87 @@ export default function TicketListPage() {
 
         {/* Tickets Display */}
         {error ? (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center">
-            <FiXCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
-            <h3 className="text-lg font-medium text-red-800 mb-2">Error Loading Tickets</h3>
-            <p className="text-red-600">{error}</p>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+            <FiXCircle className="mx-auto h-6 w-6 text-red-500 mb-1" />
+            <h3 className="text-xs font-medium text-red-800">Error</h3>
+            <p className="text-[9px] text-red-600">{error}</p>
           </div>
         ) : tickets.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-            <FiAlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No tickets found</h3>
-            <p className="text-gray-500 mb-6">
-              {filters.search || filters.status || filters.category || filters.priority
-                ? 'Try adjusting your filters'
-                : 'Create your first ticket to get started'}
-            </p>
-            <Link
-              href="/tickets/new"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-            >
-              <FiPlusCircle className="w-4 h-4" />
-              Create New Ticket
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center">
+            <FiAlertCircle className="mx-auto h-6 w-6 text-gray-300 mb-2" />
+            <h3 className="text-xs font-medium text-gray-900 mb-1">No tickets found</h3>
+            <p className="text-[9px] text-gray-500 mb-3">Adjust filters or create a ticket</p>
+            <Link href="/tickets/new" className="inline-flex items-center gap-1 px-2 py-1 bg-primary-600 text-white rounded text-[9px]">
+              <FiPlusCircle className="w-3 h-3" />
+              New Ticket
             </Link>
           </div>
         ) : (
           <>
-            {/* List View */}
+            {/* List View - compact table */}
             {viewMode === 'list' && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="min-w-full text-[10px]">
                     <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left">
+                      <tr className="text-gray-500 font-medium">
+                        <th className="px-2 py-1 text-left w-6">
                           <input
                             type="checkbox"
                             checked={selectedTickets.length === tickets.length}
                             onChange={handleSelectAll}
-                            className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                            className="rounded border-gray-300 text-primary-600"
                           />
                         </th>
-                        <th
-                          onClick={() => handleSort('ticketNumber')}
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700"
-                        >
-                          Ticket #
-                          {sortBy === 'ticketNumber' && <span className="ml-1">{sortOrder === 'asc' ? '↑' : '↓'}</span>}
+                        <th onClick={() => handleSort('ticketNumber')} className="px-2 py-1 text-left cursor-pointer">
+                          Ticket#
                         </th>
-                        <th
-                          onClick={() => handleSort('title')}
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700"
-                        >
+                        <th onClick={() => handleSort('title')} className="px-2 py-1 text-left cursor-pointer">
                           Title
-                          {sortBy === 'title' && <span className="ml-1">{sortOrder === 'asc' ? '↑' : '↓'}</span>}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Branch</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                        <th
-                          onClick={() => handleSort('createdAt')}
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700"
-                        >
+                        <th className="px-2 py-1 text-left">Branch</th>
+                        <th className="px-2 py-1 text-left">Status</th>
+                        <th className="px-2 py-1 text-left">Priority</th>
+                        <th onClick={() => handleSort('createdAt')} className="px-2 py-1 text-left cursor-pointer">
                           Created
-                          {sortBy === 'createdAt' && <span className="ml-1">{sortOrder === 'asc' ? '↑' : '↓'}</span>}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th className="px-2 py-1 text-center w-8">View</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody>
                       {tickets.map((ticket) => (
                         <tr
                           key={ticket.id}
-                          className="hover:bg-gray-50 cursor-pointer transition-colors"
+                          className="hover:bg-gray-50 cursor-pointer border-t border-gray-100"
                           onClick={() => router.push(`/send-ticket/${ticket.id}`)}
                         >
-                          <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                          <td className="px-2 py-1" onClick={(e) => e.stopPropagation()}>
                             <input
                               type="checkbox"
                               checked={selectedTickets.includes(ticket.id)}
                               onChange={() => handleSelectTicket(ticket.id)}
-                              className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                              className="rounded border-gray-300"
                             />
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {ticket.ticketNumber}
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">{ticket.title}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ticket.category}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(ticket.status)}`}>
+                          <td className="px-2 py-1 font-medium text-gray-900">{ticket.ticketNumber}</td>
+                          <td className="px-2 py-1 text-gray-700 truncate max-w-[180px]">{ticket.title}</td>
+                          <td className="px-2 py-1 text-gray-500">{ticket.category}</td>
+                          <td className="px-2 py-1">
+                            <span className={`px-1.5 py-0.5 text-[8px] font-medium rounded-full ${getStatusColor(ticket.status)}`}>
                               {ticket.status.replace(/_/g, ' ')}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(ticket.priority)}`}>
+                          <td className="px-2 py-1">
+                            <span className={`px-1.5 py-0.5 text-[8px] font-medium rounded-full ${getPriorityColor(ticket.priority)}`}>
                               {ticket.priority}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-2 py-1 text-gray-500 whitespace-nowrap">
                             {formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm" onClick={(e) => e.stopPropagation()}>
-                            <Link
-                              href={`/tickets/${ticket.id}`}
-                              className="text-primary-600 hover:text-primary-900 inline-flex items-center gap-1"
-                            >
-                              <FiEye className="w-4 h-4" />
-                              <span className="sr-only">View</span>
+                          <td className="px-2 py-1 text-center" onClick={(e) => e.stopPropagation()}>
+                            <Link href={`/tickets/${ticket.id}`} className="text-primary-600 hover:text-primary-800">
+                              <FiEye className="w-3 h-3" />
                             </Link>
                           </td>
                         </tr>
@@ -592,20 +555,20 @@ export default function TicketListPage() {
               </div>
             )}
 
-            {/* Grid View */}
+            {/* Grid View - compact cards */}
             {viewMode === 'grid' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                 {tickets.map((ticket) => (
                   <div
                     key={ticket.id}
-                    className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all cursor-pointer overflow-hidden"
+                    className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md cursor-pointer overflow-hidden"
                     onClick={() => router.push(`/tickets/${ticket.id}`)}
                   >
-                    <div className="p-5">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-2">
+                    <div className="p-2">
+                      <div className="flex items-start justify-between mb-1">
+                        <div className="flex items-center gap-1">
                           {getStatusIcon(ticket.status)}
-                          <span className="text-sm font-medium text-gray-900">{ticket.ticketNumber}</span>
+                          <span className="text-[9px] font-medium text-gray-900">{ticket.ticketNumber}</span>
                         </div>
                         <input
                           type="checkbox"
@@ -614,74 +577,55 @@ export default function TicketListPage() {
                             e.stopPropagation();
                             handleSelectTicket(ticket.id);
                           }}
-                          className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                          className="rounded border-gray-300 w-3 h-3"
                           onClick={(e) => e.stopPropagation()}
                         />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{ticket.title}</h3>
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-3">{ticket.description}</p>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(ticket.status)}`}>
+                      <h3 className="text-[10px] font-semibold text-gray-900 line-clamp-2 mb-1">{ticket.title}</h3>
+                      <p className="text-[8px] text-gray-500 line-clamp-2 mb-1">{ticket.description?.slice(0, 80)}</p>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className={`px-1 py-0.5 text-[7px] font-medium rounded-full ${getStatusColor(ticket.status)}`}>
                           {ticket.status.replace(/_/g, ' ')}
                         </span>
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(ticket.priority)}`}>
+                        <span className={`px-1 py-0.5 text-[7px] font-medium rounded-full ${getPriorityColor(ticket.priority)}`}>
                           {ticket.priority}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <FiUser className="w-3 h-3" />
-                          {ticket.createdBy?.name || 'Unknown'}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <FiClock className="w-3 h-3" />
-                          {formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}
-                        </div>
+                      <div className="flex items-center justify-between text-[8px] text-gray-500">
+                        <span className="flex items-center gap-0.5"><FiUser className="w-2 h-2" /> {ticket.createdBy?.name?.slice(0, 12)}</span>
+                        <span className="flex items-center gap-0.5"><FiClock className="w-2 h-2" /> {formatDistanceToNow(new Date(ticket.createdAt), { addSuffix: true })}</span>
                       </div>
-                      {ticket.assignedTo && (
-                        <div className="mt-2 pt-2 border-t border-gray-100 text-xs text-gray-500">
-                          Assigned to: {ticket.assignedTo.name}
-                        </div>
-                      )}
                     </div>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Pagination */}
+            {/* Pagination - compact */}
             {pagination.pages > 1 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">{(pagination.page - 1) * pagination.limit + 1}</span> to{' '}
-                  <span className="font-medium">
-                    {Math.min(pagination.page * pagination.limit, pagination.total)}
-                  </span>{' '}
-                  of <span className="font-medium">{pagination.total}</span> results
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-wrap items-center justify-between gap-2 text-[9px]">
+                <p className="text-gray-600">
+                  {(pagination.page - 1) * pagination.limit + 1} – {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total}
                 </p>
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <button
                     onClick={() => handlePageChange(pagination.page - 1)}
                     disabled={pagination.page === 1}
-                    className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-2 py-0.5 border border-gray-300 rounded disabled:opacity-40"
                   >
-                    Previous
+                    Prev
                   </button>
-                  {[...Array(Math.min(5, pagination.pages))].map((_, i) => {
+                  {[...Array(Math.min(3, pagination.pages))].map((_, i) => {
                     let pageNum;
-                    if (pagination.pages <= 5) pageNum = i + 1;
-                    else if (pagination.page <= 3) pageNum = i + 1;
-                    else if (pagination.page >= pagination.pages - 2) pageNum = pagination.pages - 4 + i;
-                    else pageNum = pagination.page - 2 + i;
+                    if (pagination.pages <= 3) pageNum = i + 1;
+                    else if (pagination.page <= 2) pageNum = i + 1;
+                    else if (pagination.page >= pagination.pages - 1) pageNum = pagination.pages - 2 + i;
+                    else pageNum = pagination.page - 1 + i;
                     return (
                       <button
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum)}
-                        className={`px-3 py-1 border rounded-lg text-sm font-medium ${
-                          pagination.page === pageNum
-                            ? 'bg-primary-600 text-white border-primary-600'
-                            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`px-2 py-0.5 border rounded ${pagination.page === pageNum ? 'bg-primary-600 text-white border-primary-600' : 'border-gray-300 text-gray-700'}`}
                       >
                         {pageNum}
                       </button>
@@ -690,7 +634,7 @@ export default function TicketListPage() {
                   <button
                     onClick={() => handlePageChange(pagination.page + 1)}
                     disabled={pagination.page === pagination.pages}
-                    className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-2 py-0.5 border border-gray-300 rounded disabled:opacity-40"
                   >
                     Next
                   </button>
@@ -704,17 +648,17 @@ export default function TicketListPage() {
   );
 }
 
-// Stat Card Component (reusable, modern)
-function StatCard({ label, value, icon: Icon, color }) {
+// Compact Stat Card Component
+function StatCardCompact({ label, value, icon: Icon, color }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-all">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2 hover:shadow transition-all">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide">{label}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+          <p className="text-[8px] text-gray-500 uppercase tracking-wide">{label}</p>
+          <p className="text-base font-bold text-gray-900">{value}</p>
         </div>
-        <div className={`p-3 rounded-full ${color}`}>
-          <Icon className="w-5 h-5" />
+        <div className={`p-1.5 rounded-full ${color}`}>
+          <Icon className="w-3 h-3" />
         </div>
       </div>
     </div>

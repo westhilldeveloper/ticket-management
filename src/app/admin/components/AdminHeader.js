@@ -13,22 +13,22 @@ export default function AdminHeader({
   isRefreshing = false,
 }) {
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Admin Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">
-          Welcome back, {userName}. Here’s what’s happening with your system.
+        <h1 className="text-base font-bold text-gray-900">Admin Dashboard</h1>
+        <p className="text-[10px] text-gray-500 mt-0.5">
+          Welcome back, {userName}. Here’s what’s happening.
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-1.5">
         {/* Request/Service Toggle */}
-        <div className="flex items-center bg-gray-100 rounded-lg p-1 shadow-sm">
+        <div className="flex items-center bg-gray-100 rounded p-0.5">
           {['', 'REQUEST', 'SERVICE'].map((type) => (
             <button
               key={type || 'all'}
               onClick={() => onRequestServiceTypeChange(type)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+              className={`px-2 py-0.5 text-[11px] font-medium rounded transition-all ${
                 requestServiceType === type
                   ? 'bg-white text-primary-600 shadow-sm ring-1 ring-gray-200'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
@@ -42,28 +42,27 @@ export default function AdminHeader({
         {/* Export Button */}
         <button
           onClick={onExport}
-          className="inline-flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all text-sm font-medium shadow-sm"
+          className="inline-flex items-center gap-1 px-2 py-0.5 border border-gray-300 rounded text-gray-700 bg-white hover:bg-gray-50 text-[9px] font-medium shadow-sm"
           title="Export report"
         >
-          <FiDownload className="w-4 h-4" />
+          <FiDownload className="w-4 h-5" />
           <span className="hidden sm:inline">Export</span>
         </button>
 
-        {/* Refresh Button with Spinner */}
+        {/* Refresh Button */}
         <button
           onClick={onRefresh}
           disabled={isRefreshing}
-          className="p-2 text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-primary-600 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-1 text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
           title="Refresh dashboard"
-          aria-label="Refresh"
         >
-          <FiRefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+          <FiRefreshCw className={`w-3 h-3 ${isRefreshing ? 'animate-spin' : ''}`} />
         </button>
 
         {/* Connection Status */}
-        <div className="flex items-center gap-1.5 px-2 py-1 bg-gray-50 rounded-full border border-gray-200 text-xs">
-          <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
-          <span className="text-gray-600 font-medium">{isConnected ? 'Live' : 'Connecting...'}</span>
+        <div className="flex items-center gap-1 px-1.5 py-0.5 bg-gray-50 rounded-full border border-gray-200">
+          <div className={`h-1.5 w-1.5 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
+          <span className="text-[8px] text-gray-600 font-medium">{isConnected ? 'Live' : 'Connecting...'}</span>
         </div>
       </div>
     </div>

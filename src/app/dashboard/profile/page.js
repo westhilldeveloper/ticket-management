@@ -6,8 +6,8 @@ import { useToast } from '@/app/context/ToastContext';
 import DashboardLayout from '@/app/components/layouts/DashboardLayout';
 import LoadingSpinner from '@/app/components/common/LoadingSpinner';
 import { 
-  FiUser, FiMail, FiPhone, FiBriefcase, FiLock, FiSave, FiEye, FiEyeOff, 
-  FiTrash2, FiCalendar, FiShield 
+  FiUser, FiMail, FiBriefcase, FiLock, FiSave, FiEye, FiEyeOff, 
+  FiTrash2, FiCalendar, FiShield, FiAlertCircle
 } from 'react-icons/fi';
 import { format } from 'date-fns';
 
@@ -19,19 +19,13 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    branch: '',
-    department: '',
-  });
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   });
   const [showPasswords, setShowPasswords] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [passwordErrors, setPasswordErrors] = useState({});
 
   useEffect(() => {
     if (user?.id) {
@@ -45,12 +39,6 @@ export default function ProfilePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       setProfile(data.user);
-      setFormData({
-        name: data.user.name || '',
-        email: data.user.email || '',
-        branch: data.user.branch || '',
-        department: data.user.department || '',
-      });
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -58,28 +46,10 @@ export default function ProfilePage() {
     }
   };
 
-  const handleProfileChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
-  };
-
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswordData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
-  };
-
-  const validateProfile = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (passwordErrors[name]) setPasswordErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const validatePassword = () => {
@@ -89,33 +59,34 @@ export default function ProfilePage() {
         newErrors.currentPassword = 'Current password is required to set a new password';
       }
       if (passwordData.newPassword.length < 8) {
-        newErrors.newPassword = 'New password must be at least 8 characters';
+        newErrors.newPassword = 'Password must be at least 8 characters';
       }
       if (passwordData.newPassword !== passwordData.confirmPassword) {
-        newErrors.confirmPassword = 'Passwords do not match';
+        newErrors.confirmPassword = 'New passwords do not match';
       }
+    } else if (passwordData.currentPassword) {
+      newErrors.newPassword = 'New password is required when current password is provided';
     }
-    setErrors(prev => ({ ...prev, ...newErrors }));
+    setPasswordErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateProfile()) return;
-    if (passwordData.newPassword && !validatePassword()) return;
+    if (!validatePassword()) return;
+
+    // If no password change attempted, do nothing
+    if (!passwordData.newPassword && !passwordData.currentPassword) {
+      toast.info('No password change requested');
+      return;
+    }
 
     setSaving(true);
     try {
       const payload = {
-        name: formData.name,
-        email: formData.email,
-        branch: formData.branch,
-        department: formData.department,
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
       };
-      if (passwordData.newPassword) {
-        payload.currentPassword = passwordData.currentPassword;
-        payload.newPassword = passwordData.newPassword;
-      }
 
       const res = await fetch('/api/users/profile', {
         method: 'PUT',
@@ -126,9 +97,9 @@ export default function ProfilePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
-      toast.success('Profile updated successfully');
+      toast.success('Password updated successfully');
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      fetchProfile(); // refresh profile data
+      setPasswordErrors({});
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -154,7 +125,6 @@ export default function ProfilePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       toast.success('Deletion request submitted. You will receive a confirmation email.');
-      // Optionally redirect to logout after a delay
       setTimeout(() => {
         window.location.href = '/api/auth/logout';
       }, 3000);
@@ -178,166 +148,183 @@ export default function ProfilePage() {
   if (!profile) {
     return (
       <DashboardLayout>
-        <div className="text-center py-12">Unable to load profile.</div>
+        <div className="flex justify-center items-center h-64 text-gray-500">
+          <FiAlertCircle className="mr-2" /> Unable to load profile.
+        </div>
       </DashboardLayout>
     );
   }
 
-  // Format creation date (European style: DD/MM/YYYY)
   const formattedCreatedAt = profile.createdAt
     ? format(new Date(profile.createdAt), 'dd/MM/yyyy')
     : '—';
 
+  // Bottom border style for password inputs only
+  const inputClassName = (hasError = false) => `
+    w-full px-0 py-2 text-gray-800 bg-transparent border-0 border-b-2 
+    ${hasError ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-pink-400'}
+    focus:outline-none focus:ring-0 transition-colors duration-150
+  `;
+
+  const labelClassName = "block text-sm font-medium text-gray-600 mb-1";
+
   return (
     <DashboardLayout>
-      <div className="max-w-4xl mx-auto py-8 px-4">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h1 className="text-xl font-semibold text-gray-900">My Profile</h1>
-            <p className="text-sm text-gray-500 mt-1">Manage your account information</p>
+      <div className="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          {/* Header */}
+          <div className="px-6 py-5 bg-white border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center">
+                <FiUser className="w-4 h-4 text-pink-600" />
+              </div>
+              <div>
+                <h1 className="text-xl font-semibold text-gray-900">My Profile</h1>
+                <p className="text-sm text-gray-500 mt-0.5">View your account information –  password can be changed</p>
+              </div>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            {/* Personal Information */}
-            <div className="space-y-4">
-              <h2 className="text-md font-medium text-gray-900 flex items-center gap-2">
-                <FiUser className="text-gray-500" /> Personal Information
+          <form onSubmit={handleSubmit} className="p-6 space-y-8">
+            {/* Personal Information – Read only */}
+            <section className="space-y-5">
+              <h2 className="text-base font-semibold text-gray-800 flex items-center gap-2 border-l-3 border-pink-500 pl-3">
+                Personal Information (read only)
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleProfileChange}
-                    className={`input-field w-full ${errors.name ? 'border-red-500' : ''}`}
-                  />
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                  <label className={labelClassName}>Full Name</label>
+                  <div className="pt-2 text-gray-700 text-sm border-b border-gray-100 pb-2">
+                    {profile.name || '—'}
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleProfileChange}
-                    className={`input-field w-full ${errors.email ? 'border-red-500' : ''}`}
-                  />
-                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                  <label className={labelClassName}>Email Address</label>
+                  <div className="pt-2 text-gray-700 text-sm border-b border-gray-100 pb-2">
+                    {profile.email || '—'}
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                  <input
-                    type="text"
-                    name="branch"
-                    value={formData.branch}
-                    onChange={handleProfileChange}
-                    className="input-field w-full"
-                    placeholder="e.g., Kochi, Bangalore"
-                  />
+                  <label className={labelClassName}>Branch / Location</label>
+                  <div className="pt-2 text-gray-700 text-sm border-b border-gray-100 pb-2">
+                    {profile.branch || '—'}
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                  <input
-                    type="text"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleProfileChange}
-                    className="input-field w-full"
-                    placeholder="e.g., IT, HR, Finance"
-                  />
+                  <label className={labelClassName}>Department</label>
+                  <div className="pt-2 text-gray-700 text-sm border-b border-gray-100 pb-2">
+                    {profile.department || '—'}
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                  <input
-                    type="text"
-                    value={profile.role?.replace('_', ' ')}
-                    disabled
-                    className="input-field w-full bg-gray-50 text-gray-500"
-                  />
+                  <label className={labelClassName}>Role</label>
+                  <div className="pt-2 text-gray-700 text-sm flex items-center gap-2">
+                    <FiBriefcase className="w-4 h-4 text-gray-400" />
+                    <span>{profile.role?.replace('_', ' ') || '—'}</span>
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Created</label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <FiCalendar className="text-gray-400" />
-                    <span className="text-sm text-gray-600">{formattedCreatedAt}</span>
+                  <label className={labelClassName}>Member Since</label>
+                  <div className="pt-2 text-gray-700 text-sm flex items-center gap-2">
+                    <FiCalendar className="w-4 h-4 text-gray-400" />
+                    <span>{formattedCreatedAt}</span>
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Change Password */}
-            <div className="pt-4 border-t border-gray-200">
-              <h2 className="text-md font-medium text-gray-900 flex items-center gap-2 mb-4">
-                <FiLock className="text-gray-500" /> Change Password
+            {/* Change Password – Editable */}
+            <section className="pt-2 border-t border-gray-100">
+              <h2 className="text-base font-semibold text-gray-800 flex items-center gap-2 border-l-3 border-pink-500 pl-3 mb-5">
+                Change Password
               </h2>
 
-              <div className="space-y-4 max-w-md">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                  <label className={labelClassName}>Current Password</label>
                   <input
                     type={showPasswords ? 'text' : 'password'}
                     name="currentPassword"
                     value={passwordData.currentPassword}
                     onChange={handlePasswordChange}
-                    className="input-field w-full"
+                    className={inputClassName(!!passwordErrors.currentPassword)}
+                    placeholder="Enter current password"
                   />
-                  {errors.currentPassword && <p className="text-red-500 text-xs mt-1">{errors.currentPassword}</p>}
+                  {passwordErrors.currentPassword && (
+                    <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                      <FiAlertCircle className="w-3 h-3" /> {passwordErrors.currentPassword}
+                    </p>
+                  )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                  <input
-                    type={showPasswords ? 'text' : 'password'}
-                    name="newPassword"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    className="input-field w-full"
-                  />
-                  {errors.newPassword && <p className="text-red-500 text-xs mt-1">{errors.newPassword}</p>}
-                  <p className="text-xs text-gray-400 mt-1">Minimum 8 characters</p>
+                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className={labelClassName}>New Password</label>
+                    <input
+                      type={showPasswords ? 'text' : 'password'}
+                      name="newPassword"
+                      value={passwordData.newPassword}
+                      onChange={handlePasswordChange}
+                      className={inputClassName(!!passwordErrors.newPassword)}
+                      placeholder="Minimum 8 characters"
+                    />
+                    {passwordErrors.newPassword && (
+                      <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                        <FiAlertCircle className="w-3 h-3" /> {passwordErrors.newPassword}
+                      </p>
+                    )}
+                    <p className="text-xs text-gray-400 mt-1.5">Minimum 8 characters</p>
+                  </div>
+
+                  <div>
+                    <label className={labelClassName}>Confirm New Password</label>
+                    <input
+                      type={showPasswords ? 'text' : 'password'}
+                      name="confirmPassword"
+                      value={passwordData.confirmPassword}
+                      onChange={handlePasswordChange}
+                      className={inputClassName(!!passwordErrors.confirmPassword)}
+                      placeholder="Retype new password"
+                    />
+                    {passwordErrors.confirmPassword && (
+                      <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                        <FiAlertCircle className="w-3 h-3" /> {passwordErrors.confirmPassword}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                  <input
-                    type={showPasswords ? 'text' : 'password'}
-                    name="confirmPassword"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    className="input-field w-full"
-                  />
-                  {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
+                <div className="md:col-span-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswords(!showPasswords)}
+                    className="inline-flex items-center gap-1.5 text-sm text-pink-600 hover:text-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-1 rounded-md px-2 py-1"
+                  >
+                    {showPasswords ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
+                    {showPasswords ? 'Hide Passwords' : 'Show Passwords'}
+                  </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => setShowPasswords(!showPasswords)}
-                  className="text-sm text-primary-600 hover:text-primary-700 flex items-center gap-1"
-                >
-                  {showPasswords ? <FiEyeOff /> : <FiEye />}
-                  {showPasswords ? 'Hide' : 'Show'} Passwords
-                </button>
               </div>
-            </div>
+            </section>
 
-            {/* GDPR / Data Protection Notice */}
-            <div className="pt-4 border-t border-gray-200 bg-blue-50 p-4 rounded-lg">
+            {/* GDPR Notice */}
+            <section className="bg-gray-50 rounded-xl border border-gray-200 p-5">
               <div className="flex items-start gap-3">
-                <FiShield className="text-blue-600 mt-0.5" size={20} />
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <FiShield className="w-4 h-4 text-blue-600" />
+                </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900">Your Data Protection Rights (GDPR)</h3>
-                  <p className="text-xs text-gray-700 mt-1">
+                  <p className="text-xs text-gray-600 mt-1 leading-relaxed">
                     Under the General Data Protection Regulation (GDPR), you have the right to:
                   </p>
-                  <ul className="text-xs text-gray-700 mt-2 list-disc list-inside space-y-0.5">
+                  <ul className="text-xs text-gray-600 mt-2 space-y-1 list-disc list-inside">
                     <li><strong>Access</strong> – request a copy of your personal data.</li>
                     <li><strong>Rectification</strong> – correct inaccurate or incomplete data.</li>
                     <li><strong>Erasure</strong> – request deletion of your data (Right to be forgotten).</li>
@@ -345,23 +332,21 @@ export default function ProfilePage() {
                     <li><strong>Portability</strong> – receive your data in a structured format.</li>
                     <li><strong>Object</strong> – object to certain processing (e.g., direct marketing).</li>
                   </ul>
-                  <p className="text-xs text-gray-500 mt-2">
-                    For any request, please contact our Data Protection Officer at <a href="mailto:privacy@example.com" className="text-blue-600 underline">privacy@example.com</a>.
+                  <p className="text-xs text-gray-500 mt-3 pt-1 border-t border-gray-200">
+                    For any request, please contact our Data Protection Officer.
                   </p>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
-              
-
+            {/* Action Buttons – only delete and save password */}
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-gray-100">
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
+                className="inline-flex items-center px-5 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1 shadow-sm"
               >
-                {saving ? <LoadingSpinner size="small" /> : <><FiSave className="mr-2" /> Save Changes</>}
+                {saving ? <LoadingSpinner size="small" /> : <><FiSave className="mr-2" /> Update Password</>}
               </button>
             </div>
           </form>

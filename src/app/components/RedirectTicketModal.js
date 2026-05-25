@@ -63,24 +63,24 @@ export default function RedirectTicketModal({ isOpen, onClose, ticketId, onRedir
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Redirect Ticket</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <FiX className="h-5 w-5" />
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-2">
+      <div className="bg-white rounded shadow-sm w-full max-w-sm p-3">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-xs font-semibold text-gray-800">Redirect Ticket</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <FiX className="w-3.5 h-3.5" />
           </button>
         </div>
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
+          <div className="space-y-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-[9px] font-medium text-gray-600 mb-0.5">
                 Target Department *
               </label>
               <select
                 value={targetDepartment}
                 onChange={(e) => setTargetDepartment(e.target.value)}
-                className="w-full border rounded px-3 py-2"
+                className="w-full border border-gray-200 rounded px-2 py-1 text-[10px] focus:outline-none focus:border-primary-300"
                 required
               >
                 <option value="">Select department</option>
@@ -91,13 +91,13 @@ export default function RedirectTicketModal({ isOpen, onClose, ticketId, onRedir
             </div>
             {targetDepartment && users.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-[9px] font-medium text-gray-600 mb-0.5">
                   Assign To (optional)
                 </label>
                 <select
                   value={assignedToId}
                   onChange={(e) => setAssignedToId(e.target.value)}
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full border border-gray-200 rounded px-2 py-1 text-[10px]"
                 >
                   <option value="">Unassigned</option>
                   {users.map(user => (
@@ -107,32 +107,32 @@ export default function RedirectTicketModal({ isOpen, onClose, ticketId, onRedir
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-[9px] font-medium text-gray-600 mb-0.5">
                 Reason (optional)
               </label>
               <textarea
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                rows="3"
-                className="w-full border rounded px-3 py-2"
+                rows="2"
+                className="w-full border border-gray-200 rounded px-2 py-1 text-[10px]"
                 placeholder="Why is this ticket being redirected?"
               />
             </div>
           </div>
-          <div className="mt-6 flex justify-end space-x-3">
+          <div className="mt-3 flex justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-50"
+              className="px-2 py-1 border border-gray-200 rounded text-[9px] text-gray-600 hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50"
+              className="px-2 py-1 bg-primary-600 text-white rounded text-[9px] font-medium hover:bg-primary-700 disabled:opacity-50"
             >
-              {loading ? 'Redirecting...' : 'Redirect'}
+              {loading ? '...' : 'Redirect'}
             </button>
           </div>
         </form>

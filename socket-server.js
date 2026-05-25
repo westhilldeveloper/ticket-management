@@ -8,7 +8,8 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin: 'https://tickets.coinplus.co.in',
+    origin:[ 'https://tickets.coinplus.co.in',
+     'http://localhost:3000'],
     methods: ['GET', 'POST'],
     credentials: true,
   },

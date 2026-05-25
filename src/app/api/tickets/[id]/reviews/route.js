@@ -5,7 +5,7 @@ import { emitTicketUpdate } from '@/app/lib/socket'
 
 export async function POST(request, { params }) {
   try {
-    const { id } = params
+     const { id } = await params;
     const { content, reviewType } = await request.json()
 
     // Get token from cookies
@@ -19,7 +19,7 @@ export async function POST(request, { params }) {
     }
 
     // Verify token
-    const decoded = verifyToken(token)
+    const decoded = await verifyToken(token)
     if (!decoded || !decoded.id) {
       return NextResponse.json(
         { message: 'Invalid token' },

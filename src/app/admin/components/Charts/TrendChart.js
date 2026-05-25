@@ -109,7 +109,7 @@ export default function TrendChart({ stats, timeRange }) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Ticket Trend</h2>
+        <h2 className="text-md font-semibold text-gray-900">Ticket Trend</h2>
         <div className="flex items-center space-x-2">
           <FiTrendingUp className="text-gray-400" />
           <span className="text-sm text-gray-600">
@@ -117,7 +117,7 @@ export default function TrendChart({ stats, timeRange }) {
           </span>
         </div>
       </div>
-      <div className="h-24">
+      <div className="h-26">
         <Line data={data} options={options} />
       </div>
     </div>

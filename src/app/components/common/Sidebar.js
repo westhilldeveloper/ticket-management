@@ -18,6 +18,7 @@ import {
   FiUserCheck
 } from 'react-icons/fi'
 import { useAuth } from '../../context/AuthContext'
+import Image from 'next/image'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -72,7 +73,7 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
   }, [isOpen, onClose])
 
   if (!isClient) {
-    return <div className="hidden lg:block lg:w-64 flex-shrink-0" aria-hidden="true" />
+    return <div className="hidden lg:block lg:w-20 flex-shrink-0" aria-hidden="true" />
   }
 
   if (authLoading) {
@@ -96,23 +97,22 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
 
   // Navigation definitions (same as before)
   const baseNavigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: FiHome, description: 'Overview and statistics', roles: ['EMPLOYEE', 'MD','SUPER_ADMIN', 'SERVICE_TEAM'] },
-    { name: 'New Ticket', href: '/tickets/new', icon: FiPlusCircle, description: 'Create a support ticket', roles: ['EMPLOYEE', 'SUPER_ADMIN'] },
-    { name: 'History', href: '/tickets/history', icon: FiArchive, description: 'Ticket history', roles: ['EMPLOYEE', 'ADMIN','MD', 'SUPER_ADMIN'] },
+    { name: 'Dashboard', href: '/dashboard', icon: FiHome, description: 'Overview', roles: ['EMPLOYEE', 'MD','SUPER_ADMIN', 'SERVICE_TEAM'] },
+    { name: 'New Ticket', href: '/tickets/new', icon: FiPlusCircle, description: 'Create', roles: ['EMPLOYEE', 'SUPER_ADMIN'] },
+    { name: 'History', href: '/tickets/history', icon: FiArchive, description: 'History', roles: ['EMPLOYEE', 'ADMIN','MD', 'SUPER_ADMIN'] },
   ]
 
   const adminNavigation = [
-    { name: 'Team Dashboard', href: '/admin', icon: FiUsers, description: 'Team overview', roles: ['ADMIN', 'SUPER_ADMIN'] },
-    { name: 'All Tickets', href: '/admin/tickets', icon: FiList, description: 'Manage all tickets', roles: ['ADMIN', 'SUPER_ADMIN'] },
-    
+    { name: 'Team Dashboard', href: '/admin', icon: FiUsers, description: 'Team', roles: ['ADMIN', 'SUPER_ADMIN'] },
+    { name: 'All Tickets', href: '/tickets/ticketlist', icon: FiList, description: 'All tickets', roles: ['ADMIN', 'SUPER_ADMIN'] },
   ]
 
   const superAdminNavigation = [
-    { name: 'User Management', href: '/admin/users', icon: FiUserCheck, description: 'Manage users and roles', roles: ['SUPER_ADMIN'] },
-    { name: 'System Settings', href: '/admin/settings', icon: FiSettings, description: 'System configuration', roles: ['SUPER_ADMIN'] },
-    { name: 'Audit Logs', href: '/admin/audit', icon: FiShield, description: 'Security and audit logs', roles: ['SUPER_ADMIN'] },
-    { name: 'Create Categories', href: '/admin/categories', icon: FiShield, description: 'ADMIN HR etc', roles: ['SUPER_ADMIN'] },
-    { name: 'Add Services', href: '/admin/item-types', icon: FiShield, description: 'Service/Request items', roles: ['SUPER_ADMIN'] },
+    { name: 'User Management', href: '/admin/users', icon: FiUserCheck, description: 'Users', roles: ['SUPER_ADMIN'] },
+    { name: 'System Settings', href: '/admin/settings', icon: FiSettings, description: 'Settings', roles: ['SUPER_ADMIN'] },
+    { name: 'Audit Logs', href: '/admin/audit', icon: FiShield, description: 'Audit', roles: ['SUPER_ADMIN'] },
+    { name: 'Create Categories', href: '/admin/categories', icon: FiShield, description: 'Categories', roles: ['SUPER_ADMIN'] },
+    { name: 'Add Services', href: '/admin/item-types', icon: FiShield, description: 'Services', roles: ['SUPER_ADMIN'] },
     { name: 'Reports', href: '/dashboard/reports/detailed', icon: FiList, description: 'Reports', roles: ['MD', 'SUPER_ADMIN'] },
   ]
 
@@ -170,75 +170,73 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
         aria-hidden="true"
       />
 
-      {/* Sidebar - now fixed on all screens */}
+      {/* Sidebar */}
       <aside
         className={classNames(
           'fixed inset-y-0 left-0 transform transition-all duration-300 ease-in-out z-40',
-          'bg-white shadow-xl',
+          'bg-white shadow-sm',
           'flex flex-col border-r border-gray-200',
-          collapsed ? 'w-20' : 'w-64',
-          // Position below navbar (navbar height = 4rem)
+          collapsed ? 'w-16' : 'w-56',
           'top-16 h-[calc(100vh-4rem)]',
-          // Mobile handling
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
         aria-label="Sidebar navigation"
         role="complementary"
       >
         {/* Header with logo and collapse button */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 flex-shrink-0">
-          <div className="flex items-center space-x-2">
-            <div className="h-8 w-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center shadow-sm">
-              <span className="text-white font-bold text-sm">TS</span>
-            </div>
-            {!collapsed && <h1 className="text-lg font-semibold text-gray-900">TicketFlow</h1>}
+        <div className="flex items-center justify-between h-12 px-2 border-b border-gray-100 flex-shrink-0">
+          <div className="flex items-center justify-center w-full">
+            {!collapsed && <span className="text-sm font-semibold text-gray-700">TicketFlow</span>}
+            <Image
+              src="/images/coupon.gif"
+              alt="Logo"
+              width={22}
+              height={22}
+              className="object-contain"
+            />
           </div>
-          
-          {/* Collapse button */}
           <button
             onClick={toggleCollapse}
-            className="hidden lg:flex p-1.5 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
-            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className="hidden lg:flex p-1 rounded text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none"
+            aria-label={collapsed ? 'Expand' : 'Collapse'}
           >
             <FiChevronRight 
               className={classNames(
-                'h-5 w-5 transition-transform duration-300',
+                'h-4 w-4 transition-transform duration-300',
                 collapsed ? 'rotate-180' : ''
               )} 
             />
           </button>
-
-          {/* Close button (mobile) */}
           <button
             onClick={onClose}
-            className="lg:hidden p-1.5 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="lg:hidden p-1 rounded text-gray-400 hover:text-gray-500"
             aria-label="Close sidebar"
           >
-            <FiX className="h-5 w-5" />
+            <FiX className="h-4 w-4" />
           </button>
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="mx-4 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg" role="alert">
-            <div className="flex items-start space-x-2">
-              <FiAlertCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-              <p className="text-xs text-red-700">{error}</p>
+          <div className="mx-2 mt-2 p-2 bg-red-50 border border-red-200 rounded text-[9px] text-red-700">
+            <div className="flex items-center gap-1">
+              <FiAlertCircle className="h-3 w-3 flex-shrink-0" />
+              <span>{error}</span>
             </div>
           </div>
         )}
 
         {/* Navigation */}
-        <div className="flex-1 overflow-y-auto py-6 px-3">
-          <nav className="space-y-6" aria-label="Main navigation">
+        <div className="flex-1 overflow-y-auto py-3 px-2">
+          <nav className="space-y-4">
             {mainNavItems.length > 0 && (
               <div>
                 {!collapsed && (
-                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                  <h3 className="px-1 text-[9px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
                     Main
                   </h3>
                 )}
-                <ul className="space-y-1">
+                <ul className="space-y-0.5">
                   {mainNavItems.map((item) => {
                     const Icon = item.icon
                     const active = isActive(item.href)
@@ -247,11 +245,11 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
                         <Link
                           href={item.href}
                           className={classNames(
-                            'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200',
+                            'group flex items-center rounded-md transition-all duration-200 text-[14px] font-medium',
                             active
-                              ? 'bg-primary-50 text-primary-700'
-                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900',
-                            collapsed ? 'justify-center' : ''
+                              ? 'bg-pink-50 text-primary-700'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                            collapsed ? 'justify-center py-2 px-0' : 'px-2 py-1.5'
                           )}
                           onClick={handleLinkClick}
                           aria-current={active ? 'page' : undefined}
@@ -259,19 +257,16 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
                         >
                           <Icon
                             className={classNames(
-                              'h-5 w-5 flex-shrink-0',
+                              'h-4 w-4 flex-shrink-0',
                               active
-                                ? 'text-primary-600'
+                                ? 'text-pink-600'
                                 : 'text-gray-400 group-hover:text-gray-500',
-                              collapsed ? 'mr-0' : 'mr-3'
+                              collapsed ? 'mr-0' : 'mr-2'
                             )}
                             aria-hidden="true"
                           />
                           {!collapsed && (
-                            <>
-                              <span className="flex-1 truncate">{item.name}</span>
-                              {active && <span className="block h-2 w-2 rounded-full bg-primary-600" />}
-                            </>
+                            <span className="flex-1 truncate">{item.name}</span>
                           )}
                         </Link>
                       </li>
@@ -284,11 +279,11 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
             {adminNavItems.length > 0 && (
               <div>
                 {!collapsed && (
-                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Administration
+                  <h3 className="px-1 text-[9px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                    Admin
                   </h3>
                 )}
-                <ul className="space-y-1">
+                <ul className="space-y-0.5">
                   {adminNavItems.map((item) => {
                     const Icon = item.icon
                     const active = isActive(item.href)
@@ -297,11 +292,11 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
                         <Link
                           href={item.href}
                           className={classNames(
-                            'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200',
+                            'group flex items-center rounded-md transition-all duration-200 text-[11px] font-medium',
                             active
                               ? 'bg-primary-50 text-primary-700'
-                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900',
-                            collapsed ? 'justify-center' : ''
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                            collapsed ? 'justify-center py-2 px-0' : 'px-2 py-1.5'
                           )}
                           onClick={handleLinkClick}
                           aria-current={active ? 'page' : undefined}
@@ -309,19 +304,16 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
                         >
                           <Icon
                             className={classNames(
-                              'h-5 w-5 flex-shrink-0',
+                              'h-4 w-4 flex-shrink-0',
                               active
                                 ? 'text-primary-600'
                                 : 'text-gray-400 group-hover:text-gray-500',
-                              collapsed ? 'mr-0' : 'mr-3'
+                              collapsed ? 'mr-0' : 'mr-2'
                             )}
                             aria-hidden="true"
                           />
                           {!collapsed && (
-                            <>
-                              <span className="flex-1 truncate">{item.name}</span>
-                              {active && <span className="block h-2 w-2 rounded-full bg-primary-600" />}
-                            </>
+                            <span className="flex-1 truncate">{item.name}</span>
                           )}
                         </Link>
                       </li>
@@ -334,23 +326,23 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
         </div>
 
         {/* User info footer */}
-        <div className="flex-shrink-0 border-t border-gray-200 p-4">
-          <div className={classNames('flex items-center', collapsed ? 'justify-center' : 'space-x-3')}>
+        <div className="flex-shrink-0 border-t border-gray-100 p-2">
+          <div className={classNames('flex items-center', collapsed ? 'justify-center' : 'space-x-2')}>
             <div className="flex-shrink-0">
-              <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-sm">
-                <span className="text-white font-medium text-sm">{getUserInitials()}</span>
+              <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-sm">
+                <span className="text-white text-[10px] font-medium">{getUserInitials()}</span>
               </div>
             </div>
             {!collapsed && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">{user?.name || user?.email}</p>
-                <p className="text-xs text-gray-500 truncate flex items-center mt-0.5">
+                <p className="text-[10px] font-medium text-gray-800 truncate">{user?.name || user?.email}</p>
+                <div className="flex items-center mt-0.5">
                   <span className={classNames(
-                    'inline-block h-1.5 w-1.5 rounded-full mr-1.5',
+                    'inline-block h-1.5 w-1.5 rounded-full mr-1',
                     user?.role === 'SUPER_ADMIN' ? 'bg-purple-500' : user?.role === 'ADMIN' ? 'bg-primary-500' : 'bg-green-500'
                   )} />
-                  {formatRole(user?.role)}
-                </p>
+                  <p className="text-[8px] text-gray-500">{formatRole(user?.role)}</p>
+                </div>
               </div>
             )}
           </div>
@@ -358,8 +350,8 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
 
         {/* Version info */}
         {!collapsed && (
-          <div className="px-4 py-2 text-xs text-gray-400 border-t border-gray-100">
-            Version 2.0.0
+          <div className="px-2 py-1 text-[7px] text-gray-300 border-t border-gray-50 text-center">
+            v2.0.0
           </div>
         )}
       </aside>

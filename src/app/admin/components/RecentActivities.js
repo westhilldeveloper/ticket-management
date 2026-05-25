@@ -25,25 +25,28 @@ export default function RecentActivities({ activities }) {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-        <h2 className="text-lg font-semibold text-gray-900">Recent Activities</h2>
+    <div className="bg-white rounded shadow-sm border border-gray-100 overflow-hidden">
+      {/* Header */}
+      <div className="px-2 py-1.5 border-b border-gray-100 bg-gray-50">
+        <h2 className="text-[12px] font-semibold text-gray-700">Recent Activities</h2>
       </div>
-      <div className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+
+      {/* Activities list */}
+      <div className="divide-y divide-gray-100 max-h-80 overflow-y-auto">
         {activities.length > 0 ? (
           activities.map((activity, index) => {
             const { icon: Icon, color, bg } = getActivityIcon(activity.type)
             return (
-              <div key={activity.id || index} className="p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex items-start space-x-3">
-                  <div className={`p-2 rounded-full flex-shrink-0 ${bg}`}>
-                    <Icon className={`h-4 w-4 ${color}`} />
+              <div key={activity.id || index} className="px-2 py-1.5 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start gap-1.5">
+                  <div className={`p-0.5 rounded-full flex-shrink-0 ${bg}`}>
+                    <Icon className={`h-3 w-3 ${color}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900">{activity.description}</p>
-                    <div className="flex items-center mt-1 text-xs text-gray-500">
+                    <p className="text-[10px] text-gray-700 leading-tight">{activity.description}</p>
+                    <div className="flex items-center mt-0.5 text-[10px] text-gray-400">
                       <span>{activity.user?.name || 'System'}</span>
-                      <span className="mx-1">•</span>
+                      <span className="mx-0.5">•</span>
                       <span>{formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}</span>
                     </div>
                   </div>
@@ -52,7 +55,7 @@ export default function RecentActivities({ activities }) {
             )
           })
         ) : (
-          <div className="p-8 text-center text-gray-500">
+          <div className="px-2 py-3 text-center text-[9px] text-gray-400">
             No recent activities
           </div>
         )}

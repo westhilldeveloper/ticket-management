@@ -75,7 +75,7 @@ export default function StatusChart({ stats }) {
     return (
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-md font-semibold text-gray-900">Tickets by Status</h2>
+          <h2 className="text-sm font-semibold text-gray-900">Tickets by Status</h2>
           <FiPieChart className="text-gray-400" />
         </div>
         <div className="h-64 flex items-center justify-center text-gray-400">

@@ -22,10 +22,10 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (!user?.id) return;
-console.log("socket url=======>",process.env.NEXT_PUBLIC_SOCKET_URL)
-    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000', {
-      withCredentials: true
-      // transports: ['websocket'],
+    const socketInstance = io( {
+       path: '/socket.io', 
+      withCredentials: true,
+       transports: ['websocket', 'polling'],
     });
 
     socketInstance.on('connect', () => {
