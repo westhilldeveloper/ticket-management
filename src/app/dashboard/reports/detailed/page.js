@@ -184,7 +184,15 @@ function DetailedReportsContent() {
     }
   };
 
-  if (authLoading || loading) return <div className="flex justify-center items-center h-96"><LoadingSpinner size="large" /></div>;
+  if (authLoading || loading) {
+  return (
+    <DashboardLayout>
+      <div className="flex justify-center items-center h-96">
+        <LoadingSpinner size="large" />
+      </div>
+    </DashboardLayout>
+  );
+}
   if (!user || !['ADMIN', 'SUPER_ADMIN', 'MD'].includes(user.role)) {
     return (
       <DashboardLayout><div className="text-center py-12"><FiAlertCircle className="mx-auto h-12 w-12 text-amber-500 mb-4" /><p>Access Denied</p></div></DashboardLayout>

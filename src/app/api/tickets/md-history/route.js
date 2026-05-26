@@ -10,50 +10,68 @@ export async function GET(request) {
     const token = cookieStore.get('token')?.value
     const user = await getCurrentUser(token)
 
-    if (!user) {
-      return NextResponse.json(
-        { message: 'Not authenticated' },
-        { status: 401 }
-      )
-    }
-
-    // Only MD and SUPER_ADMIN can access this
-    if (user.role !== 'MD' && user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json(
-        { message: 'Access denied' },
-        { status: 403 }
-      )
+    if (!user || (user.role !== 'MD' && user.role !== 'SUPER_ADMIN')) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
-    const mdApproval = searchParams.get('mdApproval') // 'APPROVED' or 'REJECTED'
-    const limit = parseInt(searchParams.get('limit') || '20')
+    let mdApproval = searchParams.get('mdApproval') // 'APPROVED' or 'REJECTED'
+    const limit = parseInt(searchParams.get('limit') || '50')
+    const page = parseInt(searchParams.get('page') || '1')
     const sort = searchParams.get('sort') || 'desc'
 
-    const tickets = await prisma.ticket.findMany({
-      where: {
-        mdApproval: mdApproval
-      },
-      include: {
-        createdBy: {
-          select: {
-            name: true,
-            email: true,
-            department: true
-          }
-        }
-      },
-      orderBy: {
-        ...(mdApproval === 'APPROVED' ? { mdApprovedAt: sort } : { mdRejectedAt: sort })
-      },
-      take: limit
-    })
+    if (mdApproval) mdApproval = mdApproval.toUpperCase()
+    if (mdApproval !== 'APPROVED' && mdApproval !== 'REJECTED') {
+      mdApproval = 'APPROVED'
+    }
 
-    return NextResponse.json({ tickets })
+    // Fallback: also include tickets where status matches the equivalent value
+    const statusMap = {
+      APPROVED: 'APPROVED_BY_MD',
+      REJECTED: 'REJECTED_BY_MD'
+    }
+
+    const where = {
+      OR: [
+        { mdApproval: mdApproval },          // uses MDFeedback enum
+        { status: statusMap[mdApproval] }    // uses Status enum (fallback)
+      ]
+    }
+
+    // Order by the appropriate date (or fallback to updatedAt)
+    const orderBy = mdApproval === 'APPROVED'
+      ? [{ mdApprovedAt: sort }, { updatedAt: 'desc' }]
+      : [{ mdRejectedAt: sort }, { updatedAt: 'desc' }]
+
+    const skip = (page - 1) * limit
+    const [tickets, total] = await Promise.all([
+      prisma.ticket.findMany({
+        where,
+        include: {
+          createdBy: {
+            select: { name: true, email: true, department: true }
+          }
+        },
+        orderBy,
+        skip,
+        take: limit
+      }),
+      prisma.ticket.count({ where })
+    ])
+
+    return NextResponse.json({
+      tickets,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    })
   } catch (error) {
-    console.error('Error fetching MD history:', error)
+    console.error('MD history error:', error)
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { message: 'Internal server error', details: error.message },
       { status: 500 }
     )
   }

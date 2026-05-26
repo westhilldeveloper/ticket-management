@@ -17,14 +17,20 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '50');
     const unreadOnly = searchParams.get('unreadOnly') === 'true';
+    const daily = searchParams.get('daily') === 'true';
 
-    const where = {
-      userId: decoded.id,
-      ...(unreadOnly ? { read: false } : {}),
-    };
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    // Build where clause for fetching notifications
+    let whereClause = { userId: decoded.id };
+    if (unreadOnly) whereClause.read = false;
+    if (daily) {
+      whereClause.createdAt = { gte: startOfDay };
+    }
 
     const notifications = await prisma.notification.findMany({
-      where,
+      where: whereClause,
       orderBy: { createdAt: 'desc' },
       take: limit,
       include: {
@@ -32,9 +38,13 @@ export async function GET(request) {
       },
     });
 
-    const unreadCount = await prisma.notification.count({
-      where: { userId: decoded.id, read: false },
-    });
+    // Build where clause for unread count – should match the same scope
+    let unreadWhere = { userId: decoded.id, read: false };
+    if (daily) {
+      unreadWhere.createdAt = { gte: startOfDay };
+    }
+
+    const unreadCount = await prisma.notification.count({ where: unreadWhere });
 
     return NextResponse.json({ notifications, unreadCount });
   } catch (error) {
