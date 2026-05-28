@@ -1,36 +1,27 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/db'
 import { verifyToken } from '@/app/lib/auth'
+import { cookies } from 'next/headers'
 
 export async function POST(request) {
   try {
-    // Verify authentication
-    const token = request.cookies.get('token')?.value
+    const cookieStore = await cookies()
+    const token = cookieStore.get('token')?.value
     if (!token) {
-      return NextResponse.json(
-        { message: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Not authenticated' }, { status: 401 })
     }
 
-    const decoded = verifyToken(token)
+    const decoded = await verifyToken(token) // await added
     if (!decoded) {
-      return NextResponse.json(
-        { message: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
     }
 
-    // Get user to check role
     const user = await prisma.user.findUnique({
       where: { id: decoded.id }
     })
 
     if (!user || !['ADMIN', 'SUPER_ADMIN'].includes(user.role)) {
-      return NextResponse.json(
-        { message: 'Access denied' },
-        { status: 403 }
-      )
+      return NextResponse.json({ message: 'Access denied' }, { status: 403 })
     }
 
     // Delete all settings
@@ -39,14 +30,16 @@ export async function POST(request) {
     // Log the action
     await prisma.auditLog.create({
       data: {
-        action: 'SETTINGS_RESET',
-        entityType: 'SYSTEM',
+        action: 'Settings reset to default',
+        entityType: 'System',
         userId: user.id,
-        details: JSON.stringify({ action: 'Reset to defaults' })
+        details: { action: 'Reset to defaults' },
+        ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
+        userAgent: request.headers.get('user-agent') || 'unknown'
       }
     })
 
-    // Return default settings
+    // Return default settings (same as in GET)
     const defaultSettings = {
       general: {
         companyName: 'Westhill International',
@@ -105,12 +98,8 @@ export async function POST(request) {
       message: 'Settings reset to default',
       settings: defaultSettings
     })
-
   } catch (error) {
     console.error('Error resetting settings:', error)
-    return NextResponse.json(
-      { message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }

@@ -91,6 +91,8 @@ export async function GET(request) {
 
     const total = await prisma.user.count({ where })
 
+    
+
     return NextResponse.json({
       users,
       pagination: {
@@ -188,6 +190,20 @@ export async function POST(request) {
       }
     })
 
+     await prisma.auditLog.create({
+      data: {
+        action: `User created: ${email}`,
+        entityType: 'User',
+        entityId: user.id,
+        userId: currentUser.id,
+        details: { role, department, isActive: isActive !== undefined ? isActive : true },
+        ipAddress: request.headers.get('x-forwarded-for') || 
+                    request.headers.get('cf-connecting-ip') || 
+                    'unknown',
+        userAgent: request.headers.get('user-agent') || 'unknown',
+      }
+    });
+    
     return NextResponse.json({
       message: 'User created successfully',
       user

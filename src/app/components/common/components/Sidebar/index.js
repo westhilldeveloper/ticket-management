@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { 
   FiHome, FiPlusCircle, FiArchive, FiUsers, FiSettings,
-  FiShield, FiUserCheck, FiList
+  FiShield, FiUserCheck, FiList, FiTrash2
 } from 'react-icons/fi'
 import { useAuth } from '../../../../context/AuthContext'
 import MobileOverlay from './MobileOverlay'
@@ -91,11 +91,13 @@ export default function Sidebar({ isOpen, onClose, collapsed, onCollapse }) {
 
   const superAdminNavigation = [
     { name: 'User Management', href: '/admin/users', icon: FiUserCheck, description: 'Users', roles: ['SUPER_ADMIN'] },
-    { name: 'System Settings', href: '/admin/settings', icon: FiSettings, description: 'Settings', roles: ['SUPER_ADMIN'] },
-    { name: 'Audit Logs', href: '/admin/audit', icon: FiShield, description: 'Audit', roles: ['SUPER_ADMIN'] },
+  
+    { name: 'Audit Logs', href: '/admin/audit-logs', icon: FiShield, description: 'Audit', roles: ['SUPER_ADMIN'] },
     { name: 'Create Categories', href: '/admin/categories', icon: FiShield, description: 'Categories', roles: ['SUPER_ADMIN'] },
     { name: 'Add Services', href: '/admin/item-types', icon: FiShield, description: 'Services', roles: ['SUPER_ADMIN'] },
     { name: 'Reports', href: '/dashboard/reports/detailed', icon: FiList, description: 'Reports', roles: ['MD', 'SUPER_ADMIN'] },
+    { name: 'Tickets', href: '/admin/ticket-cleanup', icon: FiTrash2, description: 'Tickets', roles: [ 'SUPER_ADMIN'] },
+      { name: 'System Settings', href: '/admin/settings', icon: FiSettings, description: 'Settings', roles: ['SUPER_ADMIN'] },
   ]
 
   const filteredNavigation = [

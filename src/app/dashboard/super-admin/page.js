@@ -19,57 +19,88 @@ import {
 
 export default function SuperAdminDashboard() {
   const [systemStats, setSystemStats] = useState({
-    totalUsers: 0,
-    activeUsers: 0,
-    totalTickets: 0,
-    storageUsed: '0 MB',
-    apiCalls: 0,
-    errorRate: '0%',
-    uptime: '99.9%',
-    lastBackup: null
-  })
+  totalUsers: 0,
+  activeUsers: 0,
+  totalTickets: 0,
+  openTickets: 0,
+  resolvedThisMonth: 0,
+  storageUsed: '0 MB',
+  apiCalls: 0,
+  errorRate: '0%',
+  uptime: '99.9%',
+  lastBackup: null
+})
   const [recentActivities, setRecentActivities] = useState([])
   const [loading, setLoading] = useState(true)
+
+  // Add this helper inside the component (before useEffect)
+const getFirstDayOfMonth = () => {
+  const date = new Date()
+  date.setDate(1)
+  date.setHours(0, 0, 0, 0)
+  return date.toISOString()
+}
+
+const fetchSystemStats = async () => {
+  try {
+    setLoading(true)
+
+    // 1. Total users & active users
+    const totalUsersRes = await fetch('/api/admin/users?limit=1')
+    const totalUsersData = await totalUsersRes.json()
+    const totalUsers = totalUsersData.pagination?.total || 0
+
+    const activeUsersRes = await fetch('/api/admin/users?status=active&limit=1')
+    const activeUsersData = await activeUsersRes.json()
+    const activeUsers = activeUsersData.pagination?.total || 0
+
+    // 2. Total tickets
+    const ticketsRes = await fetch('/api/tickets?limit=1')
+    const ticketsData = await ticketsRes.json()
+    const totalTickets = ticketsData.pagination?.total || 0
+
+    // 3. Open tickets
+    const openTicketsRes = await fetch('/api/tickets?status=OPEN&limit=1')
+    const openTicketsData = await openTicketsRes.json()
+    const openTickets = openTicketsData.pagination?.total || 0
+
+    // 4. Resolved this month
+    const firstDay = getFirstDayOfMonth()
+    const resolvedTicketsRes = await fetch(`/api/tickets?status=RESOLVED&dateFrom=${firstDay}&limit=1`)
+    const resolvedTicketsData = await resolvedTicketsRes.json()
+    const resolvedThisMonth = resolvedTicketsData.pagination?.total || 0
+
+    // 5. Recent activities (audit logs) – already fetched separately
+    const auditRes = await fetch('/api/admin/audit-logs?limit=10')
+    const auditData = await auditRes.json()
+
+    setSystemStats({
+      totalUsers,
+      activeUsers,
+      totalTickets,
+      openTickets,          // add this to state
+      resolvedThisMonth,    // add this to state
+      storageUsed: '2.3 GB',      // mock – replace with real calculation later
+      apiCalls: 45678,             // mock
+      errorRate: '0.02%',          // mock
+      uptime: '99.9%',             // mock
+      lastBackup: new Date().toISOString() // mock
+    })
+
+    setRecentActivities(auditData.logs || [])
+
+  } catch (error) {
+    console.error('Error fetching system stats:', error)
+  } finally {
+    setLoading(false)
+  }
+}
 
   useEffect(() => {
     fetchSystemStats()
   }, [])
 
-  const fetchSystemStats = async () => {
-    try {
-      setLoading(true)
-      
-      // Fetch users count
-      const usersRes = await fetch('/api/admin/users?limit=1')
-      const usersData = await usersRes.json()
-      
-      // Fetch tickets count
-      const ticketsRes = await fetch('/api/tickets?limit=1')
-      const ticketsData = await ticketsRes.json()
-      
-      // Fetch recent activities (audit logs)
-      const auditRes = await fetch('/api/admin/audit-logs?limit=10')
-      const auditData = await auditRes.json()
-
-      setSystemStats({
-        totalUsers: usersData.pagination?.total || 1250,
-        activeUsers: 1180,
-        totalTickets: ticketsData.pagination?.total || 3450,
-        storageUsed: '2.3 GB',
-        apiCalls: 45678,
-        errorRate: '0.02%',
-        uptime: '99.9%',
-        lastBackup: new Date().toISOString()
-      })
-
-      setRecentActivities(auditData.logs || [])
-      
-    } catch (error) {
-      console.error('Error fetching system stats:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+ 
 
   if (loading) {
     return (
@@ -169,31 +200,31 @@ export default function SuperAdminDashboard() {
           </div>
 
           <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Ticket Statistics</h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-2">
-                  <FiDatabase className="text-primary-600" />
-                  <span className="text-gray-700">Total Tickets</span>
-                </div>
-                <span className="font-bold text-gray-900">{systemStats.totalTickets}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-2">
-                  <FiActivity className="text-yellow-600" />
-                  <span className="text-gray-700">Open Tickets</span>
-                </div>
-                <span className="font-bold text-gray-900">156</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-2">
-                  <FiShield className="text-green-600" />
-                  <span className="text-gray-700">Resolved This Month</span>
-                </div>
-                <span className="font-bold text-gray-900">892</span>
-              </div>
-            </div>
-          </div>
+  <h2 className="text-lg font-semibold text-gray-900 mb-4">Ticket Statistics</h2>
+  <div className="space-y-4">
+    <div className="flex justify-between items-center">
+      <div className="flex items-center space-x-2">
+        <FiDatabase className="text-primary-600" />
+        <span className="text-gray-700">Total Tickets</span>
+      </div>
+      <span className="font-bold text-gray-900">{systemStats.totalTickets}</span>
+    </div>
+    <div className="flex justify-between items-center">
+      <div className="flex items-center space-x-2">
+        <FiActivity className="text-yellow-600" />
+        <span className="text-gray-700">Open Tickets</span>
+      </div>
+      <span className="font-bold text-gray-900">{systemStats.openTickets}</span>
+    </div>
+    <div className="flex justify-between items-center">
+      <div className="flex items-center space-x-2">
+        <FiShield className="text-green-600" />
+        <span className="text-gray-700">Resolved This Month</span>
+      </div>
+      <span className="font-bold text-gray-900">{systemStats.resolvedThisMonth}</span>
+    </div>
+  </div>
+</div>
         </div>
 
         {/* Quick Actions */}

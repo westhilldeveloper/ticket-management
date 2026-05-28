@@ -137,3 +137,4 @@ export async function isAdmin(request) {
   const user = await getServerUser(request);
   return user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
 }
+

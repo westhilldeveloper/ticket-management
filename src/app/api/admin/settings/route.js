@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/db'
 import { verifyToken } from '@/app/lib/auth'
+import { cookies } from 'next/headers'
 
 export async function GET(request) {
   try {
@@ -111,5 +112,74 @@ export async function GET(request) {
       { message: 'Internal server error' },
       { status: 500 }
     )
+  }
+}
+
+export async function POST(request) {
+  try {
+    const cookieStore = await cookies()
+    const token = cookieStore.get('token')?.value
+    if (!token) {
+      return NextResponse.json({ message: 'Not authenticated' }, { status: 401 })
+    }
+
+    const decoded = await verifyToken(token)
+    if (!decoded) {
+      return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
+    }
+
+    const userId = decoded.id || decoded.userId || decoded.sub
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, role: true }
+    })
+
+    if (!user || !['ADMIN', 'SUPER_ADMIN'].includes(user.role)) {
+      return NextResponse.json({ message: 'Access denied' }, { status: 403 })
+    }
+
+    const settings = await request.json()
+    // settings is an object like { general: {...}, ticket: {...}, ... }
+
+    // Flatten the nested settings into key-value pairs
+    const flattened = {}
+    for (const [category, values] of Object.entries(settings)) {
+      for (const [key, value] of Object.entries(values)) {
+        const fullKey = `${category}.${key}`
+        // Convert booleans and numbers to strings for storage
+        let stringValue = value
+        if (typeof value === 'boolean') stringValue = value ? 'true' : 'false'
+        else if (typeof value === 'number') stringValue = value.toString()
+        else if (Array.isArray(value)) stringValue = value.join(',')
+        else stringValue = value || ''
+        flattened[fullKey] = stringValue
+      }
+    }
+
+    // Upsert each setting
+    for (const [key, value] of Object.entries(flattened)) {
+      await prisma.systemSetting.upsert({
+        where: { key },
+        update: { value, updatedAt: new Date() },
+        create: { key, value, category: key.split('.')[0], updatedBy: user.id }
+      })
+    }
+
+    // Log the action
+    await prisma.auditLog.create({
+      data: {
+        action: 'Settings updated',
+        entityType: 'System',
+        userId: user.id,
+        details: { updatedKeys: Object.keys(flattened) },
+        ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
+        userAgent: request.headers.get('user-agent') || 'unknown'
+      }
+    })
+
+    return NextResponse.json({ message: 'Settings saved successfully' })
+  } catch (error) {
+    console.error('Error saving settings:', error)
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
   }
 }

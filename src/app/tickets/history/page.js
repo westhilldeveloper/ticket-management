@@ -153,7 +153,12 @@ function HistoryContent() {
         </div>
 
         {/* Filters bar – clean and simple */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 space-y-4" style={{
+    backgroundImage: `url('/images/papertxr.jpg')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+  }}>
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
             <div className="flex-1 relative">
@@ -163,7 +168,7 @@ function HistoryContent() {
                 placeholder="Search by ticket title or number..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-pink-400 focus:border-pink-400 text-sm"
+                className="w-full pl-9 pr-3 py-2 border text-white border-gray-200 rounded-md focus:outline-none focus:none focus:border-none text-sm"
               />
             </div>
 

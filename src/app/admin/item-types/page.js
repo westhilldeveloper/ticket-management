@@ -11,7 +11,7 @@ export default function ManageItemTypes() {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [isSaving, setIsSaving] = useState(false); // 👈 new state for add form
+  const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     categoryName: 'ADMIN',
@@ -19,45 +19,39 @@ export default function ManageItemTypes() {
     sortOrder: 0
   });
   const toast = useToast();
- 
+
   // Fetch all item types and categories
   const fetchData = useCallback(async () => {
-  setLoading(true);
-  try {
-    const itemsRes = await fetch('/api/admin/item-types');
-    if (!itemsRes.ok) throw new Error(`HTTP ${itemsRes.status}`);
-    const itemsData = await itemsRes.json();
-   
-    // Ensure array
-    const itemsArray = Array.isArray(itemsData) ? itemsData : (itemsData.items || []);
-    setItems(itemsArray);
+    setLoading(true);
+    try {
+      const itemsRes = await fetch('/api/admin/item-types');
+      if (!itemsRes.ok) throw new Error(`HTTP ${itemsRes.status}`);
+      const itemsData = await itemsRes.json();
+      const itemsArray = Array.isArray(itemsData) ? itemsData : (itemsData.items || []);
+      setItems(itemsArray);
 
-    const catsRes = await fetch('/api/dynamic-categories');
-    if (!catsRes.ok) throw new Error(`HTTP ${catsRes.status}`);
-    const catsData = await catsRes.json();
-    const catsArray = Array.isArray(catsData) ? catsData : (catsData.categories || []);
-    setCategories(catsArray);
-  } catch (error) {
-    console.log('Error fetching data:', error);
-    toast.error('Failed to load data');
-    setItems([]);   // fallback to empty array
-    setCategories([]);
-  } finally {
-    setLoading(false);
-  }
-}, [toast]);
-console.log("categories=====>",categories)
- console.log("itemdata===>", items);
+      const catsRes = await fetch('/api/dynamic-categories');
+      if (!catsRes.ok) throw new Error(`HTTP ${catsRes.status}`);
+      const catsData = await catsRes.json();
+      const catsArray = Array.isArray(catsData) ? catsData : (catsData.categories || []);
+      setCategories(catsArray);
+    } catch (error) {
+      console.log('Error fetching data:', error);
+      toast.error('Failed to load data');
+      setItems([]);
+      setCategories([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Add new item type
-  console.log("form data====>",formData)
   const handleAdd = async (e) => {
     e.preventDefault();
-    if (isSaving) return; // prevent double submission
-
+    if (isSaving) return;
     setIsSaving(true);
     try {
       const res = await fetch('/api/admin/item-types', {
@@ -81,7 +75,6 @@ console.log("categories=====>",categories)
     }
   };
 
-  // Update item type
   const handleUpdate = async (id, updatedData) => {
     try {
       const res = await fetch(`/api/admin/item-types/${id}`, {
@@ -101,7 +94,6 @@ console.log("categories=====>",categories)
     }
   };
 
-  // Toggle active status
   const handleToggleActive = async (id, currentActive) => {
     try {
       const res = await fetch(`/api/admin/item-types/${id}`, {
@@ -120,30 +112,29 @@ console.log("categories=====>",categories)
     }
   };
 
-  // Hard delete
- const handleDelete = async (id) => {
-  if (!confirm('Are you sure? This action cannot be undone.')) return;
-  try {
-    const res = await fetch(`/api/admin/item-types/${id}`, {
-      method: 'DELETE',
-      credentials: 'include'
-    });
-    if (res.ok) {
-      toast.success('Item type deleted');
-      fetchData();
-    } else {
-      toast.error('Delete failed');
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure? This action cannot be undone.')) return;
+    try {
+      const res = await fetch(`/api/admin/item-types/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      if (res.ok) {
+        toast.success('Item type deleted');
+        fetchData();
+      } else {
+        toast.error('Delete failed');
+      }
+    } catch (error) {
+      toast.error('Network error');
     }
-  } catch (error) {
-    toast.error('Network error');
-  }
-};
+  };
 
   if (loading) {
     return (
       <DashboardLayout>
         <div className="flex justify-center items-center h-64">
-          <FiLoader className="animate-spin h-8 w-8 text-primary-500" />
+          <FiLoader className="animate-spin h-6 w-6 text-gray-500" />
         </div>
       </DashboardLayout>
     );
@@ -151,42 +142,43 @@ console.log("categories=====>",categories)
 
   return (
     <DashboardLayout>
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
+      <div className="p-5 max-w-[1400px] mx-auto text-sm">
+        {/* Header */}
+        <div className="flex flex-wrap justify-between items-center gap-3 mb-5">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Manage Item Types</h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <h1 className="text-xl font-semibold text-gray-800 tracking-tight">Manage Item Types</h1>
+            <p className="text-xs text-gray-500 mt-0.5">
               Configure items and services for each category (IT, Admin, HR)
             </p>
           </div>
           <button
             onClick={() => setShowAddForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-gray-800 text-white hover:bg-gray-700 transition-colors"
           >
-            <FiPlus /> Add New
+            <FiPlus className="w-3.5 h-3.5" /> Add New
           </button>
         </div>
 
-        {/* Add Form Modal */}
+        {/* Add Form Modal – Compact & clean */}
         {showAddForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md">
-              <h2 className="text-xl font-semibold mb-4">Add Item / Service</h2>
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-5 w-full max-w-md border border-gray-200 shadow-lg">
+              <h2 className="text-base font-semibold text-gray-800 mb-4">Add Item / Service</h2>
               <form onSubmit={handleAdd}>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">Name *</label>
+                <div className="mb-3">
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Name *</label>
                   <input
                     type="text"
                     required
-                    className="w-full px-3 py-2 border rounded"
+                    className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value.toUpperCase() })}
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">Category *</label>
+                <div className="mb-3">
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Category *</label>
                   <select
-                    className="w-full px-3 py-2 border rounded"
+                    className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
                     value={formData.categoryName}
                     onChange={(e) => setFormData({ ...formData, categoryName: e.target.value })}
                   >
@@ -196,9 +188,9 @@ console.log("categories=====>",categories)
                   </select>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">Type *</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Type *</label>
                   <select
-                    className="w-full px-3 py-2 border rounded"
+                    className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                   >
@@ -206,20 +198,11 @@ console.log("categories=====>",categories)
                     <option value="SERVICE">Service</option>
                   </select>
                 </div>
-                {/* <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">Sort Order</label>
-                  <input
-                    type="number"
-                    className="w-full px-3 py-2 border rounded"
-                    value={formData.sortOrder}
-                    onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
-                  />
-                </div> */}
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-2 mt-2">
                   <button
                     type="button"
                     onClick={() => setShowAddForm(false)}
-                    className="px-4 py-2 border rounded hover:bg-gray-50"
+                    className="px-3 py-1.5 text-xs rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                     disabled={isSaving}
                   >
                     Cancel
@@ -227,11 +210,11 @@ console.log("categories=====>",categories)
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {isSaving ? (
                       <>
-                        <FiLoader className="animate-spin h-4 w-4" />
+                        <FiLoader className="animate-spin h-3.5 w-3.5" />
                         Saving...
                       </>
                     ) : (
@@ -244,72 +227,81 @@ console.log("categories=====>",categories)
           </div>
         )}
 
-        {/* Items Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sort</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {items.map((item) => (
-                <tr key={item.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {editingId === item.id ? (
-                      <input
-                        type="text"
-                        defaultValue={item.name}
-                        className="border rounded px-2 py-1"
-                        onBlur={(e) => handleUpdate(item.id, { name: e.target.value })}
-                        autoFocus
-                      />
-                    ) : (
-                      item.name
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.category?.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      item.type === 'REQUEST' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
-                    }`}>
-                      {item.type === 'REQUEST' ? 'Request' : 'Service'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.sortOrder}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button
-                      onClick={() => handleToggleActive(item.id, item.isActive)}
-                      className={`px-2 py-1 rounded-full text-xs ${
-                        item.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {item.isActive ? 'Active' : 'Inactive'}
-                    </button>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                    <button
-                      onClick={() => setEditingId(item.id)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      <FiEdit2 className="inline" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <FiTrash2 className="inline" />
-                    </button>
-                  </td>
+        {/* Items Table – Compact and minimal */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-100 text-xs">
+              <thead className="bg-gray-50 text-gray-500">
+                <tr>
+                  <th className="px-3 py-2 text-left font-medium">Name</th>
+                  <th className="px-3 py-2 text-left font-medium">Category</th>
+                  <th className="px-3 py-2 text-left font-medium">Type</th>
+                  <th className="px-3 py-2 text-left font-medium">Sort</th>
+                  <th className="px-3 py-2 text-left font-medium">Status</th>
+                  <th className="px-3 py-2 text-left font-medium">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {items.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-3 py-2 whitespace-nowrap font-medium text-gray-800">
+                      {editingId === item.id ? (
+                        <input
+                          type="text"
+                          defaultValue={item.name}
+                          className="rounded border-gray-300 text-xs py-1 px-2 w-full"
+                          onBlur={(e) => handleUpdate(item.id, { name: e.target.value })}
+                          autoFocus
+                        />
+                      ) : (
+                        item.name
+                      )}
+                    </td>
+                    <td className="px-3 py-2 whitespace-nowrap text-gray-500">{item.category?.name}</td>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                        item.type === 'REQUEST' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'
+                      }`}>
+                        {item.type === 'REQUEST' ? 'Request' : 'Service'}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 whitespace-nowrap text-gray-500">{item.sortOrder}</td>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <button
+                        onClick={() => handleToggleActive(item.id, item.isActive)}
+                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                          item.isActive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                        }`}
+                      >
+                        {item.isActive ? 'Active' : 'Inactive'}
+                      </button>
+                    </td>
+                    <td className="px-3 py-2 whitespace-nowrap space-x-2">
+                      <button
+                        onClick={() => setEditingId(item.id)}
+                        className="text-gray-500 hover:text-gray-700 transition-colors"
+                      >
+                        <FiEdit2 className="inline w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="text-gray-500 hover:text-red-600 transition-colors"
+                      >
+                        <FiTrash2 className="inline w-3.5 h-3.5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {items.length === 0 && (
+                  <tr>
+                    <td colSpan="6" className="px-3 py-6 text-center text-gray-400 text-xs">
+                      No item types found. Click "Add New" to create one.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </DashboardLayout>
