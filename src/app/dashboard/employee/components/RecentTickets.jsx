@@ -37,6 +37,28 @@ const getStatusIcon = (status) => {
           className="object-contain"
         />
       );
+      
+    case 'PENDING_MD_APPROVAL':
+      return (
+        <Image
+          src="/images/progress.gif"
+          alt="Closed/Resolved"
+          width={iconSize}
+          height={iconSize}
+          className="object-contain"
+        />
+      );
+    case 'REJECTED_BY_MD':
+      return (
+        <Image
+          src="/images/rejection.gif"
+          alt="Closed/Resolved"
+          width={iconSize}
+          height={iconSize}
+          className="object-contain"
+        />
+      );
+
     case 'CLOSED':
       return (
         <Image
@@ -50,7 +72,7 @@ const getStatusIcon = (status) => {
     default:
       return (
         <Image
-          src="/images/open.gif"
+          src="/images/progress.gif"
           alt="Status"
           width={iconSize}
           height={iconSize}
@@ -65,6 +87,15 @@ const getStatusBadge = (status) => {
   const config = {
     OPEN: { bg: 'bg-pink-50', text: 'text-pink-700', label: 'Open' },
     IN_PROGRESS: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'In Progress' },
+    PENDING_MD_APPROVAL: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Pending MD' },
+    APPROVED_BY_MD: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'MD Approved' },
+    REJECTED_BY_MD: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'MD Rejected' },
+    PENDING_SERVICE_ACCEPTANCE: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Pendng Sevice Team' },
+    REJECTED_BY_SERVICE: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Rejected By Service' },
+    SERVICE_IN_PROGRESS: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Service in Progress' },
+    SERVICE_RESOLVED: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Third Party Service Completed' },
+    
+    PENDING_THIRD_PARTY: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Pending Thrid Party' },
     RESOLVED: { bg: 'bg-emerald-50', text: 'text-emerald-700', label: 'Resolved' },
     CLOSED: { bg: 'bg-gray-100', text: 'text-gray-600', label: 'Closed' },
   };
