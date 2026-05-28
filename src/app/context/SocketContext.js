@@ -35,7 +35,7 @@ export const SocketProvider = ({ children }) => {
       console.log('Socket connected:', socketInstance.id);
       setConnected(true);
       socketInstance.emit('register', { userId: user.id, role: user.role });
-      toast.success('Real-time connected', { duration: 2000 });
+      // toast.success('Real-time connected', { duration: 2000 });
     });
 
     socketInstance.on('reconnect', (attemptNumber) => {
