@@ -9,7 +9,7 @@ export const metadata = {
   title: 'Ticket Management System',
   description: 'Enterprise Ticket Management System',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/finlogo.ico',
   },
 };
 
