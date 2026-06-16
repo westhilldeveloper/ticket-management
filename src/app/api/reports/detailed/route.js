@@ -46,9 +46,24 @@ export async function GET(request) {
     const category = url.searchParams.get('category');
     const statusFilter = url.searchParams.get('status');
 
+    console.log("=======>",category);
+
     let where = {};
-    if (startDate) where.createdAt = { gte: new Date(startDate) };
-    if (endDate) where.createdAt = { ...where.createdAt, lte: new Date(endDate) };
+    if (startDate) {
+  // Start of the day (midnight)
+  const start = new Date(startDate);
+  start.setHours(0, 0, 0, 0);
+  where.createdAt = { gte: start };
+}
+    if (endDate) {
+  // End of the day (23:59:59.999)
+  const end = new Date(endDate);
+  end.setHours(23, 59, 59, 999);
+  where.createdAt = {
+    ...where.createdAt,
+    lte: end
+  };
+}
     if (category && category !== 'ALL') where.category = category;
     if (statusFilter && statusFilter !== 'ALL') where.status = statusFilter;
     if (user.role === 'MD') {

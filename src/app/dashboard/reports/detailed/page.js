@@ -241,7 +241,7 @@ function DetailedReportsContent() {
                 onChange={e => setFilters({...filters, endDate: e.target.value})}
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Category</label>
               <select
                 className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
@@ -251,7 +251,7 @@ function DetailedReportsContent() {
                 <option value="ALL">All</option>
                 {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
               </select>
-            </div>
+            </div> */}
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Status</label>
               <select
