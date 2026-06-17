@@ -47,21 +47,19 @@ export default function NotificationsPage() {
   const [markingAll, setMarkingAll] = useState(false);
 
   const fetchNotifications = async () => {
-    try {
-      const res = await fetch('/api/notifications?limit=100', { credentials: 'include' });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-      setNotifications(data.notifications);
-      setUnreadCount(data.unreadCount);
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const data = await safeFetch('/api/notifications?limit=100');
+    setNotifications(data.notifications);
+    setUnreadCount(data.unreadCount);
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
-    if (user) fetchNotifications();
+    if (user) fetchNotifications(); 
   }, [user]);
 
   const markAsRead = async (notificationIds) => {

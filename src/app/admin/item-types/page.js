@@ -18,6 +18,10 @@ export default function ManageItemTypes() {
     type: 'REQUEST',
     sortOrder: 0
   });
+  const [filters, setFilters] = useState({
+    category: 'ALL',
+    type: 'ALL'
+  });
   const toast = useToast();
 
   // Fetch all item types and categories
@@ -48,6 +52,24 @@ export default function ManageItemTypes() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // Compute filtered and grouped data
+  const filteredItems = items.filter(item => {
+    const categoryMatch = filters.category === 'ALL' || item.category?.name === filters.category;
+    const typeMatch = filters.type === 'ALL' || item.type === filters.type;
+    return categoryMatch && typeMatch;
+  });
+
+  // Group by category name
+  const groupedItems = filteredItems.reduce((acc, item) => {
+    const catName = item.category?.name || 'Uncategorized';
+    if (!acc[catName]) acc[catName] = [];
+    acc[catName].push(item);
+    return acc;
+  }, {});
+
+  // Sort groups by category name
+  const sortedGroupKeys = Object.keys(groupedItems).sort();
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -159,7 +181,38 @@ export default function ManageItemTypes() {
           </button>
         </div>
 
-        {/* Add Form Modal – Compact & clean */}
+        {/* Filters */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className='border p-2 rounded-md'>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Category</label>
+              <select
+                className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
+                value={filters.category}
+                onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+              >
+                <option value="ALL">All Categories</option>
+                {categories.map(cat => (
+                  <option key={cat.name} value={cat.name}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className='border p-2 rounded-md'>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Type</label>
+              <select
+                className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
+                value={filters.type}
+                onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+              >
+                <option value="ALL">All Types</option>
+                <option value="REQUEST">Request</option>
+                <option value="SERVICE">Service</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Add Form Modal (unchanged) */}
         {showAddForm && (
           <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-5 w-full max-w-md border border-gray-200 shadow-lg">
@@ -168,17 +221,17 @@ export default function ManageItemTypes() {
                 <div className="mb-3">
                   <label className="block text-xs font-medium text-gray-600 mb-1">Name *</label>
                   <input
-                    type="text"
-                    required
-                    className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value.toUpperCase() })}
-                  />
+  type="text"
+  required
+  className="w-full rounded-md border border-gray-300 text-xs py-1.5 px-2 focus:ring-2 focus:ring-gray-200 focus:border-gray-400"
+  value={formData.name}
+  onChange={(e) => setFormData({ ...formData, name: e.target.value.toUpperCase() })}
+/>
                 </div>
                 <div className="mb-3">
                   <label className="block text-xs font-medium text-gray-600 mb-1">Category *</label>
                   <select
-                    className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
+                    className="w-full rounded-md border border-gray-300 text-xs py-1.5 px-2 focus:ring-none focus:border-gray-400"
                     value={formData.categoryName}
                     onChange={(e) => setFormData({ ...formData, categoryName: e.target.value })}
                   >
@@ -190,7 +243,7 @@ export default function ManageItemTypes() {
                 <div className="mb-4">
                   <label className="block text-xs font-medium text-gray-600 mb-1">Type *</label>
                   <select
-                    className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
+                    className="w-full rounded-md border border-gray-300 text-xs py-1.5 px-2 focus:ring-none focus:border-gray-400"
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                   >
@@ -227,81 +280,87 @@ export default function ManageItemTypes() {
           </div>
         )}
 
-        {/* Items Table – Compact and minimal */}
+        {/* Grouped Items Table */}
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100 text-xs">
-              <thead className="bg-gray-50 text-gray-500">
-                <tr>
-                  <th className="px-3 py-2 text-left font-medium">Name</th>
-                  <th className="px-3 py-2 text-left font-medium">Category</th>
-                  <th className="px-3 py-2 text-left font-medium">Type</th>
-                  <th className="px-3 py-2 text-left font-medium">Sort</th>
-                  <th className="px-3 py-2 text-left font-medium">Status</th>
-                  <th className="px-3 py-2 text-left font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {items.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-3 py-2 whitespace-nowrap font-medium text-gray-800">
-                      {editingId === item.id ? (
-                        <input
-                          type="text"
-                          defaultValue={item.name}
-                          className="rounded border-gray-300 text-xs py-1 px-2 w-full"
-                          onBlur={(e) => handleUpdate(item.id, { name: e.target.value })}
-                          autoFocus
-                        />
-                      ) : (
-                        item.name
-                      )}
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-gray-500">{item.category?.name}</td>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                        item.type === 'REQUEST' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'
-                      }`}>
-                        {item.type === 'REQUEST' ? 'Request' : 'Service'}
-                      </span>
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-gray-500">{item.sortOrder}</td>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <button
-                        onClick={() => handleToggleActive(item.id, item.isActive)}
-                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                          item.isActive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-                        }`}
-                      >
-                        {item.isActive ? 'Active' : 'Inactive'}
-                      </button>
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap space-x-2">
-                      <button
-                        onClick={() => setEditingId(item.id)}
-                        className="text-gray-500 hover:text-gray-700 transition-colors"
-                      >
-                        <FiEdit2 className="inline w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="text-gray-500 hover:text-red-600 transition-colors"
-                      >
-                        <FiTrash2 className="inline w-3.5 h-3.5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {items.length === 0 && (
-                  <tr>
-                    <td colSpan="6" className="px-3 py-6 text-center text-gray-400 text-xs">
-                      No item types found. Click "Add New" to create one.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          {sortedGroupKeys.length === 0 ? (
+            <div className="px-3 py-6 text-center text-gray-400 text-xs">
+              No items match the current filters.
+            </div>
+          ) : (
+            sortedGroupKeys.map(categoryName => (
+              <div key={categoryName}>
+                {/* Category Header */}
+                <div className="bg-gray-50 px-3 py-2 border-b border-gray-200">
+                  <h3 className="text-sm font-semibold text-gray-700">{categoryName}</h3>
+                </div>
+                {/* Table for this category */}
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-100 text-xs">
+                    <thead className="bg-white text-gray-500">
+                      <tr>
+                        <th className="px-3 py-2 text-left font-medium">Name</th>
+                        <th className="px-3 py-2 text-left font-medium">Type</th>
+                        <th className="px-3 py-2 text-left font-medium">Sort</th>
+                        <th className="px-3 py-2 text-left font-medium">Status</th>
+                        <th className="px-3 py-2 text-left font-medium">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {groupedItems[categoryName].map((item) => (
+                        <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-3 py-2 whitespace-nowrap font-medium text-gray-800">
+                            {editingId === item.id ? (
+                              <input
+                                type="text"
+                                defaultValue={item.name}
+                                className="rounded border-gray-300 text-xs py-1 px-2 w-full"
+                                onBlur={(e) => handleUpdate(item.id, { name: e.target.value })}
+                                autoFocus
+                              />
+                            ) : (
+                              item.name
+                            )}
+                          </td>
+                          <td className="px-3 py-2 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                              item.type === 'REQUEST' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'
+                            }`}>
+                              {item.type === 'REQUEST' ? 'Request' : 'Service'}
+                            </span>
+                          </td>
+                          <td className="px-3 py-2 whitespace-nowrap text-gray-500">{item.sortOrder}</td>
+                          <td className="px-3 py-2 whitespace-nowrap">
+                            <button
+                              onClick={() => handleToggleActive(item.id, item.isActive)}
+                              className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                                item.isActive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                              }`}
+                            >
+                              {item.isActive ? 'Active' : 'Inactive'}
+                            </button>
+                          </td>
+                          <td className="px-3 py-2 whitespace-nowrap space-x-2">
+                            <button
+                              onClick={() => setEditingId(item.id)}
+                              className="text-gray-500 hover:text-gray-700 transition-colors"
+                            >
+                              <FiEdit2 className="inline w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              className="text-gray-500 hover:text-red-600 transition-colors"
+                            >
+                              <FiTrash2 className="inline w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </DashboardLayout>
