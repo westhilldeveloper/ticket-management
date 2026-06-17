@@ -222,8 +222,8 @@ function DetailedReportsContent() {
 
         {/* Filters Card */}
         <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className='border p-2 rounded-md'>
               <label className="block text-xs font-medium text-gray-600 mb-1">Start Date</label>
               <input
                 type="date"
@@ -232,7 +232,7 @@ function DetailedReportsContent() {
                 onChange={e => setFilters({...filters, startDate: e.target.value})}
               />
             </div>
-            <div>
+            <div className='border p-2 rounded-md'>
               <label className="block text-xs font-medium text-gray-600 mb-1">End Date</label>
               <input
                 type="date"
@@ -252,7 +252,7 @@ function DetailedReportsContent() {
                 {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
               </select>
             </div> */}
-            <div>
+            <div className='border p-2 rounded-md'>
               <label className="block text-xs font-medium text-gray-600 mb-1">Status</label>
               <select
                 className="w-full rounded-md border-gray-300 text-xs py-1.5 px-2 focus:ring-gray-400 focus:border-gray-400"
