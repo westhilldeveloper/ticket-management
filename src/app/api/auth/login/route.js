@@ -1,4 +1,3 @@
-// app/api/auth/login/route.js
 import { NextResponse } from 'next/server'
 import { comparePassword, generateToken } from '@/app/lib/auth'
 import { prisma } from '@/app/lib/db'
@@ -33,6 +32,15 @@ export async function POST(request) {
       )
     }
     console.log('User found:', { id: user.id, email: user.email, role: user.role })
+
+    // ---- NEW: Block sign-in if email not verified ----
+    if (!user.emailVerified) {
+      console.log('Email not verified:', email)
+      return NextResponse.json(
+        { message: 'Email not verified. Please verify your email before logging in.' },
+        { status: 403 }
+      )
+    }
 
     // Check if user is active
     if (user.isActive === false) {
