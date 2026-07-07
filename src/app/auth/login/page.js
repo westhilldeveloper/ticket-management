@@ -66,8 +66,8 @@ export default function LoginPage() {
               />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
-            Welcome back
+          <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+            Ticket Management System
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Sign in to access your account
