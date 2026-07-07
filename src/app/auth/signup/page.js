@@ -38,15 +38,15 @@ export default function Signup() {
   const { signup } = useAuth();
 
   const departments = [
-    'HR', 'IT', 'Finance', 'Operations', 'Sales', 'Marketing', 'Chits', 'Travels',
+    'HR', 'IT', 'Accounts', 'Operations', 'Branch', 'Marketing', 'Chits', 'Travels',
   ];
   const branches = [
-    'ENATHU', 'POOVATTOOR', 'KODUMON', 'HARIPAD', 'THRIPPUNITHURA', 'CHETTIKULANGARA',
+    'ENATHU', 'POOVATTOOR', 'KODUMON', 'HARIPAD', 'CHETTIKULANGARA',
     'MUTHUKULAM', 'KARUNAGAPALLY', 'CHETTIKULANGARA MAIN', 'KULATHUPUZHA', 'MULAKKUZHA',
     'KATTANAM', 'KUMBANAD', 'RANNI', 'VAIKOM', 'ALAPPUZHA', 'PALLIKATHODU', 'PUTHOOR',
     'PATHANAMTHITTA', 'MANNAR', 'PRAVINKODU', 'KOTTARAKKARA', 'ANCHAL', 'THRIPPUNITHURA TOWN',
     'MUVATTUPUZHA', 'KOTHAMANGALAM', 'THOPPUMPODY', 'PATHANAPURAM', 'MATTANCHERRY', 'ATHANI',
-    'KECHERY', 'VADANAPALLI', 'KALMANDAPAM',
+    'KECHERY', 'VADANAPALLI', 'KALMANDAPAM','ALOOR','THRISSUR WEST FORT'
   ];
 
   // Email domain validation – exact match only
@@ -153,7 +153,7 @@ export default function Signup() {
 
         {/* Server Error Alert */}
         {serverError && (
-          <div className="rounded-lg bg-red-50 p-4 border border-red-200">
+          <div className="rounded-md bg-red-50 p-4 border border-red-200">
             <div className="flex items-start">
               <FiAlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-3 flex-shrink-0" />
               <p className="text-sm text-red-700">{serverError}</p>
@@ -179,7 +179,7 @@ export default function Signup() {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-3 py-2.5 border rounded-lg 
+                className={`block w-full pl-10 pr-3 py-2.5 border rounded-md 
                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
                   sm:text-sm transition duration-150 ease-in-out
                   ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
@@ -206,7 +206,7 @@ export default function Signup() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-3 py-2.5 border rounded-lg 
+                className={`block w-full pl-10 pr-3 py-2.5 border rounded-md 
                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
                   sm:text-sm transition duration-150 ease-in-out
                   ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
@@ -232,7 +232,7 @@ export default function Signup() {
                   required
                   value={formData.department}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-2.5 border rounded-lg appearance-none
+                  className={`block w-full pl-10 pr-3 py-2.5 border rounded-md appearance-none
                     focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
                     sm:text-sm transition duration-150 ease-in-out bg-white
                     ${errors.department ? 'border-red-500' : 'border-gray-300'}`}
@@ -262,7 +262,7 @@ export default function Signup() {
                   required
                   value={formData.branch}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-2.5 border rounded-lg appearance-none
+                  className={`block w-full pl-10 pr-3 py-2.5 border rounded-md appearance-none
                     focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
                     sm:text-sm transition duration-150 ease-in-out bg-white
                     ${errors.branch ? 'border-red-500' : 'border-gray-300'}`}
@@ -296,7 +296,7 @@ export default function Signup() {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-10 py-2.5 border rounded-lg 
+                className={`block w-full pl-10 pr-10 py-2.5 border rounded-md 
                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
                   sm:text-sm transition duration-150 ease-in-out
                   ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
@@ -331,7 +331,7 @@ export default function Signup() {
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-10 py-2.5 border rounded-lg 
+                className={`block w-full pl-10 pr-10 py-2.5 border rounded-md 
                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
                   sm:text-sm transition duration-150 ease-in-out
                   ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
@@ -382,7 +382,7 @@ export default function Signup() {
             type="submit"
             disabled={loading}
             className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent 
-                     text-sm font-semibold rounded-lg text-white bg-primary-600 hover:bg-primary-700 
+                     text-sm font-semibold rounded-md text-white bg-primary-600 hover:bg-primary-700 
                      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 
                      disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
           >
