@@ -15,7 +15,7 @@ const statusColors = {
   CLOSED: 'bg-gray-100 text-gray-800'
 }
 
-export default function RecentTickets({ tickets }) {
+export default function RecentTickets({ tickets }) { 
   return (
     <div className="bg-white rounded shadow-sm border border-gray-100 overflow-hidden">
       {/* Header */}

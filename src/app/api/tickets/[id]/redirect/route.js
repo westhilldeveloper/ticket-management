@@ -26,7 +26,12 @@ export async function POST(request, { params }) {
     const { targetDepartment, assignedToId, reason } = body
 
     // Validate targetDepartment
-    const validDepartments = ['IT', 'ADMIN', 'HR']
+    const categories = await prisma.dynamicCategory.findMany({
+      where: { isActive: true },
+      select: { name: true }
+    });
+    // const validDepartments = ['IT', 'ADMIN', 'HR']
+    const validDepartments = categories.map(c => c.name);
     if (!targetDepartment || !validDepartments.includes(targetDepartment)) {
       return NextResponse.json({ message: 'Invalid target department' }, { status: 400 })
     }
@@ -84,8 +89,7 @@ export async function POST(request, { params }) {
     await prisma.ticketHistory.create({
       data: {
         action: 'TICKET_REDIRECTED',
-        description: `Ticket redirected from ${existingTicket.mainCategory?.name || 'unknown'} to ${targetDepartment}${reason ? `: ${reason}` : ''}`,
-        oldValue: existingTicket.mainCategory?.name,
+        description: `Ticket redirected from ${existingTicket.mainCategory?.name || 'unknown'} to ${targetDepartment} by ${user.name} (${user.department || 'no department'})${reason ? `: ${reason}` : ''}`,
         newValue: targetDepartment,
         createdById: user.id,
         ticketId: id

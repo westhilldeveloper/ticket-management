@@ -128,6 +128,13 @@ export async function getServerUser(request) {
   }
 }
 
+export async function getDepartmentCategoryId(user) {
+  if (!user?.department) return null;
+  const category = await prisma.dynamicCategory.findFirst({
+    where: { name: user.department }
+  });
+  return category?.id || null;
+}
 /**
  * Check if current user is admin (ADMIN or SUPER_ADMIN)
  * @param {Request} request
