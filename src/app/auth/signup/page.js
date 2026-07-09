@@ -38,7 +38,7 @@ export default function Signup() {
   const { signup } = useAuth();
 
   const departments = [
-    'HR', 'IT', 'Accounts', 'Operations', 'Branch', 'Marketing', 'Chits', 'Travels',
+    'HR', 'IT', 'Accounts', 'Operations', 'Branch', 'Marketing', 'Chits', 'Travels','Infra',
   ];
   const branches = [
     'ENATHU', 'POOVATTOOR', 'KODUMON', 'HARIPAD', 'CHETTIKULANGARA',

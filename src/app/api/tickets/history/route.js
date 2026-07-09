@@ -1,4 +1,3 @@
-// app/api/tickets/history/route.js
 import { NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/db'
 import { getCurrentUser } from '@/app/lib/auth'
@@ -11,10 +10,7 @@ export async function GET(request) {
     const user = await getCurrentUser(token)
 
     if (!user) {
-      return NextResponse.json(
-        { message: 'Not authenticated' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: 'Not authenticated' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -27,131 +23,82 @@ export async function GET(request) {
     const category = searchParams.get('category')
     const skip = (page - 1) * limit
 
-    // Build where clause with ROLE-BASED ACCESS
-    let where = {}
+    // ---------- ROLE-BASED BASE WHERE ----------
+    let baseWhere = {}
 
-    // 🔐 ROLE-BASED ACCESS CONTROL
     switch (user.role) {
       case 'SUPER_ADMIN':
-      case 'ADMIN':
-        // Admins see everything
+        // Super admin sees everything – no extra filters
         break
-        
-      case 'MD':
-        where = {
-          OR: [
-            {
-              ticket: {
-                mdApproval: 'PENDING',
-                status: 'PENDING_MD_APPROVAL'
-              }
-            },
-            {
-              ticket: {
-                OR: [
-                  { assignedToId: user.id },
-                  { createdById: user.id }
-                ]
-              }
-            }
-          ]
+
+      case 'ADMIN': {
+        // Admin sees only tickets from their own department
+        if (!user.department) {
+          // No department assigned → return nothing
+          baseWhere = { id: null } // trick to get empty result
+          break
         }
-        break
-        
-      case 'EMPLOYEE':
-        where = {
+        const deptCategory = await prisma.dynamicCategory.findFirst({
+          where: { name: user.department }
+        })
+        if (!deptCategory) {
+          // Department name doesn't exist in DynamicCategory → return nothing
+          baseWhere = { id: null }
+          break
+        }
+        // Filter history entries to only those tickets whose mainCategoryId matches the admin's department
+        baseWhere = {
           ticket: {
-            createdById: user.id
+            mainCategoryId: deptCategory.id
           }
         }
         break
-        
+      }
+
+      case 'MD':
+        baseWhere = {
+          OR: [
+            { ticket: { mdApproval: 'PENDING', status: 'PENDING_MD_APPROVAL' } },
+            { ticket: { assignedToId: user.id } },
+            { ticket: { createdById: user.id } }
+          ]
+        }
+        break
+
+      case 'EMPLOYEE':
+        baseWhere = { ticket: { createdById: user.id } }
+        break
+
       default:
-        return NextResponse.json(
-          { message: 'Unauthorized role' },
-          { status: 403 }
-        )
+        return NextResponse.json({ message: 'Unauthorized role' }, { status: 403 })
     }
 
-    // Apply user filter for admins
-    // if (userId && userId !== 'ALL' && ['SUPER_ADMIN', 'ADMIN'].includes(user.role)) {
-    //   if (where.OR) {
-    //     where = {
-    //       AND: [
-    //         { OR: where.OR },
-    //         { createdById: userId }
-    //       ]
-    //     }
-    //   } else {
-    //     where.createdById = userId
-    //   }
-    // }
+    // If baseWhere is set to { id: null }, we can immediately return empty
+    // (but we continue to merge filters – they will never match)
+    let where = { ...baseWhere }
 
+    // ---------- APPLY ADDITIONAL FILTERS ----------
+    const filters = []
 
-    // Apply user filter (who performed the action)
-if (userId && userId !== 'ALL' && ['SUPER_ADMIN', 'ADMIN'].includes(user.role)) {
-  const userFilter = { createdById: userId }; // filter on history entry creator
-  
-  if (where.AND) {
-    where.AND.push(userFilter);
-  } else if (where.OR) {
-    where = {
-      AND: [
-        { OR: where.OR },
-        userFilter
-      ]
-    };
-  } else {
-    where = { ...where, ...userFilter };
-  }
-}
+    // 1. User filter (who performed the action) – only for SUPER_ADMIN and ADMIN
+    if (userId && userId !== 'ALL' && ['SUPER_ADMIN', 'ADMIN'].includes(user.role)) {
+      filters.push({ createdById: userId })
+    }
 
-    // Filter by action type
+    // 2. Action type filter
     if (action && action !== 'ALL') {
-      if (where.AND) {
-        where.AND.push({ action })
-      } else if (where.OR) {
-        where = {
-          AND: [
-            { OR: where.OR },
-            { action }
-          ]
-        }
-      } else {
-        where.action = action
-      }
+      filters.push({ action })
     }
 
-    // Filter by category
+    // 3. Category filter (string field, optional)
     if (category && category !== 'ALL') {
-      const categoryFilter = {
-        ticket: {
-          category: category
-        }
-      }
-      
-      if (where.AND) {
-        where.AND.push(categoryFilter)
-      } else if (where.OR) {
-        where = {
-          AND: [
-            { OR: where.OR },
-            categoryFilter
-          ]
-        }
-      } else {
-        where = {
-          ...where,
-          ...categoryFilter
-        }
-      }
+      filters.push({ ticket: { category } })
     }
 
-    // Filter by date range
+    // 4. Date range filter
     if (dateRange && dateRange !== 'ALL') {
       const now = new Date()
       let startDate = new Date()
-
       switch (dateRange) {
         case 'TODAY':
           startDate.setHours(0, 0, 0, 0)
@@ -166,90 +113,47 @@ if (userId && userId !== 'ALL' && ['SUPER_ADMIN', 'ADMIN'].includes(user.role)) 
           startDate.setFullYear(now.getFullYear() - 1)
           break
       }
-
-      const dateFilter = {
-        createdAt: {
-          gte: startDate
-        }
-      }
-
-      if (where.AND) {
-        where.AND.push(dateFilter)
-      } else if (where.OR) {
-        where = {
-          AND: [
-            { OR: where.OR },
-            dateFilter
-          ]
-        }
-      } else {
-        where = {
-          ...where,
-          ...dateFilter
-        }
-      }
+      filters.push({ createdAt: { gte: startDate } })
     }
 
-    // Search in ticket title or description
+    // 5. Search filter (ticket title, description, ticketNumber)
     if (search && search.trim() !== '') {
-      const searchFilter = {
+      filters.push({
         OR: [
-          {
-            ticket: {
-              title: {
-                contains: search,
-                mode: 'insensitive'
-              }
-            }
-          },
-          {
-            description: {
-              contains: search,
-              mode: 'insensitive'
-            }
-          },
-          {
-            ticket: {
-              ticketNumber: {
-                contains: search,
-                mode: 'insensitive'
-              }
-            }
-          }
+          { ticket: { title: { contains: search, mode: 'insensitive' } } },
+          { description: { contains: search, mode: 'insensitive' } },
+          { ticket: { ticketNumber: { contains: search, mode: 'insensitive' } } }
         ]
-      }
+      })
+    }
 
-      if (where.AND) {
-        where.AND.push(searchFilter)
-      } else if (where.OR) {
+    // Merge all filters with AND
+    if (filters.length > 0) {
+      // If baseWhere already has an OR (like MD), wrap everything in AND
+      if (baseWhere.OR) {
         where = {
           AND: [
-            { OR: where.OR },
-            searchFilter
+            { OR: baseWhere.OR },
+            ...filters
           ]
         }
       } else {
+        // Otherwise, spread baseWhere and add AND with filters
         where = {
-          ...where,
-          ...searchFilter
+          ...baseWhere,
+          AND: filters
         }
       }
     }
 
-    // Get total count for pagination
+    // ---------- FETCH DATA ----------
     const total = await prisma.ticketHistory.count({ where })
 
-    // Get history with pagination
     const history = await prisma.ticketHistory.findMany({
       where,
       include: {
         createdBy: {
-          select: {
-            id: true,
-            name: true,
-            role: true,
-            email: true
-          }
+          select: { id: true, name: true, role: true, email: true }
         },
         ticket: {
           select: {
@@ -260,7 +164,8 @@ if (userId && userId !== 'ALL' && ['SUPER_ADMIN', 'ADMIN'].includes(user.role)) 
             status: true,
             mdApproval: true,
             createdById: true,
-            assignedToId: true
+            assignedToId: true,
+            mainCategoryId: true  // include for debugging
           }
         }
       },
@@ -269,81 +174,22 @@ if (userId && userId !== 'ALL' && ['SUPER_ADMIN', 'ADMIN'].includes(user.role)) 
       take: limit
     })
 
-    // Get most active day using Prisma's API instead of raw SQL
+    // ---------- MOST ACTIVE DAY ----------
     let mostActiveDay = null
-    
     try {
-      if (['SUPER_ADMIN', 'ADMIN'].includes(user.role)) {
-        // For admins - count all history entries by date
-        const dailyCounts = await prisma.ticketHistory.groupBy({
-          by: ['createdAt'],
-          _count: {
-            id: true
-          },
-          orderBy: {
-            _count: {
-              id: 'desc'
-            }
-          },
-          take: 1
-        })
-        
-        if (dailyCounts.length > 0) {
-          mostActiveDay = dailyCounts[0].createdAt
-        }
-      } else {
-        // For non-admins - count only their relevant tickets
-        let ticketIds = []
-        
-        if (user.role === 'MD') {
-          // Get tickets relevant to MD
-          const tickets = await prisma.ticket.findMany({
-            where: {
-              OR: [
-                { mdApproval: 'PENDING', status: 'PENDING_MD_APPROVAL' },
-                { assignedToId: user.id },
-                { createdById: user.id }
-              ]
-            },
-            select: { id: true }
-          })
-          ticketIds = tickets.map(t => t.id)
-        } else {
-          // For employees - just their tickets
-          const tickets = await prisma.ticket.findMany({
-            where: { createdById: user.id },
-            select: { id: true }
-          })
-          ticketIds = tickets.map(t => t.id)
-        }
-        
-        if (ticketIds.length > 0) {
-          const dailyCounts = await prisma.ticketHistory.groupBy({
-            by: ['createdAt'],
-            where: {
-              ticketId: {
-                in: ticketIds
-              }
-            },
-            _count: {
-              id: true
-            },
-            orderBy: {
-              _count: {
-                id: 'desc'
-              }
-            },
-            take: 1
-          })
-          
-          if (dailyCounts.length > 0) {
-            mostActiveDay = dailyCounts[0].createdAt
-          }
-        }
+      // Use the same where clause for counting (we can remove extra includes)
+      const dailyCounts = await prisma.ticketHistory.groupBy({
+        by: ['createdAt'],
+        where,
+        _count: { id: true },
+        orderBy: { _count: { id: 'desc' } },
+        take: 1
+      })
+      if (dailyCounts.length > 0) {
+        mostActiveDay = dailyCounts[0].createdAt
       }
     } catch (err) {
       console.error('Error calculating most active day:', err)
-      // Don't fail the whole request if this fails
     }
 
     return NextResponse.json({

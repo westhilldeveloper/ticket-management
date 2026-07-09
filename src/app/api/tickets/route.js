@@ -39,7 +39,6 @@ export async function POST(request) {
       if (dynamicCategory) {
         mainCategoryId = dynamicCategory.id
       } else {
-        // Optionally create the category? For now, treat as invalid
         return NextResponse.json({ message: `Invalid main category: ${mainCategoryName}` }, { status: 400 })
       }
     }
@@ -70,7 +69,7 @@ export async function POST(request) {
         description,
         category,
         priority,
-        mainCategoryId,              // store relation ID instead of string
+        mainCategoryId,
         requestServiceType,
         itemType,
         attachment: attachmentUrls.join(','),
@@ -103,8 +102,36 @@ export async function POST(request) {
       }
     })
 
+    // ---------- DEPARTMENT‑BASED NOTIFICATION ----------
+    // Determine the department name for this ticket
+    let ticketDepartment = mainCategoryName
+    if (!ticketDepartment) {
+      ticketDepartment = category // fallback
+    }
+
+    // Build admin filter – only notify relevant admins
+    let adminWhere = {
+      role: { in: ['ADMIN', 'SUPER_ADMIN'] }
+    }
+
+    if (ticketDepartment) {
+      adminWhere.OR = [
+        { role: 'SUPER_ADMIN' }, // super admins always get notified
+        {
+          role: 'ADMIN',
+          department: ticketDepartment
+        }
+      ]
+    } else {
+      // If no department, fallback to all admins (or you could notify only super admins)
+      adminWhere.OR = [
+        { role: 'SUPER_ADMIN' },
+        { role: 'ADMIN' }
+      ]
+    }
+
     const admins = await prisma.user.findMany({
-      where: { OR: [{ role: 'ADMIN' }, { role: 'SUPER_ADMIN' }] }
+      where: adminWhere
     })
 
     const ticketLink = `${process.env.NEXTAUTH_URL}/tickets/${ticket.id}`
@@ -115,9 +142,7 @@ export async function POST(request) {
       } catch (emailError) {
         console.error('Email failed but ticket created:', emailError)
       }
-    }
 
-    for (const admin of admins) {
       await prisma.notification.create({
         data: {
           type: 'TICKET_CREATED',
@@ -152,7 +177,7 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
-    const category = searchParams.get('category')        // branch filter (still string)
+    const category = searchParams.get('category')
     const priority = searchParams.get('priority')
     const search = searchParams.get('search')
     const limit = parseInt(searchParams.get('limit') || '10')
@@ -163,7 +188,7 @@ export async function GET(request) {
     const dateTo = searchParams.get('dateTo')
     const sortBy = searchParams.get('sortBy') || 'createdAt'
     const sortOrder = searchParams.get('sortOrder') || 'desc'
-    const departmentParam = searchParams.get('department')   // optional department name filter
+    const departmentParam = searchParams.get('department')
 
     let where = {}
 
@@ -201,7 +226,7 @@ export async function GET(request) {
       where.createdById = user.id
     }
 
-    // Additional filters (status, category, priority, assignedTo, date range)
+    // Additional filters
     if (status) where.status = status
     if (category) where.category = category
     if (priority) where.priority = priority
@@ -238,7 +263,7 @@ export async function GET(request) {
             orderBy: { createdAt: 'desc' },
             include: { createdBy: { select: { name: true, role: true } } }
           },
-           mainCategory: { select: { id: true, name: true } }  
+          mainCategory: { select: { id: true, name: true } }
         }
       }),
       prisma.ticket.count({ where })
