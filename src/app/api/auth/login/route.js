@@ -34,13 +34,13 @@ export async function POST(request) {
     console.log('User found:', { id: user.id, email: user.email, role: user.role })
 
     // ---- NEW: Block sign-in if email not verified ----
-    // if (!user.emailVerified) {
-    //   console.log('Email not verified:', email)
-    //   return NextResponse.json(
-    //     { message: 'Email not verified. Please verify your email before logging in.' },
-    //     { status: 403 }
-    //   )
-    // }
+    if (!user.emailVerified) {
+      console.log('Email not verified:', email)
+      return NextResponse.json(
+        { message: 'Email not verified. Please verify your email before logging in.' },
+        { status: 403 }
+      )
+    }
 
     // Check if user is active
     if (user.isActive === false) {
