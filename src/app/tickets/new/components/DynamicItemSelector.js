@@ -3,7 +3,7 @@
 
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { FiAlertCircle, FiLoader } from 'react-icons/fi';
+import { FiAlertCircle, FiLoader, FiSearch } from 'react-icons/fi';
 
 export default function DynamicItemSelector() {
   const { register, formState: { errors }, setValue, getValues } = useFormContext();
@@ -13,6 +13,7 @@ export default function DynamicItemSelector() {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Fetch options whenever mainCategory or requestServiceType changes
   useEffect(() => {
@@ -32,7 +33,6 @@ export default function DynamicItemSelector() {
         const data = await res.json();
         const items = data.items || [];
         setOptions(items);
-        console.log("items====>", items)
 
         // Reset itemType if current value is no longer in the new options list
         const currentItemType = getValues('itemType');
@@ -52,6 +52,16 @@ export default function DynamicItemSelector() {
 
     fetchOptions();
   }, [mainCategory, requestServiceType, setValue, getValues]);
+
+  // Reset search term whenever options change (new category/service type)
+  useEffect(() => {
+    setSearchTerm('');
+  }, [options]);
+
+  // Filter options based on search term (case‑insensitive)
+  const filteredOptions = options.filter(opt =>
+    opt.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Show nothing until both selections are made
   if (!mainCategory || !requestServiceType) {
@@ -96,28 +106,49 @@ export default function DynamicItemSelector() {
     );
   }
 
-  // Render radio buttons from fetched options
+  // Render radio buttons from fetched options with search
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4">
       <h2 className="text-sm font-medium text-gray-700 mb-3">
         {requestServiceType === 'REQUEST' ? 'Select Item' : 'Select Service Type'}
         <span className="text-red-500 ml-1">*</span>
       </h2>
-      <div className="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto">
-        {options.map((opt) => (
-          <label key={opt.id} className="flex items-center p-2 border rounded cursor-pointer hover:bg-gray-50">
-            <input
-              type="radio"
-              value={opt.name}
-              {...register('itemType', { 
-                required: `Please select a ${requestServiceType === 'REQUEST' ? 'item' : 'service type'}` 
-              })}
-              className="mr-2"
-            />
-            <span className="text-sm">{opt.name}</span>
-          </label>
-        ))}
+
+      {/* Search input */}
+      <div className="relative mb-3">
+        <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none  focus:border-transparent text-sm"
+        />
       </div>
+
+      {/* Radio options grid */}
+      <div className="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto">
+        {filteredOptions.length > 0 ? (
+          filteredOptions.map((opt) => (
+            <label key={opt.id} className="flex items-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+              <input
+                type="radio"
+                value={opt.name}
+                {...register('itemType', { 
+                  required: `Please select a ${requestServiceType === 'REQUEST' ? 'item' : 'service type'}` 
+                })}
+                className="mr-2"
+              />
+              <span className="text-sm">{opt.name}</span>
+            </label>
+          ))
+        ) : (
+          <div className="col-span-2 text-sm text-gray-500 py-2 text-center">
+            No matching options
+          </div>
+        )}
+      </div>
+
       {errors.itemType && (
         <p className="mt-1 text-xs text-red-600 flex items-center">
           <FiAlertCircle className="h-3 w-3 mr-1" />
