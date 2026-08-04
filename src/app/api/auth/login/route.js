@@ -3,7 +3,6 @@ import { comparePassword, generateToken } from '@/app/lib/auth'
 import { prisma } from '@/app/lib/db'
 
 export async function POST(request) {
-  console.log('=== LOGIN API CALLED ===')
   
   try {
     const { email, password } = await request.json()
@@ -11,7 +10,6 @@ export async function POST(request) {
 
     // Validate input
     if (!email || !password) {
-      console.log('Missing email or password')
       return NextResponse.json(
         { message: 'Email and password are required' },
         { status: 400 }

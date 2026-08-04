@@ -4,7 +4,6 @@ const JWT_SECRET = process.env.JWT_SECRET
 const secret = new TextEncoder().encode(JWT_SECRET)
 
 export const generateToken = async (user) => {
-  console.log('generateToken called for user:', user?.email)
   
   try {
     if (!JWT_SECRET) {
@@ -35,7 +34,6 @@ export const generateToken = async (user) => {
 }
 
 export const verifyToken = async (token) => {
-  console.log('verifyToken called, token exists:', !!token)
   
   try {
     if (!token) return null

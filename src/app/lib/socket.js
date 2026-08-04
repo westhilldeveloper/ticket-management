@@ -36,7 +36,6 @@ export const initSocket = (server) => {
     });
 
     socket.on('ticket-created', (ticketData) => {
-      console.log("=======> socket accepted", ticketData);
       if (ticketData.createdById) {
         io.to(`user:${ticketData.createdById}`).emit('new-ticket', ticketData);
       }
@@ -65,7 +64,6 @@ export const initSocket = (server) => {
   console.log(`MD decision: ${action} for ticket ${ticket.id}`);
   
   // Broadcast to the ticket creator (employee)
-  console.log("ticket user=====>", ticket.createdById)
   if (ticket.createdById) {
     io.to(`user:${ticket.createdById}`).emit('ticket-updated', ticket);
   }

@@ -14,6 +14,7 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiInfo,
+  FiCopy, // <-- added
 } from 'react-icons/fi';
 import { useAuth } from '@/app/context/AuthContext';
 import { useToast } from '@/app/context/ToastContext';
@@ -77,6 +78,65 @@ export default function TicketDetails({ ticket }) {
     return format(new Date(date), 'dd MMM yyyy, HH:mm');
   };
 
+  // ---------- Copy Details ----------
+  const handleCopyDetails = async () => {
+    if (!ticketData) {
+      toast.error('No ticket data to copy');
+      return;
+    }
+
+    // Build a formatted text block
+    const lines = [];
+    lines.push(`Ticket #${ticketData.ticketNumber || 'N/A'}`);
+    lines.push(`Title: ${ticketData.title || '—'}`);
+    lines.push(`Status: ${ticketData.status || '—'}`);
+    lines.push(`Priority: ${ticketData.priority || '—'}`);
+    lines.push(`Category: ${ticketData.mainCategory || '—'}`);
+    lines.push(`Request/Service: ${ticketData.requestServiceType || '—'}`);
+    lines.push(`Item/Service: ${ticketData.itemType || '—'}`);
+    lines.push(`Created By: ${ticketData.createdBy?.name || '—'}`);
+    lines.push(`Assigned To: ${ticketData.assignedTo?.name || 'Unassigned'}`);
+    lines.push(`Branch: ${ticketData.category || '—'}`);
+    lines.push(`Serial No: ${ticketData.serialNumber || '—'}`);
+    lines.push(`Created At: ${formatDate(ticketData.createdAt)}`);
+    lines.push(`Last Updated: ${formatDistanceToNow(new Date(ticketData.updatedAt), { addSuffix: true })}`);
+    lines.push(`Description: ${ticketData.description || 'No description provided.'}`);
+
+    // MD Approval / Third Party (if present)
+    if (ticketData.mdApproval && ticketData.mdApproval !== 'PENDING') {
+      lines.push(`MD Approval: ${ticketData.mdApproval}`);
+      if (ticketData.mdApprovalComment) lines.push(`MD Comment: ${ticketData.mdApprovalComment}`);
+      if (ticketData.mdRejectReason) lines.push(`MD Reject Reason: ${ticketData.mdRejectReason}`);
+      if (ticketData.mdApprovedAt) lines.push(`MD Approved At: ${formatDate(ticketData.mdApprovedAt)}`);
+      if (ticketData.mdRejectedAt) lines.push(`MD Rejected At: ${formatDate(ticketData.mdRejectedAt)}`);
+    }
+    if (ticketData.thirdParty) {
+      lines.push(`Third Party Status: ${ticketData.thirdPartyStatus || '—'}`);
+      if (ticketData.thirdPartyDetails) lines.push(`Third Party Details: ${ticketData.thirdPartyDetails}`);
+    }
+
+    // Attachments (list URLs)
+    if (ticketData.attachment) {
+      const attachments = ticketData.attachment.includes(',') 
+        ? ticketData.attachment.split(',') 
+        : [ticketData.attachment];
+      lines.push('Attachments:');
+      attachments.forEach((url, idx) => {
+        lines.push(`  ${idx+1}. ${url.trim()}`);
+      });
+    }
+
+    const text = lines.join('\n');
+
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success('Ticket details copied to clipboard!');
+    } catch (err) {
+      console.error('Copy failed:', err);
+      toast.error('Failed to copy details. Please try again.');
+    }
+  };
+ 
   return (
     <div className="bg-white rounded shadow-sm border border-gray-100 overflow-hidden">
       {/* Header */}
@@ -86,10 +146,18 @@ export default function TicketDetails({ ticket }) {
             <h2 className="text-xs font-bold text-gray-800">{ticketData.title}</h2>
             <p className="text-[9px] text-gray-400 mt-0.5">#{ticketData.ticketNumber}</p>
           </div>
-          <div className="flex gap-1">
+          <div className="flex items-center gap-1">
             <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-medium ${getPriorityBadge(ticketData.priority)}`}>
               {ticketData.priority}
             </span>
+            {/* Copy button */}
+            <button
+              onClick={handleCopyDetails}
+              className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              title="Copy all details to clipboard"
+            >
+              <FiCopy className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       </div>
@@ -97,8 +165,9 @@ export default function TicketDetails({ ticket }) {
       {/* Main info */}
       <div className="p-2 space-y-2">
         {/* Info grid - compact */}
+       
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
-          <InfoItemCompact icon={<FiTag className="w-3 h-3 text-gray-400" />} label="Category" value={ticketData.mainCategory || '—'} />
+          {/* <InfoItemCompact icon={<FiTag className="w-3 h-3 text-gray-400" />} label="Category" value={ticketData.mainCategory || '—'} /> */}
           <InfoItemCompact icon={<FiTag className="w-3 h-3 text-gray-400" />} label="Req/Service" value={ticketData.requestServiceType || '—'} />
           <InfoItemCompact icon={<FiTag className="w-3 h-3 text-gray-400" />} label="Item/Service" value={ticketData.itemType || '—'} />
           <InfoItemCompact icon={<FiUser className="w-3 h-3 text-gray-400" />} label="Created By" value={ticketData.createdBy?.name || '—'} />
@@ -112,7 +181,7 @@ export default function TicketDetails({ ticket }) {
         {/* Description */}
         <div className="bg-gray-50 rounded p-1.5 border border-gray-100">
           <h3 className="text-[9px] font-semibold text-gray-600 mb-0.5">Description</h3>
-          <p className="text-[9px] text-gray-700 whitespace-pre-wrap leading-tight">
+          <p className="text-[11px] font-bold text-gray-700 whitespace-pre-wrap leading-tight">
             {ticketData.description || 'No description provided.'}
           </p>
         </div>
@@ -165,7 +234,7 @@ export default function TicketDetails({ ticket }) {
 
       {/* Redirect button */}
       {canEdit && (
-        <div className="px-2  pb-2  flex justify-end">
+        <div className="px-2 pb-2 flex justify-end">
           <button
             onClick={handleOpenModal}
             className="w-[20%] flex items-center justify-center gap-1 px-2 py-1 border border-green-300 rounded text-[9px] font-medium text-yellow-600 bg-white hover:bg-gray-50"

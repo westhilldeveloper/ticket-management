@@ -237,7 +237,6 @@ function EmployeeDashboardContent() {
   };
 
  const handleTicketUpdated = (updatedTicket) => {
-  console.log('ticket-updated received in employee dashboard:', updatedTicket);
   fetchDashboardData();
 };
 

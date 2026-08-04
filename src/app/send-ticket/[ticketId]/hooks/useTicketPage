@@ -86,7 +86,6 @@ export function useTicketPage({ ticketId, user, socket, joinTicket, leaveTicket,
 
   // Admin Actions
   const handleAdminAction = useCallback(async (action) => {
-    console.log("action=====>",action)
     if (action === 'ASSIGN_TO_SERVICE') {
       if (!selectedServiceUserId) {
         toast.error('Please select a service team member');

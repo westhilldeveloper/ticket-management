@@ -90,7 +90,7 @@ export default function AdminDashboard() {
       departmentParam = `&department=${encodeURIComponent(user.department)}`
     }
 
-    console.log("department param===>", departmentParam)
+   
     // For SUPER_ADMIN, MD, or others, no filter (show all)
     
     // Fetch all tickets for stats (limit to 100 for performance)

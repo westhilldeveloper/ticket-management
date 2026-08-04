@@ -86,7 +86,6 @@ function AdminDashboardContent() {
   useEffect(() => {
     if (socket && isConnected) {
       const handleNewTicket = (ticketData) => {
-        console.log('New ticket received:', ticketData);
         fetchDashboardData();
         toast.success(`New ticket #${ticketData.ticketNumber} created`, { duration: 4000 });
       };
@@ -100,7 +99,6 @@ function AdminDashboardContent() {
   useEffect(() => {
     if (socket && isConnected) {
       const handleTicketUpdated = (updatedTicket) => {
-        console.log('Admin: ticket updated', updatedTicket);
         fetchDashboardData();
         toast.info(`Ticket #${updatedTicket.ticketNumber} updated`);
       };
